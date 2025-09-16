@@ -97,3 +97,4 @@ Use this format:
 **Suggested fix:** Safely guard or use null-propagation:
 ```csharp
 var upper = user?.Name?.ToUpperInvariant();
+```
