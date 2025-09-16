@@ -13,3 +13,10 @@ This is a group project with:
 
 - `client/` - Client-side application code
 - `server/` - Server-side application code 
+
+## AI Usage
+
+AI is used to automatically review code.  
+It is also used to help decide on technologies for apporach.  
+Outside of this no AI is used.  
+This is has an AITS Score of 2
