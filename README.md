@@ -17,6 +17,6 @@ This is a group project with:
 ## AI Usage
 
 AI is used to automatically review code.  
-It is also used to help decide on technologies for apporach.  
+It is also used to help decide on technologies for approach.  
 Outside of this no AI is used.  
 This is has an AITS Score of 2
