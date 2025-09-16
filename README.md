@@ -19,4 +19,4 @@ This is a group project with:
 AI is used to automatically review code.  
 It is also used to help decide on technologies for approach.  
 Outside of this no AI is used.  
-This is has an AITS Score of 2
+This project has an AITS Score of 2
