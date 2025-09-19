@@ -81,6 +81,27 @@ Prefer **mechanical, verifiable** rules. Examples for C# and general style below
 - **Constants**: no magic numbers/strings—use named constants/enums.
 - **Docs**: public APIs have brief summaries; any breaking change has migration notes.
 
+## Zero-Finding Behavior (LGTM)
+
+When you review all changed files and generate **no new comments**:
+
+- Always say the PR looks good — never attempt to approve.  
+- Post a concise **LGTM message** with context:  
+  - If all review threads are resolved and checks are passing:  
+    ```
+    Copilot reviewed {n}/{n} changed files; no new findings.
+    LGTM ✅ — PR looks good.
+    ```
+  - If unresolved threads remain:  
+    ```
+    Copilot reviewed {n}/{n} changed files; no new findings.
+    LGTM ✅ — Code looks good, but some review threads remain open.
+    ```
+  - If checks are failing:  
+    ```
+    Copilot reviewed {n}/{n} changed files; no new findings.
+    LGTM ✅ — Code looks good, but required checks are failing.
+    ```
 ---
 
 ## Commenting Style
