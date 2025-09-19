@@ -6,17 +6,14 @@ namespace SmartMeterSystemBackend.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        {
-            _logger = logger;
-        }
+        private readonly ILogger<WeatherForecastController> logger;
 
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
