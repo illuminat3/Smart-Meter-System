@@ -8,11 +8,14 @@ This is a group project with:
 - Matthew Rawson C3060480
 - William Pearson C3067280
 - Jacob Allmedinger C3018245
+- Aran Bansal C4037436
 
 ## Project Structure
 
-- `client/` - Client-side application code
-- `server/` - Server-side application code 
+- `frontend/` - Frontend dashboard that connects with a signalr socket to the meter-api  
+- `meter-api/` - The api that handles smart meter connections and has a signalr socket to the frontend with the live status of the meter  
+- `meter-agent` - The agent that connects to the meter-api and tells it its current state  
+- `mock-database` - The mock database connection as a docker compose and relevant accompanying files  
 
 ## AI Usage
 
