@@ -2,6 +2,6 @@
 {
     public interface IJwtService
     {
-        string GetJwt(string key); // Change to user object
+        string GetJwt(string key); // TODO: Change to user object
     }
 }
