@@ -1,4 +1,4 @@
-﻿using meter_api.Datatypes;
+﻿using meter_api.Datatypes.Database;
 
 namespace meter_api.Services
 {

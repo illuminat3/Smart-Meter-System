@@ -1,8 +1,7 @@
-﻿namespace meter_api.Datatypes
+﻿namespace meter_api.Datatypes.Database
 {
-    public class MeterAgentCredentials
+    public class MeterAgentCredentials : ICredential
     {
-        public required string Id { get; set; } = Guid.NewGuid().ToString();
         public required string MeterId {  get; set; }
         public required string Username { get; set; }
         public required string HashedPassword { get; set; }

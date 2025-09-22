@@ -1,4 +1,4 @@
-﻿namespace meter_api.Datatypes
+﻿namespace meter_api.Datatypes.Database
 {
     public class MeterAgentReading
     {
