@@ -1,0 +1,29 @@
+name: Meter API Build
+
+on:
+  pull_request:
+    paths:
+      - 'meter-api/**'
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Build Meter API
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: ./meter-api
+      
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+      working-directory: ./meter-api
