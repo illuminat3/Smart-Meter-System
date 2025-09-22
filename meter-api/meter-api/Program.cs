@@ -15,6 +15,9 @@ builder.Services.AddSignalR();
 
 // Services
 builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IBillingService, BillingService>();
+builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 
 var app = builder.Build();
 
