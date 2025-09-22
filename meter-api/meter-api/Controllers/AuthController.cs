@@ -12,9 +12,20 @@ namespace meter_api.Controllers
         [HttpPost("agent/login")]
         public async Task<IActionResult> AgentLogin([FromBody] AgentLoginRequest request)
         {
-            var response = await authService.AgentLogin(request);
+            try
+            {
+                var response = await authService.AgentLogin(request);
 
-            return Ok(response);
+                return Ok(response);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
