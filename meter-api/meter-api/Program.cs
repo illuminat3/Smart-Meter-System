@@ -8,7 +8,11 @@ builder.Services.AddControllers();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(s =>
+{
+    s.SwaggerDoc("v1", new() { Title = "Smart Meter API", Version = "v1" });
+    s.AddSignalRSwaggerGen();
+});
 
 // SignalR
 builder.Services.AddSignalR();
