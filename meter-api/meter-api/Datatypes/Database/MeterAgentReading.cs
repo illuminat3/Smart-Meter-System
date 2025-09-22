@@ -7,12 +7,5 @@
         public required string PreviousReadingId { get; set; }
         public DateTime TimestampUtc { get; set; } = DateTime.UtcNow;
         public required double Usage { get; set; } 
-        public MeterAgentReading()
-        {
-            if (string.IsNullOrEmpty(Id))
-            {
-                Id = Guid.NewGuid().ToString();
-            }
-        }
     }
 }
