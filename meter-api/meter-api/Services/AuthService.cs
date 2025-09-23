@@ -3,11 +3,34 @@ using meter_api.Datatypes.Responses;
 
 namespace meter_api.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService(IDatabaseService databaseService, IHashService hashService, IJwtService jwtService) : IAuthService
     {
         public Task<AgentLoginResponse> AgentLogin(AgentLoginRequest request)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ClientLoginResponse> ClientLogin(ClientLoginRequest request)
+        {
+            var credential = await databaseService.GetCredentialsFromUsername(request.Username);
+            var hashedPassword = hashService.GetHash(request.Password);
+
+            if (credential.HashedPassword != hashedPassword)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var client = await databaseService.GetClientFromUsername(request.Username);
+
+            var authToken = jwtService.GetClientJwt(client);
+
+            var response = new ClientLoginResponse 
+            { 
+                AuthenticationToken = authToken,
+                Username = request.Username 
+            };
+
+            return response;
         }
     }
 }
