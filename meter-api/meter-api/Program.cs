@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
 // Jwt
-var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? throw new InvalidOperationException("JWT configuration is missing"); ;
+var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? throw new InvalidOperationException("JWT configuration is missing");
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret));
 
 builder.Services
