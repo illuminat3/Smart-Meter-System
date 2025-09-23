@@ -27,5 +27,24 @@ namespace meter_api.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPost("client/login")]
+        public async Task<IActionResult> ClientLogin([FromBody] ClientLoginRequest request)
+        {
+            try
+            {
+                var response = await authService.ClientLogin(request);
+
+                return Ok(response);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

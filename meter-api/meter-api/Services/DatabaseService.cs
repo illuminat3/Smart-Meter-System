@@ -1,10 +1,16 @@
-﻿using meter_api.Datatypes.Database;
+﻿using meter_api.Datatypes;
+using meter_api.Datatypes.Database;
 
 namespace meter_api.Services
 {
     public class DatabaseService : IDatabaseService
     {
-        public Task<MeterAgentCredentials> GetCredentialsFromUsername(string username)
+        public Task<Client> GetClientFromUsername(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICredential> GetCredentialsFromUsername(string username)
         {
             throw new NotImplementedException();
         }

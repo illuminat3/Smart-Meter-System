@@ -1,7 +1,10 @@
-﻿namespace meter_api.Services
+﻿using meter_api.Datatypes.Database;
+
+namespace meter_api.Services
 {
     public interface IJwtService
     {
-        string GetJwt(string key); // TODO: Change to user object
+        string GetClientJwt(Client client);
+        bool IsValidJwt(string jwt);
     }
 }
