@@ -5,6 +5,11 @@ namespace meter_api.Services
 {
     public class DatabaseService : IDatabaseService
     {
+        public Task<MeterAgent> GetAgentFromUsername(string username)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Client> GetClientFromUsername(string username)
         {
             throw new NotImplementedException();
