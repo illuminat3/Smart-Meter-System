@@ -6,5 +6,6 @@ namespace meter_api.Services
     public interface IAuthService
     {
        Task<AgentLoginResponse> AgentLogin(AgentLoginRequest request);
+       Task<ClientLoginResponse> ClientLogin(ClientLoginRequest request);
     }
 }
