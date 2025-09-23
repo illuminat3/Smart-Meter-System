@@ -7,5 +7,6 @@ namespace meter_api.Services
     {
         Task<ICredential> GetCredentialsFromUsername(string username); 
         Task<Client> GetClientFromUsername(string username); 
+        Task<MeterAgent> GetAgentFromUsername(string username);
     }
 }
