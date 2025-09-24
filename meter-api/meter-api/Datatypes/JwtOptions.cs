@@ -1,4 +1,4 @@
-﻿namespace meter_api.Datatypes.Database
+﻿namespace meter_api.Datatypes
 {
     public class JwtOptions
     {
