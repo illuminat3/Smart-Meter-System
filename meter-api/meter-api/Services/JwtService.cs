@@ -1,4 +1,5 @@
-﻿using meter_api.Datatypes.Database;
+﻿using meter_api.Datatypes;
+using meter_api.Datatypes.Database;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

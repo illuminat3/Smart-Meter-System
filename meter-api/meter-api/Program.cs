@@ -1,4 +1,4 @@
-using meter_api.Datatypes.Database;
+using meter_api.Datatypes;
 using meter_api.Hubs;
 using meter_api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
