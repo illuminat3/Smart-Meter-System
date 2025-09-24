@@ -29,7 +29,49 @@ builder.Services
             ValidAudience = jwtOptions.Audience,
             ValidateLifetime = true
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hub/meters"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                var jwtService = context.HttpContext.RequestServices.GetRequiredService<IJwtService>();
+
+                var authHeader = context.Request.Headers.Authorization.ToString();
+                var rawJwt = !string.IsNullOrWhiteSpace(authHeader) && authHeader.StartsWith("Bearer ")
+                    ? authHeader["Bearer ".Length..]
+                    : (context.SecurityToken as Microsoft.IdentityModel.JsonWebTokens.JsonWebToken)?.EncodedToken
+                      ?? (context.SecurityToken as System.IdentityModel.Tokens.Jwt.JwtSecurityToken)?.RawData;
+
+                if (string.IsNullOrWhiteSpace(rawJwt) || !jwtService.IsValidJwt(rawJwt))
+                {
+                    context.Fail("JWT failed validation.");
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
+
+// CORS
+builder.Services.AddCors(o =>
+{
+    o.AddPolicy("open", p =>
+    {
+        p.AllowAnyOrigin()
+         .AllowAnyHeader()
+         .AllowAnyMethod();
+    });
+});
 
 // Authorization
 builder.Services.AddAuthorization();
@@ -58,6 +100,7 @@ builder.Services.AddSingleton<IBillingService, BillingService>();
 builder.Services.AddSingleton<IBillingRateService, BillingRateService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
+builder.Services.AddScoped<ISnapshotService, SnapshotService>();
 
 var app = builder.Build();
 
@@ -68,9 +111,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
+app.UseCors("open");
 
-app.MapHub<MeterHub>("/hub/meters");
+app.MapHub<MeterHub>("/hub/meters").RequireAuthorization();
 
 app.Run();
