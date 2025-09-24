@@ -28,10 +28,10 @@ namespace meter_api.Services
         public async Task<MeterAgent> GetAgentFromUsername(string username)
         {
             var meterAgentCredentialUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?username={Uri.EscapeDataString(username)}";
-            var meterAgentCredential = await GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl) ?? throw new KeyNotFoundException($"No meter agent credentials for username '{username}'.");
+            var meterAgentCredential = await GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl) ?? throw new KeyNotFoundException($"No meter agent credentials for username: {username}");
 
             var meterAgentUrl = $"{_databaseOptions.ConnectionUrl}/meterAgents/{Uri.EscapeDataString(meterAgentCredential.MeterId)}";
-            var meterAgent = await GetSingleAsync<MeterAgent>(meterAgentUrl) ?? throw new KeyNotFoundException($"Meter Agent '{meterAgentCredential.MeterId}' not found.");
+            var meterAgent = await GetSingleAsync<MeterAgent>(meterAgentUrl) ?? throw new KeyNotFoundException($"Meter Agent: {meterAgentCredential.MeterId} not found");
 
             return meterAgent;
         }
@@ -39,10 +39,10 @@ namespace meter_api.Services
         public async Task<Client> GetClientFromUsername(string username)
         {
             var clientCredentialUrl = $"{_databaseOptions.ConnectionUrl}/clientCredentials?username={Uri.EscapeDataString(username)}";
-            var clientCredential = await GetFirstOrDefaultAsync<ClientCredentials>(clientCredentialUrl) ?? throw new KeyNotFoundException($"No client credentials for username '{username}'.");
+            var clientCredential = await GetFirstOrDefaultAsync<ClientCredentials>(clientCredentialUrl) ?? throw new KeyNotFoundException($"No client credentials for username: {username}");
 
             var clientUrl = $"{_databaseOptions.ConnectionUrl}/clients/{Uri.EscapeDataString(clientCredential.ClientId)}";
-            var client = await GetSingleAsync<Client>(clientUrl) ?? throw new KeyNotFoundException($"Client '{clientCredential.ClientId}' not found.");
+            var client = await GetSingleAsync<Client>(clientUrl) ?? throw new KeyNotFoundException($"Client: {clientCredential.ClientId} not found");
 
             return client;
         }
