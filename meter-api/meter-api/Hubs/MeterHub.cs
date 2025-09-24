@@ -1,10 +1,59 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using meter_api.Datatypes.Messages;
+using meter_api.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using SignalRSwaggerGen.Attributes;
 
 namespace meter_api.Hubs
 {
+    [Authorize]
     [SignalRHub]
-    public class MeterHub : Hub
+    public class MeterHub(ISnapshotService snapshotService) : Hub
     {
+        public override async Task OnConnectedAsync()
+        {
+            var clientId = GetClientId();
+
+            if (clientId == null)
+            {
+                Context.Abort();
+                return;
+            }
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"client:{clientId}");
+
+            var meterIds = Context.User?.FindAll("meterId").Select(c => c.Value) ?? [];
+            foreach (var meterId in meterIds)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, $"meter:{meterId}");
+            }
+
+            await Clients.Caller.SendAsync(InitialStateMessage.MessageName, new InitialStateMessage
+            {
+                MeterSnapshots = await snapshotService.GetMeterSnapshotsForClient(clientId)
+            }); 
+
+            await base.OnConnectedAsync();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            var clientId = GetClientId();
+
+            if (clientId == null)
+            {
+                Context.Abort();
+                return;
+            }
+
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"client:{clientId}");
+
+            await base.OnDisconnectedAsync(exception);
+        }
+
+        private string? GetClientId()
+        {
+            return Context.User?.FindFirst("id")?.Value;
+        }
     }
 }
