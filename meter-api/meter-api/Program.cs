@@ -113,8 +113,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 app.UseCors("open");
+app.MapControllers();
 
 app.MapHub<MeterHub>("/hub/meters").RequireAuthorization();
 
