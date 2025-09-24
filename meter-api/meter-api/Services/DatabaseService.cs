@@ -27,22 +27,22 @@ namespace meter_api.Services
 
         public async Task<MeterAgent> GetAgentFromUsername(string username)
         {
-            var meterAgentCredential = await GetFirstOrDefaultAsync<MeterAgentCredentials>(
-           $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?username={Uri.EscapeDataString(username)}") ?? throw new KeyNotFoundException($"No meter agent credentials for username '{username}'.");
+            var meterAgentCredentialUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?username={Uri.EscapeDataString(username)}";
+            var meterAgentCredential = await GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl) ?? throw new KeyNotFoundException($"No meter agent credentials for username '{username}'.");
 
-            var meterAgent = await GetSingleAsync<MeterAgent>(
-                $"{_databaseOptions.ConnectionUrl}/meterAgents/{Uri.EscapeDataString(meterAgentCredential.MeterId)}") ?? throw new KeyNotFoundException($"Meter Agent '{meterAgentCredential.MeterId}' not found.");
+            var meterAgentUrl = $"{_databaseOptions.ConnectionUrl}/meterAgents/{Uri.EscapeDataString(meterAgentCredential.MeterId)}";
+            var meterAgent = await GetSingleAsync<MeterAgent>(meterAgentUrl) ?? throw new KeyNotFoundException($"Meter Agent '{meterAgentCredential.MeterId}' not found.");
 
             return meterAgent;
         }
 
         public async Task<Client> GetClientFromUsername(string username)
         {
-            var clientCredential = await GetFirstOrDefaultAsync<ClientCredentials>(
-                $"{_databaseOptions.ConnectionUrl}/clientCredentials?username={Uri.EscapeDataString(username)}") ?? throw new KeyNotFoundException($"No client credentials for username '{username}'.");
-            
-            var client = await GetSingleAsync<Client>(
-                $"{_databaseOptions.ConnectionUrl}/clients/{Uri.EscapeDataString(clientCredential.ClientId)}") ?? throw new KeyNotFoundException($"Client '{clientCredential.ClientId}' not found.");
+            var clientCredentialUrl = $"{_databaseOptions.ConnectionUrl}/clientCredentials?username={Uri.EscapeDataString(username)}";
+            var clientCredential = await GetFirstOrDefaultAsync<ClientCredentials>(clientCredentialUrl) ?? throw new KeyNotFoundException($"No client credentials for username '{username}'.");
+
+            var clientUrl = $"{_databaseOptions.ConnectionUrl}/clients/{Uri.EscapeDataString(clientCredential.ClientId)}";
+            var client = await GetSingleAsync<Client>(clientUrl) ?? throw new KeyNotFoundException($"Client '{clientCredential.ClientId}' not found.");
 
             return client;
         }
