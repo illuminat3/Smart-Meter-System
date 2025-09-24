@@ -15,7 +15,7 @@ namespace meter_api.Services
             var usageSeconds = usageTime.TotalSeconds;
 
 
-            var usageRate = currentReading.Usage / usageSeconds;
+            var usageRate = (decimal)currentReading.Usage / (decimal)usageSeconds;
 
             var totalCost = billingRateService.GetRate(currentReading.TimestampUtc) * (decimal)usageRate;
 
