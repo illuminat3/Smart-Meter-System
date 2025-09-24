@@ -14,10 +14,6 @@ namespace meter_api.Services
             var usageTime = currentReading.TimestampUtc - previousReading.TimestampUtc;
             var usageSeconds = usageTime.TotalSeconds;
 
-            if (usageSeconds <= 0)
-            {
-                return 0.0m;
-            }
 
             var usageRate = currentReading.Usage / usageSeconds;
 
