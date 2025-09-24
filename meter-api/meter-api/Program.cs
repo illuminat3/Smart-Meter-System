@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // AppSettings
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("Database"));
 
 // Jwt
 var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? throw new InvalidOperationException("JWT configuration is missing");
@@ -32,6 +33,9 @@ builder.Services
 
 // Authorization
 builder.Services.AddAuthorization();
+
+// HttpClient
+builder.Services.AddHttpClient<IDatabaseService, DatabaseService>();
 
 // Controllers
 builder.Services.AddControllers();
