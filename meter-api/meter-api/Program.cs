@@ -35,7 +35,7 @@ builder.Services
 builder.Services.AddAuthorization();
 
 // HttpClient
-builder.Services.AddHttpClient<IDatabaseService, DatabaseService>();
+builder.Services.AddHttpClient<DatabaseHttpClient>();
 
 // Controllers
 builder.Services.AddControllers();
