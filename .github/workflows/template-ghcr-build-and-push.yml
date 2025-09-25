@@ -1,0 +1,38 @@
+name: Template GHCR Build and Push
+on:
+  workflow_dispatch:
+    inputs:
+      context:
+        description: Build context (folder with Dockerfile)
+        required: true
+        default: mock-database
+      dockerfile:
+        description: Dockerfile path (relative to context)
+        required: true
+        default: Dockerfile
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ghcr.io/illuminat3/smart-meter-system-database:latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: illuminat3
+          password: ${{ secrets.GHCR_AUTH_TOKEN }}
+      - name: Build & push latest
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ github.event.inputs.context }}
+          file: ${{ github.event.inputs.context }}/${{ github.event.inputs.dockerfile }}
+          push: true
+          tags: ${{ env.IMAGE }}
