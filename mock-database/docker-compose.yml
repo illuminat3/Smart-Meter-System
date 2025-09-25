@@ -1,0 +1,9 @@
+services:
+  mock-database:
+    image: justilluminate/smart-meter-system-database:latest
+    container_name: mock-database
+    ports:
+      - "3030:3000"
+    volumes:
+      - ./db.json:/src/db.json
+    restart: unless-stopped
