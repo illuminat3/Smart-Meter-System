@@ -28,10 +28,12 @@ namespace meter_api.Hubs
                 await Groups.AddToGroupAsync(Context.ConnectionId, $"meter:{meterId}");
             }
 
-            await Clients.Caller.SendAsync(InitialStateMessage.MessageName, new InitialStateMessage
+            var message = new InitialStateMessage
             {
-                MeterSnapshots = await snapshotService.GetMeterSnapshotsForClient(clientId)
-            }); 
+                Body = await snapshotService.GetMeterSnapshotsForClient(clientId)
+            };
+
+            await Clients.Caller.SendAsync(message.MessageName, message); 
 
             await base.OnConnectedAsync();
         }
