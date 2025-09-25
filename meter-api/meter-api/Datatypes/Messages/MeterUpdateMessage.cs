@@ -1,9 +1,9 @@
 ﻿namespace meter_api.Datatypes.Messages
 {
-    public class MeterUpdateMessage
+    public class MeterUpdateMessage : IMessage<MeterSnapshot>
     {
-        public const string MessageName = "MeterUpdate";
+        public string MessageName { get; } = "MeterUpdate";
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-        public required MeterSnapshot Snapshot { get; set; }
+        public required MeterSnapshot Body { get; set; }
     }
 }
