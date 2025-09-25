@@ -1,6 +1,6 @@
 services:
   mock-database:
-    image: justilluminate/smart-meter-system-database:latest
+    image: ghcr.io/illuminat3/smart-meter-system-database:latest
     container_name: mock-database
     ports:
       - "3030:3000"
