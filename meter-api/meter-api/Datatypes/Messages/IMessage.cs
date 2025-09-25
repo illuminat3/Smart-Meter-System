@@ -4,6 +4,6 @@
     {
         string MessageName { get; }
         DateTime Timestamp { get; set; }
-        TBody Body { get; }
+        TBody Body { get; set; }
     }
 }
