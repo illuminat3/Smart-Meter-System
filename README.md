@@ -17,6 +17,14 @@ This is a group project with:
 - `meter-agent/` - The agent that connects to the meter-api and tells it its current state  
 - `mock-database/` - The mock database connection as a docker compose and relevant accompanying files  
 
+## Requirements
+  
+- [Docker](https://www.docker.com/products/docker-desktop/)
+- [Visual Studio](https://visualstudio.microsoft.com/downloads/)  
+- [.NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- [Visual Studio Code](https://code.visualstudio.com/download)
+- [Node.js](https://nodejs.org/en/download)
+
 ## AI Usage
 
 AI is used to automatically review code.  
