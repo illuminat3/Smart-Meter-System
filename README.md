@@ -5,10 +5,10 @@ University Smart Meter System.
 
 This is a group project with:
 
-- Matthew Rawson C3060480
-- William Pearson C3067280
-- Jacob Allmedinger C3018245
-- Aran Bansal C4037436
+- Matthew Rawson C3060480 ([illuminat3](https://github.com/illuminat3), [matthewrawsoninfotrack](https://github.com/matthewrawsoninfotrack))
+- William Pearson C3067280 ([MARSPEARSWIL](https://github.com/MARSPEARSWIL))
+- Jacob Allmedinger C3018245 ([jallmen](https://github.com/jallmen))
+- Aran Bansal C4037436 ([TBD](tbd))
 
 ## Project Structure
 
