@@ -15,7 +15,7 @@ namespace meter_api.Services
                 throw new UnauthorizedAccessException();
             }
 
-            var agent = await databaseService.GetAgentFromUsername(request.Username);
+            var agent = await databaseService.GetFullMeterAgentFromUsername(request.Username);
 
             var response = new AgentLoginResponse
             {
