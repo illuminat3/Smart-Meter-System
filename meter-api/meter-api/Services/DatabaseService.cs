@@ -21,9 +21,6 @@ namespace meter_api.Services
 
         public async Task<MeterAgent> GetAgentFromId(string id)
         {
-            var meterAgentCredentialUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?id={Uri.EscapeDataString(id)}";
-            var meterAgentCredential = await databaseClient.GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl) ?? throw new KeyNotFoundException($"No meter agent credentials for Id: {id}");
-
             var meterAgentUrl = $"{_databaseOptions.ConnectionUrl}/meterAgents/{Uri.EscapeDataString(meterAgentCredential.MeterId)}";
             var meterAgent = await databaseClient.GetSingleAsync<MeterAgent>(meterAgentUrl) ?? throw new KeyNotFoundException($"Meter Agent: {meterAgentCredential.MeterId} not found");
 
