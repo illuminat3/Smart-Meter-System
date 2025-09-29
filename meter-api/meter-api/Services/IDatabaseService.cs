@@ -9,6 +9,9 @@ namespace meter_api.Services
         Task<Client> GetClientFromUsername(string username);
         Task<Client> GetClientFromId(string id);
         Task<MeterAgent> GetAgentFromUsername(string username);
+        Task<FullMeterAgent> GetFullMeterAgentFromId(string id);
         Task<MeterSnapshot> GetMeterSnapshotFromId(string id);
+        Task<FullMeterAgent> GetFullMeterAgentFromUsername(string username);
+        Task<List<MeterAgentReading>> GetReadingsFromMeterId(string meterId);
     }
 }
