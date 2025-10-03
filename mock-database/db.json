@@ -1,5 +1,11 @@
 {
-  "Clients": [],
+  "Clients": [
+    {
+      "Id": "1",
+      "Name": "John Doe",
+      "MeterIds": ["1", "2", "3"]
+    }
+  ],
   "ClientCredentials": [],
   "MeterAgents": [],
   "MeterAgentCredentials": [],
