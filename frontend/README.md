@@ -12,14 +12,18 @@ This is a smart meter app with:
 
 ## Getting Started
 
+0. Ensure you are in the right folder
+
+   - Make sure you are in the frontend folder.
+
 1. Install dependencies
 
    - npm: `npm install`
 
 2. Configure API base URL
 
-   - Copy `.env.example` to `.env` and set `VITE_API_BASE_URL` to your backend URL.
-   - Example: `VITE_API_BASE_URL=http://localhost:3000`
+   - Run `cp .env.example .env` and set `VITE_API_BASE_URL` to your backend URL.
+   - This is: `VITE_API_BASE_URL=https://localhost:7268`
 
 3. Start the dev server
 
