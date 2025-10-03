@@ -1,6 +1,7 @@
 # Smart Meter App
 
 This is a smart meter app with:
+
 - TypeScript
 - PrimeVue v4 (Aura theme) and PrimeIcons
 - Tailwind CSS
@@ -12,16 +13,20 @@ This is a smart meter app with:
 ## Getting Started
 
 1. Install dependencies
+
    - npm: `npm install`
 
 2. Configure API base URL
+
    - Copy `.env.example` to `.env` and set `VITE_API_BASE_URL` to your backend URL.
    - Example: `VITE_API_BASE_URL=http://localhost:3000`
 
 3. Start the dev server
+
    - npm: `npm run dev`
 
 4. Build for production
+
    - npm: `npm run build`
 
 5. Preview the production build
@@ -50,3 +55,7 @@ This is a smart meter app with:
 - `src/assets/main.css`: Tailwind entry with `@tailwind` directives.
 - `src/lib/httpClient.ts`: Configurable axios client and helpers.
 - `src/services/auth.ts`: Example service using the axios client.
+
+## SignalR docs
+
+- [SignalR](https://www.npmjs.com/package/@microsoft/signalr)
