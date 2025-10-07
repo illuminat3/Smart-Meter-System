@@ -6,8 +6,40 @@
       "MeterIds": ["1", "2", "3"]
     }
   ],
-  "ClientCredentials": [],
-  "MeterAgents": [],
-  "MeterAgentCredentials": [],
-  "MeterAgentReadings": []
+  "ClientCredentials": [
+    {
+      "Id": "1",
+      "ClientId": "123456",
+      "Username": "JohnnyDoe101",
+      "HashedPassword": "9f898879658ed6ad005dcad0fd5cb8c71f0febafccc240c8bdc4fa3d4ef892e0"
+    }
+
+  ],
+  "MeterAgents": [
+    {
+      "Id": "1",
+      "ClientId": "789789",
+      "TotalUsage": 21.6,
+      "TotalBilling": 50.69
+    }
+  ],
+  "MeterAgentCredentials": [
+    {
+      "Id": "1",
+      "MeterId": "1",
+      "Username": "Meter1",
+      "HashedPassword": "57278cd3e131e62861662792a79cb26d430096ae4b2777a1ba97f6fd52b0559d"
+    }
+  ],
+  "MeterAgentReadings": [
+    {
+      "Id": "1",
+      "MeterId": "1",
+      "PreviousReadingId": "2",
+      "TimestampUtc": "2025-10-07T18:25:43.511Z",
+      "Usage": 190,
+      "Billing": 0.0
+
+    }
+  ]
 }
