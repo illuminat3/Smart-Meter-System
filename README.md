@@ -27,7 +27,7 @@ This is a group project with:
 
 ## Docker Images
 
-Here is a quick guide on how to pull docker images since it is not straight forward.
+Here is a quick guide on how to pull docker images since it is not straightforward.
 
 ### Packages
 
@@ -39,7 +39,7 @@ You can access all repository packages [here](https://github.com/illuminat3?tab=
 
 To access the packages you will need to create a Personal Access Token.  
 To do this go to [classic token in developer settings](https://github.com/settings/tokens)  
-Create a new class token. Do not create a fine grained token.  
+Create a new classic token. Do not create a fine grained token.  
 Call the token Docker Access and make sure to set the expiry to 90 days.  
 You will then be given a bunch of options.  Make sure to select `write:packages`  
 This will also tick a bunch of other options. This is all you need to do.  
