@@ -3,24 +3,24 @@
     {
       "Id": "1",
       "Name": "John Doe",
-      "MeterIds": ["1", "2", "3"]
+      "MeterIds": ["1"]
     }
   ],
   "ClientCredentials": [
     {
       "Id": "1",
-      "ClientId": "123456",
-      "Username": "JohnnyDoe101",
-      "HashedPassword": "9f898879658ed6ad005dcad0fd5cb8c71f0febafccc240c8bdc4fa3d4ef892e0"
+      "ClientId": "1",
+      "Username": "JohnDoe",
+      "HashedPassword": "4a01094b6a2fc92307b9ec2264c52cbb23b08f93be5658710fab71e1fa6d2010"
     }
 
   ],
   "MeterAgents": [
     {
       "Id": "1",
-      "ClientId": "789789",
-      "TotalUsage": 21.6,
-      "TotalBilling": 50.69
+      "DisplayName": "Meter 1",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
     }
   ],
   "MeterAgentCredentials": [
@@ -28,18 +28,17 @@
       "Id": "1",
       "MeterId": "1",
       "Username": "Meter1",
-      "HashedPassword": "57278cd3e131e62861662792a79cb26d430096ae4b2777a1ba97f6fd52b0559d"
+      "HashedPassword": "654ce2fba02285c4d23b91780659817f60d80035aa8fcd5dcc9d712c94f1bef3"
     }
   ],
   "MeterAgentReadings": [
     {
       "Id": "1",
       "MeterId": "1",
-      "PreviousReadingId": "2",
+      "PreviousReadingId": "",
       "TimestampUtc": "2025-10-07T18:25:43.511Z",
-      "Usage": 190,
+      "Usage": 0.00220833,
       "Billing": 0.0
-
     }
   ]
 }
