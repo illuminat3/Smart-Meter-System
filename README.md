@@ -8,7 +8,7 @@ This is a group project with:
 - Matthew Rawson C3060480 ([illuminat3](https://github.com/illuminat3), [matthewrawsoninfotrack](https://github.com/matthewrawsoninfotrack))
 - William Pearson C3067280 ([MARSPEARSWIL](https://github.com/MARSPEARSWIL))
 - Jacob Allmedinger C3018245 ([jallmen](https://github.com/jallmen))
-- Aran Bansal C4037436 ([TBD](tbd))
+- Aran Bansal C4037436 ([Aranb4](https://github.com/aranb4))
 
 ## Project Structure
 
