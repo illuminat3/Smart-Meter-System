@@ -1,4 +1,4 @@
-public class UsageService : iUsageService
+public class UsageService : IUsageService
 {
     public decimal getusage()
     {
