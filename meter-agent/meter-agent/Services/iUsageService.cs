@@ -1,3 +1,3 @@
-public interface iUsageService {
+public interface IUsageService {
     decimal getusage();
 }
