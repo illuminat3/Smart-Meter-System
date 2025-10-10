@@ -1,7 +1,10 @@
-public class UsageService : IUsageService
+namespace meter_agent.Services
 {
-    public decimal GetUsage()
+    public class UsageService : IUsageService
     {
-        throw new NotImplementedException();
+        public decimal GetUsage()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
