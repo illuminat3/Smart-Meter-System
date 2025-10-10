@@ -1,6 +1,6 @@
 public class UsageService : IUsageService
 {
-    public decimal getusage()
+    public decimal GetUsage()
     {
         throw new NotImplementedException();
     }
