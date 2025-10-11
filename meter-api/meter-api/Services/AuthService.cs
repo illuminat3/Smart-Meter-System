@@ -3,11 +3,11 @@ using meter_api.Datatypes.Responses;
 
 namespace meter_api.Services
 {
-    public class AuthService(IDatabaseService databaseService, IHashService hashService, IJwtService jwtService) : IAuthService
+    public class AuthService(IDatabaseService databaseService, IHashService hashService, IJwtService jwtService, IAgentTokenService agentTokenService) : IAuthService
     {
         public async Task<AgentLoginResponse> AgentLogin(AgentLoginRequest request)
         {
-            var credential = await databaseService.GetCredentialsFromUsername(request.Username);
+            var credential = await databaseService.GetAgentCredentialsFromMeterIdAndUsername(request.MeterId, request.Username);
             var hashedPassword = hashService.GetHash(request.Password);
 
             if (credential.HashedPassword != hashedPassword)
@@ -15,13 +15,14 @@ namespace meter_api.Services
                 throw new UnauthorizedAccessException();
             }
 
-            var agent = await databaseService.GetFullMeterAgentFromUsername(request.Username);
+            var agent = await databaseService.GetFullMeterAgentFromId(request.MeterId);
+            var authToken = agentTokenService.GetAgentToken(agent);
 
             var response = new AgentLoginResponse
             {
-                MeterId = agent.Id,
+                MeterId = request.MeterId,
                 Username = request.Username,
-                PreviousReadingId = agent.PreviousReadingId,
+                AuthenticationToken = authToken,
             };
 
             return response;
@@ -29,7 +30,7 @@ namespace meter_api.Services
 
         public async Task<ClientLoginResponse> ClientLogin(ClientLoginRequest request)
         {
-            var credential = await databaseService.GetCredentialsFromUsername(request.Username);
+            var credential = await databaseService.GetClientCredentialsFromUsername(request.Username);
             var hashedPassword = hashService.GetHash(request.Password);
 
             if (credential.HashedPassword != hashedPassword)

@@ -1,6 +1,9 @@
- public class AgentLoginResponse
+namespace meter_agent.Datatypes.Responses
+{
+    public class AgentLoginResponse : ILoginResponse
     {
         public required string MeterId { get; set; }
         public required string Username { get; set; }
-        public required string PreviousReadingId { get; set; }
+        public required string AuthenticationToken { get; set; }
     }
+}
