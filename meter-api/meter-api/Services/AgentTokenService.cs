@@ -27,8 +27,8 @@ namespace meter_api.Services
         };
 
             var token = new JwtSecurityToken(
-                issuer: "AgentFlow",
-                audience: "MeterAgents",
+                issuer: _options.Issuer,
+                audience: _options.Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(_options.Expiry),
                 signingCredentials: creds
