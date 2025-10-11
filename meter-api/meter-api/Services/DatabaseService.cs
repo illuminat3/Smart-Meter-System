@@ -83,5 +83,19 @@ namespace meter_api.Services
 
             return meterAgentReadings;
         }
+
+        public Task<ICredential> GetClientCredentialsFromUsername(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ICredential> GetAgentCredentialsFromMeterIdAndUsername(string meterId, string username)
+        {
+            var meterAgentCredentialUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?meterId={Uri.EscapeDataString(meterId)}&username={Uri.EscapeDataString(username)}";
+            var meterAgentCredential = await databaseClient.GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl)
+                ?? throw new KeyNotFoundException($"No meter agent credentials found for meterId: {meterId} and username: {username}");
+
+            return meterAgentCredential;
+        }
     }
 }

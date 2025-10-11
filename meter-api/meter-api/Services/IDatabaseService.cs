@@ -5,7 +5,8 @@ namespace meter_api.Services
 {
     public interface IDatabaseService
     {
-        Task<ICredential> GetCredentialsFromUsername(string username); 
+        Task<ICredential> GetClientCredentialsFromUsername(string username); 
+        Task<ICredential> GetAgentCredentialsFromMeterIdAndUsername(string meterId, string username);
         Task<Client> GetClientFromUsername(string username);
         Task<Client> GetClientFromId(string id);
         Task<MeterAgent> GetAgentFromUsername(string username);
