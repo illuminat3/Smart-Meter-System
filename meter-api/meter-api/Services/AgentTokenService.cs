@@ -37,7 +37,7 @@ namespace meter_api.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public bool isAgentTokenValid(string agentToken)
+        public bool IsAgentTokenValid(string agentToken)
         {
             if (string.IsNullOrWhiteSpace(agentToken))
                 return false;
