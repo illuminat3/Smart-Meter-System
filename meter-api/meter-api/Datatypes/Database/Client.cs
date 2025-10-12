@@ -1,6 +1,6 @@
 ﻿namespace meter_api.Datatypes.Database
 {
-    public class Client
+    public class Client : IDatabaseObject
     {
         public required string Id { get; set; }
         public required string Name { get; set; }
