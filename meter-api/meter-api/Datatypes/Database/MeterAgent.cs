@@ -2,7 +2,7 @@
 
 namespace meter_api.Datatypes.Database
 {
-    public class MeterAgent
+    public class MeterAgent : IDatabaseObject
     {
         public required string Id { get; set; }
         public required string DisplayName { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace meter_api.Datatypes.Database
 {
-    public class MeterAgentReading
+    public class MeterAgentReading : IDatabaseObject
     {
         public required string Id { get; set; }
         public required string MeterId {  get; set; }
