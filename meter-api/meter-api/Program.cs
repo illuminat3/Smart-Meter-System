@@ -102,8 +102,8 @@ builder.Services.AddSignalR(options =>
 builder.Services.AddSingleton<IHashService, HashService>();
 builder.Services.AddSingleton<IBillingService, BillingService>();
 builder.Services.AddSingleton<IBillingRateService, BillingRateService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddScoped<IAgentTokenService, AgentTokenService>();
+builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddSingleton<IAgentTokenService, AgentTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 builder.Services.AddScoped<ISnapshotService, SnapshotService>();
