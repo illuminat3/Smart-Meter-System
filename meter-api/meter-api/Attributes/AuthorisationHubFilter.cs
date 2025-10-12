@@ -9,15 +9,14 @@ namespace meter_api.Attributes
 {
     public class AuthorisationHubFilter : IHubFilter
     {
-        public async ValueTask<object?> InvokeMethodAsync(
-            HubInvocationContext invocationContext, Func<HubInvocationContext, ValueTask<object?>> next)
+        public async ValueTask<object?> InvokeMethodAsync(HubInvocationContext invocationContext, Func<HubInvocationContext, ValueTask<object?>> next)
         {
             var httpContext = invocationContext.Context.GetHttpContext();
             if (httpContext == null)
                 return await next(invocationContext);
 
-            var jwtService = httpContext.RequestServices.GetService<IJwtService>();
-            var agentTokenService = httpContext.RequestServices.GetService<IAgentTokenService>();
+            var jwtService = httpContext.RequestServices.GetRequiredService<IJwtService>();
+            var agentTokenService = httpContext.RequestServices.GetRequiredService<IAgentTokenService>();
             var token = GetBearerToken(httpContext.Request.Headers.Authorization);
 
             if (string.IsNullOrEmpty(token) ||
