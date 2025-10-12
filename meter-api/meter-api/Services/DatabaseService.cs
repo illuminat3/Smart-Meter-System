@@ -8,24 +8,7 @@ namespace meter_api.Services
     {
         private readonly DatabaseOptions _databaseOptions = options.Value;
 
-        public async Task<MeterAgent> GetAgentFromUsername(string username)
-        {
-            var meterAgentCredentialUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?username={Uri.EscapeDataString(username)}";
-            var meterAgentCredential = await databaseClient.GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl) ?? throw new KeyNotFoundException($"No meter agent credentials for username: {username}");
-
-            var meterAgentUrl = $"{_databaseOptions.ConnectionUrl}/meterAgents/{Uri.EscapeDataString(meterAgentCredential.MeterId)}";
-            var meterAgent = await databaseClient.GetSingleAsync<MeterAgent>(meterAgentUrl) ?? throw new KeyNotFoundException($"Meter Agent: {meterAgentCredential.MeterId} not found");
-
-            return meterAgent;
-        }
-
-        public async Task<MeterAgent> GetAgentFromId(string id)
-        {
-            var meterAgentUrl = $"{_databaseOptions.ConnectionUrl}/meterAgents/{Uri.EscapeDataString(id)}";
-            var meterAgent = await databaseClient.GetSingleAsync<MeterAgent>(meterAgentUrl) ?? throw new KeyNotFoundException($"Meter Agent: {id} not found");
-
-            return meterAgent;
-        }
+        #region Client
 
         public Task<Client> GetClientFromId(string id)
         {
@@ -35,21 +18,54 @@ namespace meter_api.Services
         public async Task<Client> GetClientFromUsername(string username)
         {
             var clientCredentialUrl = $"{_databaseOptions.ConnectionUrl}/clientCredentials?username={Uri.EscapeDataString(username)}";
-            var clientCredential = await databaseClient.GetFirstOrDefaultAsync<ClientCredentials>(clientCredentialUrl) ?? throw new KeyNotFoundException($"No client credentials for username: {username}");
+            var clientCredential = await databaseClient.GetFirstOrDefaultAsync<ClientCredentials>(clientCredentialUrl)
+                ?? throw new KeyNotFoundException($"No client credentials for username: {username}");
 
             var clientUrl = $"{_databaseOptions.ConnectionUrl}/clients/{Uri.EscapeDataString(clientCredential.ClientId)}";
-            var client = await databaseClient.GetSingleAsync<Client>(clientUrl) ?? throw new KeyNotFoundException($"Client: {clientCredential.ClientId} not found");
+            var client = await databaseClient.GetSingleAsync<Client>(clientUrl)
+                ?? throw new KeyNotFoundException($"Client: {clientCredential.ClientId} not found");
 
             return client;
         }
-        public Task<MeterSnapshot> GetMeterSnapshotFromId(string id)
+
+        #endregion
+
+        #region ClientCredentials
+
+        public Task<ICredential> GetClientCredentialsFromUsername(string username)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ICredential> GetCredentialsFromUsername(string username)
+        #endregion
+
+        #region MeterAgent
+
+        public async Task<MeterAgent> GetAgentFromId(string id)
         {
-            throw new NotImplementedException(); 
+            var meterAgentUrl = $"{_databaseOptions.ConnectionUrl}/meterAgents/{Uri.EscapeDataString(id)}";
+            var meterAgent = await databaseClient.GetSingleAsync<MeterAgent>(meterAgentUrl)
+                ?? throw new KeyNotFoundException($"Meter Agent: {id} not found");
+
+            return meterAgent;
+        }
+
+        public async Task<MeterAgent> GetAgentFromUsername(string username)
+        {
+            var meterAgentCredentialUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?username={Uri.EscapeDataString(username)}";
+            var meterAgentCredential = await databaseClient.GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl)
+                ?? throw new KeyNotFoundException($"No meter agent credentials for username: {username}");
+
+            var meterAgentUrl = $"{_databaseOptions.ConnectionUrl}/meterAgents/{Uri.EscapeDataString(meterAgentCredential.MeterId)}";
+            var meterAgent = await databaseClient.GetSingleAsync<MeterAgent>(meterAgentUrl)
+                ?? throw new KeyNotFoundException($"Meter Agent: {meterAgentCredential.MeterId} not found");
+
+            return meterAgent;
+        }
+
+        public Task<MeterSnapshot> GetMeterSnapshotFromId(string id)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<FullMeterAgent> GetFullMeterAgentFromId(string id)
@@ -76,26 +92,39 @@ namespace meter_api.Services
             return fullMeterAgent;
         }
 
-        public async Task<List<MeterAgentReading>> GetReadingsFromMeterId(string meterId)
-        {
-            var meterAgentReadingsUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentReading?meterId={Uri.EscapeDataString(meterId)}";
-            var meterAgentReadings = await databaseClient.GetListAsync<MeterAgentReading>(meterAgentReadingsUrl) ?? throw new KeyNotFoundException($"No meter agent readings for meterId: {meterId}");
+        #endregion
 
-            return meterAgentReadings;
-        }
-
-        public Task<ICredential> GetClientCredentialsFromUsername(string username)
-        {
-            throw new NotImplementedException();
-        }
+        #region MeterAgentCredentials
 
         public async Task<ICredential> GetAgentCredentialsFromMeterIdAndUsername(string meterId, string username)
         {
-            var meterAgentCredentialUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?meterId={Uri.EscapeDataString(meterId)}&username={Uri.EscapeDataString(username)}";
+            var meterAgentCredentialUrl =
+                $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?meterId={Uri.EscapeDataString(meterId)}&username={Uri.EscapeDataString(username)}";
+
             var meterAgentCredential = await databaseClient.GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl)
                 ?? throw new KeyNotFoundException($"No meter agent credentials found for meterId: {meterId} and username: {username}");
 
             return meterAgentCredential;
         }
+
+        public Task<ICredential> GetCredentialsFromUsername(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region MeterAgentReading
+
+        public async Task<List<MeterAgentReading>> GetReadingsFromMeterId(string meterId)
+        {
+            var meterAgentReadingsUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentReading?meterId={Uri.EscapeDataString(meterId)}";
+            var meterAgentReadings = await databaseClient.GetListAsync<MeterAgentReading>(meterAgentReadingsUrl)
+                ?? throw new KeyNotFoundException($"No meter agent readings for meterId: {meterId}");
+
+            return meterAgentReadings;
+        }
+
+        #endregion
     }
 }
