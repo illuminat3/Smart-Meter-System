@@ -1,7 +1,9 @@
+using meter_api.Attributes;
 using meter_api.Datatypes;
 using meter_api.Hubs;
 using meter_api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -91,14 +93,17 @@ builder.Services.AddSwaggerGen(s =>
 });
 
 // SignalR
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options =>
+{
+    options.AddFilter<AuthorisationHubFilter>();
+});
 
 // Services
-builder.Services.AddSingleton<IJwtService, JwtService>();
-builder.Services.AddSingleton<IAgentTokenService, AgentTokenService>();
 builder.Services.AddSingleton<IHashService, HashService>();
 builder.Services.AddSingleton<IBillingService, BillingService>();
 builder.Services.AddSingleton<IBillingRateService, BillingRateService>();
+builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddSingleton<IAgentTokenService, AgentTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 builder.Services.AddScoped<ISnapshotService, SnapshotService>();

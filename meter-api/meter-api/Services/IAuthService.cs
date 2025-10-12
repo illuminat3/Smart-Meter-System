@@ -5,7 +5,10 @@ namespace meter_api.Services
 {
     public interface IAuthService
     {
-       Task<AgentLoginResponse> AgentLogin(AgentLoginRequest request);
-       Task<ClientLoginResponse> ClientLogin(ClientLoginRequest request);
+        Task<AgentLoginResponse> AgentLogin(AgentLoginRequest request);
+        Task<ClientLoginResponse> ClientLogin(ClientLoginRequest request);
+        string? TryGetBearerToken(string? authHeader);
+        bool IsTokenAuthorised(string? token);
+        bool IsAuthorised(HttpContext httpContext);
     }
 }

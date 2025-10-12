@@ -6,6 +6,6 @@ namespace meter_api.Services
     {
         string GetAgentToken(MeterAgent agent);
 
-        bool isAgentTokenValid(string agentToken);
+        bool IsAgentTokenValid(string agentToken);
     }
 }

@@ -50,5 +50,24 @@ namespace meter_api.Services
 
             return response;
         }
+
+        public string? TryGetBearerToken(string? authHeader)
+        {
+            if (string.IsNullOrWhiteSpace(authHeader)) return null;
+            if (!authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)) return null;
+            return authHeader["Bearer ".Length..].Trim();
+        }
+
+        public bool IsTokenAuthorised(string? token)
+        {
+            if (string.IsNullOrWhiteSpace(token)) return false;
+            return jwtService.IsValidJwt(token) || agentTokenService.IsAgentTokenValid(token);
+        }
+
+        public bool IsAuthorised(HttpContext httpContext)
+        {
+            var token = TryGetBearerToken(httpContext.Request.Headers.Authorization);
+            return IsTokenAuthorised(token);
+        }
     }
 }
