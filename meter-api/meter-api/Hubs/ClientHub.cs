@@ -1,4 +1,5 @@
 ﻿using meter_api.Datatypes.Messages;
+using meter_api.Datatypes.Messages.Client;
 using meter_api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -8,7 +9,7 @@ namespace meter_api.Hubs
 {
     [Authorize]
     [SignalRHub]
-    public class MeterHub(ISnapshotService snapshotService) : Hub
+    public class ClientHub(ISnapshotService snapshotService) : Hub
     {
         public override async Task OnConnectedAsync()
         {
@@ -28,7 +29,7 @@ namespace meter_api.Hubs
                 await Groups.AddToGroupAsync(Context.ConnectionId, $"meter:{meterId}");
             }
 
-            var message = new InitialStateMessage
+            var message = new ClientInitialStateMessage
             {
                 Body = await snapshotService.GetMeterSnapshotsForClient(clientId)
             };
