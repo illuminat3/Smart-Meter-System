@@ -2,7 +2,7 @@
 {
     public class ClientUpdateMessage : IMessage<MeterSnapshot>
     {
-        public string MessageName { get; } = "MeterUpdate";
+        public string MessageName { get; } = "ClientUpdate";
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         public required MeterSnapshot Body { get; set; }
     }

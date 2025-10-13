@@ -54,8 +54,8 @@ namespace meter_api.Hubs
             switch (messageName)
             {
                 case "AgentErrorUpdate":
-                    message = JsonSerializer.Deserialize<AgentErrorUpdate>(rawMessage) as IMessage<object>;
-                    if (message is AgentErrorUpdate errorUpdate)
+                    message = JsonSerializer.Deserialize<AgentErrorUpdateMessage>(rawMessage) as IMessage<object>;
+                    if (message is AgentErrorUpdateMessage errorUpdate)
                     {
                         var meterIds = Context.User?.FindAll("meterId").Select(c => c.Value) ?? [];
                         foreach (var meterId in meterIds)
@@ -64,8 +64,8 @@ namespace meter_api.Hubs
                     break;
 
                 case "AgentUsageUpdate":
-                    message = JsonSerializer.Deserialize<AgentUsageUpdate>(rawMessage) as IMessage<object>;
-                    if (message is AgentUsageUpdate usageUpdate)
+                    message = JsonSerializer.Deserialize<AgentUsageUpdateMessage>(rawMessage) as IMessage<object>;
+                    if (message is AgentUsageUpdateMessage usageUpdate)
                     {
                         var meterIds = Context.User?.FindAll("meterId").Select(c => c.Value) ?? [];
                         foreach (var meterId in meterIds)

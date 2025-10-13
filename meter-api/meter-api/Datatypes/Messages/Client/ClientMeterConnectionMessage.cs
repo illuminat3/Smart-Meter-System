@@ -2,7 +2,7 @@
 {
     public class ClientMeterConnectionMessage : IMessage<ConnectionMessage>
     {
-        public string MessageName { get; } = "MeterAgentConnection";
+        public string MessageName { get; } = "ClientMeterConnection";
 
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         public required ConnectionMessage Body { get; set; }
