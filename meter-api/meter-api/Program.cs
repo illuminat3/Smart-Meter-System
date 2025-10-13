@@ -104,6 +104,7 @@ builder.Services.AddSingleton<IBillingService, BillingService>();
 builder.Services.AddSingleton<IBillingRateService, BillingRateService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IAgentTokenService, AgentTokenService>();
+builder.Services.AddSingleton<IMeterAgentService, MeterAgentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 builder.Services.AddScoped<ISnapshotService, SnapshotService>();
@@ -122,6 +123,7 @@ app.UseAuthorization();
 app.UseCors("open");
 app.MapControllers();
 
-app.MapHub<MeterHub>("/hub/meters").RequireAuthorization();
+app.MapHub<ClientHub>("/hub/clients").RequireAuthorization();
+app.MapHub<AgentHub>("/hub/agents").RequireAuthorization();
 
-app.Run();
+await app.RunAsync();
