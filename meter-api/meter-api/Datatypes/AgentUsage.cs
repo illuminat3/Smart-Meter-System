@@ -2,6 +2,6 @@
 {
     public class AgentUsage
     {
-        public required double EnergyUsedKWh { get; set; } = 0.0d;
+        public required double EnergyUsedKWh { get; set; }
     }
 }
