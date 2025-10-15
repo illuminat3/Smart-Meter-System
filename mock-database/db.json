@@ -2,23 +2,112 @@
   "Clients": [
     {
       "Id": "1",
-      "Name": "John Doe",
-      "MeterIds": ["1"]
+      "Name": "Client1",
+      "MeterIds": [1,2,3,4,5,6] - 12
     }
   ],
   "ClientCredentials": [
     {
       "Id": "1",
       "ClientId": "1",
-      "Username": "JohnDoe",
+      "Username": "Client1",
       "HashedPassword": "4a01094b6a2fc92307b9ec2264c52cbb23b08f93be5658710fab71e1fa6d2010"
+    },
+    {
+      "Id": "2",
+      "ClientId": "2",
+      "Username": "Client2",
+      "HashedPassword": "02c11f97a3f08f958d4855da473ae622918c55c2739941352b7e9b6466050768"
     }
-
   ],
   "MeterAgents": [
     {
       "Id": "1",
       "DisplayName": "Meter 1",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "2",
+      "DisplayName": "Meter 2",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "3",
+      "DisplayName": "Meter 3",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "4",
+      "DisplayName": "Meter 4",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "5",
+      "DisplayName": "Meter 5",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "6",
+      "DisplayName": "Meter 6",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "7",
+      "DisplayName": "Meter 7",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "8",
+      "DisplayName": "Meter 8",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "9",
+      "DisplayName": "Meter 9",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "10",
+      "DisplayName": "Meter 10",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "11",
+      "DisplayName": "Meter 11",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "12",
+      "DisplayName": "Meter 12",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "13",
+      "DisplayName": "Meter 13",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "14",
+      "DisplayName": "Meter 14",
+      "TotalUsage": 0.0,
+      "TotalBilling": 0.0
+    },
+    {
+      "Id": "15",
+      "DisplayName": "Meter 15",
       "TotalUsage": 0.0,
       "TotalBilling": 0.0
     }
@@ -27,9 +116,94 @@
     {
       "Id": "1",
       "MeterId": "1",
-      "Username": "Meter1",
+      "Username": "username_agent_1",
       "HashedPassword": "654ce2fba02285c4d23b91780659817f60d80035aa8fcd5dcc9d712c94f1bef3"
+    },
+    {
+      "Id": "2",
+      "MeterId": "2",
+      "Username": "username_agent_2",
+      "HashedPassword": "6720ab6e346698eba93e9eccfaa084d249142bf2b2ed54b7a35d4b8fce3b0b60"
+    },
+    {
+      "Id": "3",
+      "MeterId": "3",
+      "Username": "username_agent_3",
+      "HashedPassword": "726c566138252c1d222963251281a51fedd9f91959fa24d143bded9092484fb6"
+    },
+    {
+      "Id": "4",
+      "MeterId": "4",
+      "Username": "username_agent_4",
+      "HashedPassword": "19726d52b046d9f63a12d48f31c32d55a42500a7436376ba4fda6e6a5612d9b5"
+    },
+    {
+      "Id": "5",
+      "MeterId": "5",
+      "Username": "username_agent_5",
+      "HashedPassword": "018238dab057aa5032c926713f89c4a314bc545050a15732ec4afe367c6d9cae"
+    },
+    {
+      "Id": "6",
+      "MeterId": "6",
+      "Username": "username_agent_6",
+      "HashedPassword": "f63ccdae49c5a62ffa7405ce223cdf255334b85829c6e520db459bf56a592f08"
+    },
+    {
+      "Id": "7",
+      "MeterId": "7",
+      "Username": "username_agent_7",
+      "HashedPassword": "ff58a323488d318132cd03ae6b7823cb76ba9420ab11a90ae71c4790ae891ab9"
+    },
+    {
+      "Id": "8",
+      "MeterId": "8",
+      "Username": "username_agent_8",
+      "HashedPassword": "e4f0b720b6e9d805fa783240af7726af5797feb36ec6015b4ad80340dce39aee"
+    },
+    {
+      "Id": "9",
+      "MeterId": "9",
+      "Username": "username_agent_9",
+      "HashedPassword": "2c2397fa7f39b7f5f59d407ce1296af3b172ddbc4bbc02999e94e161684e1de8"
+    },
+    {
+      "Id": "10",
+      "MeterId": "10",
+      "Username": "username_agent_10",
+      "HashedPassword": "603d36c355301c502b1f322315a53e766ead8108751f94c76a8c1f9fd6853069"
+    },
+    {
+      "Id": "11",
+      "MeterId": "11",
+      "Username": "username_agent_11",
+      "HashedPassword": "0af75b8694b6348c65200ec511cf95b617074be9c865121f7b7817b5c9897476"
+    },
+    {
+      "Id": "12",
+      "MeterId": "12",
+      "Username": "username_agent_12",
+      "HashedPassword": "c0d54646556803a26d3d4a47ed663ba7ffef68a20b39724f8e182c0ca5e05c13"
+    },
+    {
+      "Id": "13",
+      "MeterId": "13",
+      "Username": "username_agent_13",
+      "HashedPassword": "12b9cc93de148d423d6889f94c7f72aba2c054d824292a20d8507208b2ff8f70"
+    },
+    {
+      "Id": "14",
+      "MeterId": "14",
+      "Username": "username_agent_14",
+      "HashedPassword": "6a4c91ee10bddeba6340612629cb1c88737d8063cc8973c51dd21afbc7f9fa66"
+    },
+    {
+      "Id": "15",
+      "MeterId": "15",
+      "Username": "username_agent_15",
+      "HashedPassword": "43a3741a317e654e7cb29980b2128ff8c7c3d0be46dd699c2a969cc68ec007e6"
     }
+
   ],
   "MeterAgentReadings": [
     {
