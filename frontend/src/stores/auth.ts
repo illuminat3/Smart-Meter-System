@@ -2,22 +2,15 @@ import { defineStore } from 'pinia';
 
 const TOKEN_KEY = 'auth_token';
 
-export type AuthUser = {
-  id?: string | number;
-  username?: string;
-  // extend as needed
-  [key: string]: any;
-} | null;
-
 interface State {
-  token: string | null;
-  user: AuthUser;
+  token: string | undefined;
+  user: string | undefined;
 }
 
 export const useAuthStore = defineStore('auth', {
   state: (): State => ({
-    token: null,
-    user: null,
+    token: undefined,
+    user: undefined,
   }),
   getters: {
     isAuthenticated: (state) => !!state.token,
@@ -33,7 +26,7 @@ export const useAuthStore = defineStore('auth', {
         // no-op: localStorage might be unavailable
       }
     },
-    setToken(token: string, user?: AuthUser) {
+    setToken(token: string, user: string) {
       this.token = token;
       if (user !== undefined) this.user = user;
       try {
@@ -43,13 +36,10 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     clearToken() {
-      this.token = null;
-      this.user = null;
-      try {
-        localStorage.removeItem(TOKEN_KEY);
-      } catch (_) {
-        // ignore
-      }
+      this.token = undefined;
+      this.user = undefined;
+
+      localStorage.removeItem(TOKEN_KEY);
     },
   },
 });

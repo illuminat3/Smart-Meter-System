@@ -1,8 +1,8 @@
 <template>
-  <!-- Single page outlet; Login is the default route -->
+  <Toast />
   <RouterView />
 </template>
 
 <script setup lang="ts">
-// No logic needed here; routes handle view rendering
+import Toast from 'primevue/toast';
 </script>

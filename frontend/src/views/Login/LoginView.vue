@@ -6,17 +6,21 @@
           <div class="text-center">Welcome to Smart Meter</div>
         </template>
         <template #content>
-          <form class="space-y-4" @submit="login" novalidate>
+          <div class="mb-4">
             <UsernameComponent v-model="username"
-                               :validation="v$.username" />
+                               :validation="v$.username"/>
+          </div>
+          <div class="mb-4">
             <PasswordComponent v-model="password"
                                label="Password"
                                id="password"
-                               :validation="v$.password" />
-            <Button type="submit"
-                    label="Login"
-                    class="w-full" />
-          </form>
+                               :validation="v$.password"/>
+    </div>
+          <div>
+            <Button label="Login"
+                    class="w-full"
+                    @click="login"/>
+          </div>
         </template>
       </Card>
     </div>
@@ -32,11 +36,12 @@ import Button from 'primevue/button';
 import UsernameComponent from '@/components/UsernameComponent.vue';
 import PasswordComponent from '@/components/PasswordComponent.vue';
 import { login as apiLogin } from '@/services/auth';
+import { useToast } from "primevue/usetoast";
+
+const toast = useToast();
 
 const username = ref('');
 const password = ref('');
-const loading = ref(false);
-const errorMsg = ref<string | null>(null);
 
 const rules = {
   username: {
@@ -49,23 +54,18 @@ const rules = {
 
 const v$ = useVuelidate(rules, { username, password });
 
-const login = async (e: Event) => {
-  e.preventDefault();
-  errorMsg.value = null;
+const login = async () => {
   const isValid = await v$.value.$validate();
   if (!isValid) {
     return;
   }
+
   try {
-    loading.value = true;
-    const res = await apiLogin({ username: username.value, password: password.value });
-    console.log('Logged in:', res);
+    const response = await apiLogin({ username: username.value, password: password.value });
+    toast.add({ severity: 'success', summary: 'Login successful', detail: `Welcome, ${response.username}` });
     // TODO: Navigate to dashboard upon success
-  } catch (err: any) {
-    console.error('Login failed', err);
-    errorMsg.value = err?.message || 'Login failed';
-  } finally {
-    loading.value = false;
+  } catch (error: any) {
+    toast.add({ severity: 'error', summary: 'Login failed', detail: 'Incorrect username or password' });
   }
 };
 </script>
