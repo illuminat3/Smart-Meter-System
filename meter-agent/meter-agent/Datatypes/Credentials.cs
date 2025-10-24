@@ -1,9 +1,9 @@
 ﻿namespace meter_agent.Datatypes
 {
-    public class Credentials
+    public class Credentials(string meterId, string username, string password)
     {
-        public required string MeterId { get; set; }
-        public required string Username { get; set; }
-        public required string Password { get; set; }
+        public required string MeterId { get; init; } = meterId;
+        public required string Username { get; init; } = username;
+        public required string Password { get; init; } = password;
     }
 }
