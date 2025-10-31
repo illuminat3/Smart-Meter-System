@@ -2,6 +2,6 @@
 {
     public class AgentUsage
     {
-        public required double EnergyUsedKWh { get; set; }
+        public required decimal EnergyUsedKWh { get; set; }
     }
 }
