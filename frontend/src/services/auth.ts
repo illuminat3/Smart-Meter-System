@@ -7,8 +7,8 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
-  token: string;
-  username: string;
+    authenticationToken: string;
+    username: string;
 };
 
 export async function login(data: LoginRequest): Promise<LoginResponse> {
@@ -18,9 +18,9 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
     data
   });
 
-  if (res?.token) {
+  if (res?.authenticationToken) {
     const auth = useAuthStore();
-    auth.setToken(res.token, res.username);
+    auth.setToken(res.authenticationToken, res.username);
   }
 
   return res;
