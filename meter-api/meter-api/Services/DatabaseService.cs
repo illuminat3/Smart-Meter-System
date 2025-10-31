@@ -73,7 +73,7 @@ namespace meter_api.Services
 
         public async Task<MeterSnapshot> GetMeterSnapshotFromId(string id)
         {
-           var fullMeterAgent = await GetFullMeterAgentFromId(id);
+            var fullMeterAgent = await GetFullMeterAgentFromId(id);
 
             return new MeterSnapshot
             {
