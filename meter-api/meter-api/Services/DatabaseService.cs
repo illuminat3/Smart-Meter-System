@@ -149,7 +149,7 @@ namespace meter_api.Services
         {
             var meterAgentReadingsUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentReading?meterId={Uri.EscapeDataString(meterId)}";
             var meterAgentReadings = await databaseClient.GetListAsync<MeterAgentReading>(meterAgentReadingsUrl)
-                ?? throw new KeyNotFoundException($"No meter agent readings for meterId: {meterId}");
+                ?? [];
 
             return meterAgentReadings;
         }
