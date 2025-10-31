@@ -7,9 +7,10 @@ using System.Text.Json;
 
 namespace meter_agent.Hubs
 {
-    public class AgentHubClient(IAuthenticationService authenticationService, AgentLoginRequest request, string hubUrl) : IAgentHubClient
+    public class AgentHubClient(IAuthenticationService authenticationService, AgentLoginRequest request, string hubUrl) : IAgentHubClient, IAsyncDisposable
     {
         private HubConnection? _connection;
+        private bool _disposed;
         private readonly SemaphoreSlim _gate = new(1, 1);
 
         private async Task<string?> GetToken()
@@ -89,6 +90,27 @@ namespace meter_agent.Hubs
             if (_connection is not null)
             {
                 await _connection.InvokeAsync("ReceiveMessage", raw, cancellationToken);
+            }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_disposed) return;
+            _disposed = true;
+
+            await _gate.WaitAsync();
+            try
+            {
+                if (_connection is not null)
+                {
+                    await _connection.DisposeAsync();
+                    _connection = null;
+                }
+            }
+            finally
+            {
+                _gate.Release();
+                _gate.Dispose();
             }
         }
     }
