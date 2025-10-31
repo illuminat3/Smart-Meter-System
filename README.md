@@ -46,8 +46,7 @@ This will also tick a bunch of other options. This is all you need to do.
 Generate your token and make sure to save it somewhere so you don't lose it.  
 
 ### Docker commands
-
-Now for the final step.  
+ 
 Firstly, make sure that you have docker installed.  
 If you do not, make sure to install it from the requirements section as it is required.  
 With docker desktop open and running, open a new command prompt window.  
