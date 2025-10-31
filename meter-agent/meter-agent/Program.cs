@@ -68,7 +68,7 @@ namespace meter_agent
                     });
 
                     int delaySeconds = random.Next(15, 61);
-                    Console.WriteLine($"Waiting {delaySeconds} seconds before next reading...\n");
+                    Console.WriteLine($"Waiting {delaySeconds} seconds");
                     Thread.Sleep(delaySeconds * 1000);
                 }
             }
