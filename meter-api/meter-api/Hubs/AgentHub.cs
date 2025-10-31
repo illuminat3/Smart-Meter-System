@@ -57,7 +57,7 @@ namespace meter_api.Hubs
                     {
                         var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
                         foreach (var meterId in meterIds)
-                            meterAgentService.HandleErrorUpdate(meterId, errorUpdate.Body);
+                            await meterAgentService.HandleErrorUpdate(meterId, errorUpdate.Body);
                     }
                     break;
 
@@ -67,7 +67,7 @@ namespace meter_api.Hubs
                     {
                         var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
                         foreach (var meterId in meterIds)
-                            meterAgentService.HandleUsageUpdate(meterId, usageUpdate.Body);
+                            await meterAgentService.HandleUsageUpdate(meterId, usageUpdate.Body);
                     }
                     break;
 
@@ -75,6 +75,5 @@ namespace meter_api.Hubs
                     break;
             }
         }
-
     }
 }
