@@ -1,3 +1,5 @@
+using System.Text;
+using DotNetEnv;
 using meter_api.Attributes;
 using meter_api.Datatypes;
 using meter_api.Hubs;
@@ -5,16 +7,35 @@ using meter_api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// AppSettings
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
-builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("Database"));
 
-// Jwt
-var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? throw new InvalidOperationException("JWT configuration is missing");
+Env.Load(); 
+builder.Configuration.AddEnvironmentVariables();
+
+static string Require(string? value, string keyName)
+    => string.IsNullOrWhiteSpace(value)
+        ? throw new InvalidOperationException($"Missing required environment variable: {keyName}")
+        : value;
+
+var jwtOptions = new JwtOptions
+{
+    Secret = Require(Environment.GetEnvironmentVariable("JWT__SECRET"), "JWT__SECRET"),
+    Issuer = Require(Environment.GetEnvironmentVariable("JWT__ISSUER"), "JWT__ISSUER"),
+    Audience = Require(Environment.GetEnvironmentVariable("JWT__AUDIENCE"), "JWT__AUDIENCE"),
+    Expiry = int.TryParse(Environment.GetEnvironmentVariable("JWT__EXPIRY"), out var mins) ? mins : 60
+};
+
+var databaseOptions = new DatabaseOptions
+{
+    ConnectionUrl = Require(Environment.GetEnvironmentVariable("DATABASE__CONNECTIONURL"), "DATABASE__CONNECTIONURL")
+};
+
+builder.Services.AddSingleton<IOptions<JwtOptions>>(_ => Options.Create(jwtOptions));
+builder.Services.AddSingleton<IOptions<DatabaseOptions>>(_ => Options.Create(databaseOptions));
+
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret));
 
 builder.Services
@@ -38,7 +59,10 @@ builder.Services
             {
                 var accessToken = context.Request.Query["access_token"];
                 var path = context.HttpContext.Request.Path;
-                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hub/meters"))
+
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    (path.StartsWithSegments("/hub/clients")
+                     || path.StartsWithSegments("/hub/agents")))
                 {
                     context.Token = accessToken;
                 }

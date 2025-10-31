@@ -31,16 +31,21 @@ namespace meter_api.Services
         public async Task<T?> GetFirstOrDefaultAsync<T>(string url)
         {
             var list = await GetListAsync<T>(url);
+            
+            if (list == null || list.Count == 0)
+                return default;
+
             return list.FirstOrDefault();
         }
 
-        public async Task<List<T>> GetListAsync<T>(string url)
+        public async Task<List<T>?> GetListAsync<T>(string url)
         {
             using var resp = await _httpClient.GetAsync(url);
+            if (resp.StatusCode == HttpStatusCode.NotFound) return default;
             resp.EnsureSuccessStatusCode();
             var stream = await resp.Content.ReadAsStreamAsync();
             var data = await JsonSerializer.DeserializeAsync<List<T>>(stream, _jsonOptions);
-            return data ?? [];
+            return data;
         }
     }
 }
