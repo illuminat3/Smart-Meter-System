@@ -15,6 +15,20 @@ export const checkIsAuthenticatedAndRedirect = async () => {
 
 export function useLogin() {
 
+    const username = ref('');
+    const password = ref('');
+
+    const rules = {
+        username: {
+            required: helpers.withMessage('Username is required.', required)
+        },
+        password: {
+            required: helpers.withMessage('Password is required.', required)
+        }
+    };
+
+    const v$ = useVuelidate(rules, { username, password });
+
     const login = async (toast: ToastServiceMethods) => {
         const isValid = await v$.value.$validate();
         if (!isValid) {
@@ -29,20 +43,6 @@ export function useLogin() {
             toast.add({ severity: 'error', summary: 'Login failed', detail: 'Incorrect username or password' });
         }
     };
-
-    const username = ref('');
-    const password = ref('');
-
-    const rules = {
-        username: {
-            required: helpers.withMessage('Username is required.', required)
-        },
-        password: {
-            required: helpers.withMessage('Password is required.', required)
-        }
-    };
-
-    const v$ = useVuelidate(rules, { username, password });
 
     return {
         username,
