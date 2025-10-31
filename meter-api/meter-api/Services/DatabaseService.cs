@@ -1,6 +1,7 @@
 ﻿using meter_api.Datatypes;
 using meter_api.Datatypes.Database;
 using Microsoft.Extensions.Options;
+using System.Text;
 
 namespace meter_api.Services
 {
@@ -8,94 +9,17 @@ namespace meter_api.Services
     {
         private readonly DatabaseOptions _databaseOptions = options.Value;
 
-        #region Client
-
-        public async Task<Client> GetClientFromId(string id)
-        {
-            var clientUrl = $"{_databaseOptions.ConnectionUrl}/clients/{Uri.EscapeDataString(id)}";
-            var client = await databaseClient.GetSingleAsync<Client>(clientUrl)
-                ?? throw new KeyNotFoundException($"Client: {id} not found");
-
-            return client;
-        }
-
-        public async Task<Client> GetClientFromUsername(string username)
-        {
-            var clientCredentialUrl = $"{_databaseOptions.ConnectionUrl}/clientCredentials?username={Uri.EscapeDataString(username)}";
-            var clientCredential = await databaseClient.GetFirstOrDefaultAsync<ClientCredentials>(clientCredentialUrl)
-                ?? throw new KeyNotFoundException($"No client credentials for username: {username}");
-
-            var clientUrl = $"{_databaseOptions.ConnectionUrl}/clients/{Uri.EscapeDataString(clientCredential.ClientId)}";
-            var client = await databaseClient.GetSingleAsync<Client>(clientUrl)
-                ?? throw new KeyNotFoundException($"Client: {clientCredential.ClientId} not found");
-
-            return client;
-        }
-
-        #endregion
-
-        #region ClientCredentials
-
-        public async Task<ICredential> GetClientCredentialsFromUsername(string username)
-        {
-            var clientCredentialUrl = $"{_databaseOptions.ConnectionUrl}/clientCredentials?username={Uri.EscapeDataString(username)}";
-            var clientCredential = await databaseClient.GetFirstOrDefaultAsync<ClientCredentials>(clientCredentialUrl)
-                ?? throw new KeyNotFoundException($"No client credentials for username: {username}");
-
-            return clientCredential;
-        }
-
-        #endregion
-
-        #region MeterAgent
-
-        public async Task<MeterAgent> GetAgentFromId(string id)
-        {
-            var meterAgentUrl = $"{_databaseOptions.ConnectionUrl}/meterAgents/{Uri.EscapeDataString(id)}";
-            var meterAgent = await databaseClient.GetSingleAsync<MeterAgent>(meterAgentUrl)
-                ?? throw new KeyNotFoundException($"Meter Agent: {id} not found");
-
-            return meterAgent;
-        }
-
-        public async Task<MeterAgent> GetAgentFromUsername(string username)
-        {
-            var meterAgentCredentialUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?username={Uri.EscapeDataString(username)}";
-            var meterAgentCredential = await databaseClient.GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl)
-                ?? throw new KeyNotFoundException($"No meter agent credentials for username: {username}");
-
-            var meterAgentUrl = $"{_databaseOptions.ConnectionUrl}/meterAgents/{Uri.EscapeDataString(meterAgentCredential.MeterId)}";
-            var meterAgent = await databaseClient.GetSingleAsync<MeterAgent>(meterAgentUrl)
-                ?? throw new KeyNotFoundException($"Meter Agent: {meterAgentCredential.MeterId} not found");
-
-            return meterAgent;
-        }
-
-        public async Task<MeterSnapshot> GetMeterSnapshotFromId(string id)
-        {
-            var fullMeterAgent = await GetFullMeterAgentFromId(id);
-
-            return new MeterSnapshot
-            {
-                MeterId = fullMeterAgent.Id,
-                DisplayName = fullMeterAgent.DisplayName,
-                CurrentUsage = fullMeterAgent.Readings.FirstOrDefault(r => r.Id == fullMeterAgent.PreviousReadingId)?.Usage ?? 0m,
-                TotalUsage = fullMeterAgent.TotalUsage,
-                TotalCost = fullMeterAgent.TotalBilling
-            };
-        }
-
         public async Task<FullMeterAgent> GetFullMeterAgentFromId(string id)
         {
-            var meterAgent = await GetAgentFromId(id);
-            var readings = await GetReadingsFromMeterId(id);
-            var credentials = await GetAgentCredentialsFromMeterId(id);
+            var meterAgent = await Get<MeterAgent>(new Dictionary<string, string> { { "id", id } });
+            var readings = await GetCollection<MeterAgentReading>(new Dictionary<string, string> { { "meterId", id } });
+            var credentials = await Get<MeterAgentCredentials>(new Dictionary<string, string> { { "meterId", id } });
 
             var fullMeterAgent = new FullMeterAgent
             {
                 Id = meterAgent.Id,
                 DisplayName = meterAgent.DisplayName,
-                Credentials = (MeterAgentCredentials)credentials,
+                Credentials = credentials,
                 Readings = readings,
                 TotalUsage = meterAgent.TotalUsage,
                 TotalBilling = meterAgent.TotalBilling
@@ -104,65 +28,96 @@ namespace meter_api.Services
             return fullMeterAgent;
         }
 
-        public async Task<FullMeterAgent> GetFullMeterAgentFromUsername(string username)
-        {
-            var meterAgent = await GetAgentFromUsername(username);
-            var readings = await GetReadingsFromMeterId(meterAgent.Id);
-            var credentials = await GetAgentCredentialsFromMeterId(meterAgent.Id);
+        #region Generic Methods
 
-            var fullMeterAgent = new FullMeterAgent
+        public async Task<T> Create<T>(T entity)
+        {
+            var resource = GetResourcePathFor<T>();
+            var url = $"{_databaseOptions.ConnectionUrl}/{resource}";
+            var created = await databaseClient.PostAsync<T>(url, entity)
+                ?? throw new InvalidOperationException($"Failed to create {typeof(T).Name} at {url}");
+            return created;
+        }
+        public async Task<T> Update<T>(string id, T entity)
+        {
+            var resource = GetResourcePathFor<T>();
+            var url = $"{_databaseOptions.ConnectionUrl}/{resource}/{Uri.EscapeDataString(id)}";
+            var updated = await databaseClient.PutAsync<T>(url, entity)
+                ?? throw new KeyNotFoundException($"{typeof(T).Name} with id '{id}' not found or not updated.");
+            return updated;
+        }
+
+        public async Task<T> Get<T>(Dictionary<string, string> paramValue)
+        {
+            var resource = GetResourcePathFor<T>();
+            var sb = new StringBuilder($"{_databaseOptions.ConnectionUrl}/{resource}");
+
+            if (paramValue != null && paramValue.Count > 0)
             {
-                Id = meterAgent.Id,
-                DisplayName = meterAgent.DisplayName,
-                Credentials = (MeterAgentCredentials)credentials,
-                Readings = readings,
-                TotalUsage = meterAgent.TotalUsage,
-                TotalBilling = meterAgent.TotalBilling
-            };
+                sb.Append('?');
+                bool first = true;
 
-            return fullMeterAgent;
+                foreach (var kvp in paramValue)
+                {
+                    if (!first)
+                        sb.Append('&');
+                    else
+                        first = false;
+
+                    sb.Append(Uri.EscapeDataString(kvp.Key))
+                      .Append('=')
+                      .Append(Uri.EscapeDataString(kvp.Value));
+                }
+            }
+
+            var url = sb.ToString();
+
+            var entity = await databaseClient.GetFirstOrDefaultAsync<T>(url)
+                ?? throw new KeyNotFoundException($"{typeof(T).Name} with specified parameters not found.");
+
+            return entity;
         }
 
-        #endregion
-
-        #region MeterAgentCredentials
-
-        public async Task<ICredential> GetAgentCredentialsFromMeterIdAndUsername(string meterId, string username)
+        public async Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue)
         {
-            var meterAgentCredentialUrl =
-                $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?meterId={Uri.EscapeDataString(meterId)}&username={Uri.EscapeDataString(username)}";
+            var resource = GetResourcePathFor<T>();
+            var sb = new StringBuilder($"{_databaseOptions.ConnectionUrl}/{resource}");
 
-            var meterAgentCredential = await databaseClient.GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl)
-                ?? throw new KeyNotFoundException($"No meter agent credentials found for meterId: {meterId} and username: {username}");
+            if (paramValue != null && paramValue.Count > 0)
+            {
+                sb.Append('?');
+                bool first = true;
 
-            return meterAgentCredential;
+                foreach (var kvp in paramValue)
+                {
+                    if (!first)
+                        sb.Append('&');
+                    else
+                        first = false;
+
+                    sb.Append(Uri.EscapeDataString(kvp.Key))
+                      .Append('=')
+                      .Append(Uri.EscapeDataString(kvp.Value));
+                }
+            }
+
+            var url = sb.ToString();
+
+            var entities = await databaseClient.GetListAsync<T>(url)
+                ?? throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
+
+            return entities;
         }
 
-        public async Task<ICredential> GetAgentCredentialsFromMeterId(string meterId)
+        private static string GetResourcePathFor<T>() => typeof(T).Name switch
         {
-            var meterAgentCredentialUrl =
-                $"{_databaseOptions.ConnectionUrl}/meterAgentCredentials?meterId={Uri.EscapeDataString(meterId)}";
-
-            var meterAgentCredential = await databaseClient.GetFirstOrDefaultAsync<MeterAgentCredentials>(meterAgentCredentialUrl)
-                ?? throw new KeyNotFoundException($"No meter agent credentials found for meterId: {meterId}");
-
-            return meterAgentCredential;
-        }
-
-
-        #endregion
-
-        #region MeterAgentReading
-
-        public async Task<List<MeterAgentReading>> GetReadingsFromMeterId(string meterId)
-        {
-            var meterAgentReadingsUrl = $"{_databaseOptions.ConnectionUrl}/meterAgentReading?meterId={Uri.EscapeDataString(meterId)}";
-            var meterAgentReadings = await databaseClient.GetListAsync<MeterAgentReading>(meterAgentReadingsUrl)
-                ?? [];
-
-            return meterAgentReadings;
-        }
-
-        #endregion
+            nameof(Client) => "clients",
+            nameof(ClientCredentials) => "clientCredentials",
+            nameof(MeterAgent) => "meterAgents",
+            nameof(MeterAgentCredentials) => "meterAgentCredentials",
+            nameof(MeterAgentReading) => "meterAgentReading",
+            _ => throw new NotSupportedException($"No resource path configured for type {typeof(T).Name}.")
+        };
+        #endregion 
     }
 }

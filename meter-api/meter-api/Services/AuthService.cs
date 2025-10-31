@@ -1,4 +1,6 @@
-﻿using meter_api.Datatypes.Requests;
+﻿using meter_api.Datatypes;
+using meter_api.Datatypes.Database;
+using meter_api.Datatypes.Requests;
 using meter_api.Datatypes.Responses;
 
 namespace meter_api.Services
@@ -7,7 +9,12 @@ namespace meter_api.Services
     {
         public async Task<AgentLoginResponse> AgentLogin(AgentLoginRequest request)
         {
-            var credential = await databaseService.GetAgentCredentialsFromMeterIdAndUsername(request.MeterId, request.Username);
+            var credential = await databaseService.Get<MeterAgentCredentials>(new Dictionary<string, string>
+            {
+                { "meterId", request.MeterId },
+                { "username", request.Username }
+            });
+
             var hashedPassword = hashService.GetHash(request.Password);
 
             if (credential.HashedPassword != hashedPassword)
@@ -30,7 +37,10 @@ namespace meter_api.Services
 
         public async Task<ClientLoginResponse> ClientLogin(ClientLoginRequest request)
         {
-            var credential = await databaseService.GetClientCredentialsFromUsername(request.Username);
+            var credential = await databaseService.Get<ClientCredentials>(new Dictionary<string, string>
+            {
+                { "username", request.Username }
+            });
             var hashedPassword = hashService.GetHash(request.Password);
 
             if (credential.HashedPassword != hashedPassword)
@@ -38,7 +48,7 @@ namespace meter_api.Services
                 throw new UnauthorizedAccessException();
             }
 
-            var client = await databaseService.GetClientFromUsername(request.Username);
+            var client = await databaseService.Get<Client>(new Dictionary<string, string> { { "username", request.Username } });
 
             var authToken = jwtService.GetClientJwt(client);
 
