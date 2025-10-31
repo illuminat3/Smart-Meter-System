@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { getStoredToken, TOKEN_KEY } from '@/stores/auth';
+import { getStoredToken } from '@/stores/auth';
 
 const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL as string | undefined;
 
@@ -12,7 +12,6 @@ function createClient(): AxiosInstance {
     }
   });
 
-  // Attach Authorization header if token exists
   instance.interceptors.request.use((config) => {
     const t = getStoredToken();
     if (t) {
@@ -22,17 +21,16 @@ function createClient(): AxiosInstance {
     return config;
   });
 
-  // Basic error normalization
   instance.interceptors.response.use(
     (response: AxiosResponse) => response,
     (error) => {
       if (error.response) {
-        // Pass-through but keep a friendlier message
         const status = error.response.status;
         const msg =
           (error.response.data && (error.response.data.message || error.response.data.error)) ||
           error.message ||
           'Request failed';
+
         return Promise.reject({ status, message: msg, data: error.response.data });
       }
       if (error.request) {

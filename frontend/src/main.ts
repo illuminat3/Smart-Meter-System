@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import ToastService from 'primevue/toastservice';
 import App from './App.vue';
 import router from './router';
 
@@ -20,6 +21,7 @@ app.use(PrimeVue, {
     preset: Aura,
   },
 });
+app.use(ToastService);
 
 // Initialize auth state from storage
 const auth = useAuthStore();
