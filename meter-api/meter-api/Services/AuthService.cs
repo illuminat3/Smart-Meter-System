@@ -48,7 +48,7 @@ namespace meter_api.Services
                 throw new UnauthorizedAccessException();
             }
 
-            var client = await databaseService.Get<Client>(new Dictionary<string, string> { { "username", request.Username } });
+            var client = await databaseService.Get<Client>(new Dictionary<string, string> { { "id", credential.ClientId } });
 
             var authToken = jwtService.GetClientJwt(client);
 
