@@ -9,12 +9,12 @@ using System.Text.Json;
 namespace meter_api.Hubs
 {
     [Authorize]
-    [SignalRHub]
+    [SignalRHub("hub/agents")]
     public class AgentHub(IMeterAgentService meterAgentService) : Hub
     {
         public override async Task OnConnectedAsync()
         {
-            var meterIds = Context.User?.FindAll("meterId").Select(c => c.Value) ?? [];
+            var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
 
             if (!meterIds.Any())
             {
@@ -33,7 +33,7 @@ namespace meter_api.Hubs
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            var meterIds = Context.User?.FindAll("meterId").Select(c => c.Value) ?? [];
+            var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
             foreach (var meterId in meterIds)
             {
                 meterAgentService.AgentDisconnected(meterId, Context.ConnectionId);
@@ -49,27 +49,25 @@ namespace meter_api.Hubs
             using var doc = JsonDocument.Parse(rawMessage);
             var messageName = doc.RootElement.GetProperty("MessageName").GetString();
 
-            IMessage<object>? message = null;
-
             switch (messageName)
             {
                 case "AgentErrorUpdate":
-                    message = JsonSerializer.Deserialize<AgentErrorUpdateMessage>(rawMessage) as IMessage<object>;
-                    if (message is AgentErrorUpdateMessage errorUpdate)
+                    var errorUpdate = JsonSerializer.Deserialize<AgentErrorUpdateMessage>(rawMessage);
+                    if (errorUpdate is not null)
                     {
-                        var meterIds = Context.User?.FindAll("meterId").Select(c => c.Value) ?? [];
+                        var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
                         foreach (var meterId in meterIds)
-                            meterAgentService.HandleErrorUpdate(meterId, errorUpdate.Body);
+                            await meterAgentService.HandleErrorUpdate(meterId, errorUpdate.Body);
                     }
                     break;
 
                 case "AgentUsageUpdate":
-                    message = JsonSerializer.Deserialize<AgentUsageUpdateMessage>(rawMessage) as IMessage<object>;
-                    if (message is AgentUsageUpdateMessage usageUpdate)
+                    var usageUpdate = JsonSerializer.Deserialize<AgentUsageUpdateMessage>(rawMessage);
+                    if (usageUpdate is not null)
                     {
-                        var meterIds = Context.User?.FindAll("meterId").Select(c => c.Value) ?? [];
+                        var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
                         foreach (var meterId in meterIds)
-                            meterAgentService.HandleUsageUpdate(meterId, usageUpdate.Body);
+                            await meterAgentService.HandleUsageUpdate(meterId, usageUpdate.Body);
                     }
                     break;
 
@@ -77,6 +75,5 @@ namespace meter_api.Hubs
                     break;
             }
         }
-
     }
 }

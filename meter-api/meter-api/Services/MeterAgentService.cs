@@ -25,12 +25,12 @@ namespace meter_api.Services
             }
         }
 
-        public void HandleErrorUpdate(string meterId, AgentError error)
+        public Task HandleErrorUpdate(string meterId, AgentError error)
         {
             throw new NotImplementedException();
         }
 
-        public void HandleUsageUpdate(string meterId, AgentUsage usage)
+        public Task HandleUsageUpdate(string meterId, AgentUsage usage)
         {
             throw new NotImplementedException();
         }
