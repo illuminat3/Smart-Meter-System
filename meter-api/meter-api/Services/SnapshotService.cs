@@ -12,19 +12,11 @@ namespace meter_api.Services
         public async Task<List<MeterSnapshot>> GetMeterSnapshotsForClient(string clientId)
         {
             var client = await databaseService.GetClientFromId(clientId);
-            var meterIds = client.MeterIds ?? [];
-            var meterSnapshots = new List<MeterSnapshot>();
+            if (client?.MeterIds == null || client.MeterIds.Count == 0)
+                return [];
 
-            foreach (var meterId in meterIds)
-            {
-                var meterSnapshot = await databaseService.GetMeterSnapshotFromId(meterId);
-                if (meterSnapshot != null)
-                {
-                    meterSnapshots.Add(meterSnapshot);
-                }
-            }
-
-            return meterSnapshots;
+            var tasks = client.MeterIds.Select(databaseService.GetMeterSnapshotFromId);
+            return (await Task.WhenAll(tasks)).ToList();
         }
     }
 }
