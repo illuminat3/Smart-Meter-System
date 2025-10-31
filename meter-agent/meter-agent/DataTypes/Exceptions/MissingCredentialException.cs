@@ -1,6 +1,5 @@
 ﻿namespace meter_agent.DataTypes.Exceptions
 {
-    [Serializable]
     public class MissingCredentialException : Exception
     {
         public MissingCredentialException()
