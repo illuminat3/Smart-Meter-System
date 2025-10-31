@@ -1,22 +1,87 @@
-name: Copilot review PR
+name: Copilot Auto Review
 
 on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
   workflow_dispatch:
     inputs:
       pr_number:
         description: "PR number to review"
         required: true
 
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: copilot-review-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
 jobs:
   copilot-review:
+    if: >
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event_name == 'pull_request' &&
+       !github.event.pull_request.draft &&
+       github.actor != 'dependabot[bot]' &&
+       github.actor != 'github-actions[bot]' &&
+       github.actor != 'github-classroom[bot]')
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN_COPILOT_REVIEW }} 
+      GH_TOKEN: ${{ secrets.GH_TOKEN_COPILOT_REVIEW }}
+      REPO: ${{ github.repository }}
+      LARGE_PR_THRESHOLD: "2000"
+      SKIP_LABEL: "no-copilot"
     steps:
-      - name: Install gh CLI extension
+      - name: Ensure PR number (pull_request)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+
+      - name: Ensure PR number (manual)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: echo "PR_NUMBER=${{ inputs.pr_number }}" >> "$GITHUB_ENV"
+
+      - name: Install gh CLI extension for Copilot review
         run: gh extension install ChrisCarini/gh-copilot-review
-      - name: Trigger Copilot review
+
+      - name: Skip if labeled to skip
+        id: maybe_skip_label
         run: |
-          REPO="${{ github.repository }}"
-          PR="${{ inputs.pr_number }}"
-          gh copilot-review "https://github.com/${REPO}/pull/${PR}"
+          HAS_SKIP=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json labels --jq \
+            '.labels[].name | select(. == env.SKIP_LABEL)' || true)
+          if [ -n "$HAS_SKIP" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Reason: label '$SKIP_LABEL' present."
+          fi
+
+      - name: Skip if too large
+        id: maybe_skip_size
+        if: steps.maybe_skip_label.outputs.skip != 'true'
+        run: |
+          CHANGES=$(gh api repos/$REPO/pulls/$PR_NUMBER --jq '.additions + .deletions')
+          echo "Total changes (add+del): $CHANGES"
+          if [ "${CHANGES:-0}" -gt "$LARGE_PR_THRESHOLD" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Reason: PR size $CHANGES > $LARGE_PR_THRESHOLD."
+          fi
+
+      - name: Request Copilot review
+        if: >
+          steps.maybe_skip_label.outputs.skip != 'true' &&
+          steps.maybe_skip_size.outputs.skip != 'true'
+        run: |
+          echo "Requesting Copilot review for PR #$PR_NUMBER in $REPO"
+          gh copilot-review "https://github.com/${REPO}/pull/${PR_NUMBER}"
+
+      - name: Summary
+        run: |
+          echo "### Copilot Review Automation" >> $GITHUB_STEP_SUMMARY
+          echo "- Repo: \`$REPO\`" >> $GITHUB_STEP_SUMMARY
+          echo "- PR: #$PR_NUMBER" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.maybe_skip_label.outputs.skip }}" = "true" ]; then
+            echo "- Skipped: label '$SKIP_LABEL' present." >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.maybe_skip_size.outputs.skip }}" = "true" ]; then
+            echo "- Skipped: PR exceeded size threshold ($LARGE_PR_THRESHOLD changes)." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- Action: Copilot review requested" >> $GITHUB_STEP_SUMMARY
+          fi
