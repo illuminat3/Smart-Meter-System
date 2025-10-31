@@ -50,27 +50,7 @@ namespace meter_api.Services
         public async Task<T> Get<T>(Dictionary<string, string> paramValue)
         {
             var resource = GetResourcePathFor<T>();
-            var sb = new StringBuilder($"{_databaseOptions.ConnectionUrl}/{resource}");
-
-            if (paramValue != null && paramValue.Count > 0)
-            {
-                sb.Append('?');
-                bool first = true;
-
-                foreach (var kvp in paramValue)
-                {
-                    if (!first)
-                        sb.Append('&');
-                    else
-                        first = false;
-
-                    sb.Append(Uri.EscapeDataString(kvp.Key))
-                      .Append('=')
-                      .Append(Uri.EscapeDataString(kvp.Value));
-                }
-            }
-
-            var url = sb.ToString();
+            var url = BuildUrl(_databaseOptions.ConnectionUrl, resource, paramValue);
 
             var entity = await databaseClient.GetFirstOrDefaultAsync<T>(url)
                 ?? throw new KeyNotFoundException($"{typeof(T).Name} with specified parameters not found.");
@@ -81,27 +61,7 @@ namespace meter_api.Services
         public async Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue)
         {
             var resource = GetResourcePathFor<T>();
-            var sb = new StringBuilder($"{_databaseOptions.ConnectionUrl}/{resource}");
-
-            if (paramValue != null && paramValue.Count > 0)
-            {
-                sb.Append('?');
-                bool first = true;
-
-                foreach (var kvp in paramValue)
-                {
-                    if (!first)
-                        sb.Append('&');
-                    else
-                        first = false;
-
-                    sb.Append(Uri.EscapeDataString(kvp.Key))
-                      .Append('=')
-                      .Append(Uri.EscapeDataString(kvp.Value));
-                }
-            }
-
-            var url = sb.ToString();
+            var url = BuildUrl(_databaseOptions.ConnectionUrl, resource, paramValue);
 
             var entities = await databaseClient.GetListAsync<T>(url)
                 ?? throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
@@ -118,6 +78,20 @@ namespace meter_api.Services
             nameof(MeterAgentReading) => "meterAgentReading",
             _ => throw new NotSupportedException($"No resource path configured for type {typeof(T).Name}.")
         };
+
+        private static string BuildUrl(string baseUrl, string resource, Dictionary<string, string>? parameters = null)
+        {
+            var sb = new StringBuilder($"{baseUrl}/{resource}");
+
+            if (parameters != null && parameters.Count > 0)
+            {
+                sb.Append('?');
+                sb.Append(string.Join("&", parameters.Select(kvp =>
+                    $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}")));
+            }
+
+            return sb.ToString();
+        }
         #endregion 
     }
 }
