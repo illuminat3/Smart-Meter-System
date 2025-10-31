@@ -4,23 +4,13 @@ using System.Net.Http.Json;
 
 namespace meter_agent.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService(HttpClient httpClient) : IAuthenticationService
     {
-        private readonly HttpClient _httpClient;
-
-        public AuthenticationService(string apiBase)
-        {
-            _httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(apiBase)
-            };
-        }
-
         public async Task<AgentLoginResponse> Login(AgentLoginRequest request)
         {
             string path = "auth/agent/login";
 
-            var response = await _httpClient.PostAsJsonAsync(path, request);
+            var response = await httpClient.PostAsJsonAsync(path, request);
 
             response.EnsureSuccessStatusCode();
 

@@ -10,7 +10,6 @@ namespace meter_agent
     public static class Program
     {
         private static readonly IUsageService usageService = new UsageService();
-        private static IAuthenticationService authenticationService;
         private static readonly Random random = new();
 
         public static async Task Main(string[] args)
@@ -26,7 +25,16 @@ namespace meter_agent
 
             var baseUrl = Environment.GetEnvironmentVariable("BASE_URL") ?? throw new MissingCredentialException("BASE_URL missing");
 
-            authenticationService = new AuthenticationService(baseUrl);
+            var handler = new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(2),
+                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(5),
+                EnableMultipleHttp2Connections = true
+            };
+            var sharedClient = new HttpClient(handler) { BaseAddress = new Uri(baseUrl), Timeout = TimeSpan.FromSeconds(100) };
+
+
+            var authenticationService = new AuthenticationService(sharedClient);
 
             var loginRequest = new AgentLoginRequest
             {
