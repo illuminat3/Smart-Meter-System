@@ -1,0 +1,22 @@
+name: Copilot review PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to review"
+        required: true
+
+jobs:
+  copilot-review:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN_COPILOT_REVIEW }} 
+    steps:
+      - name: Install gh CLI extension
+        run: gh extension install ChrisCarini/gh-copilot-review
+      - name: Trigger Copilot review
+        run: |
+          REPO="${{ github.repository }}"
+          PR="${{ inputs.pr_number }}"
+          gh copilot-review "https://github.com/${REPO}/pull/${PR}"
