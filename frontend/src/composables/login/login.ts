@@ -13,31 +13,41 @@ export const checkIsAuthenticatedAndRedirect = async () => {
     }
 };
 
-export const login = async (toast: ToastServiceMethods) => {
-    const isValid = await v$.value.$validate();
-    if (!isValid) {
-        return;
-    }
+export function useLogin() {
 
-    try {
-        const response = await apiLogin({ username: username.value, password: password.value });
-        toast.add({ severity: 'success', summary: 'Login successful', detail: `Welcome, ${response.username}` });
-        await router.push({ name: 'meters' });
-    } catch (error: any) {
-        toast.add({ severity: 'error', summary: 'Login failed', detail: 'Incorrect username or password' });
-    }
-};
+    const login = async (toast: ToastServiceMethods) => {
+        const isValid = await v$.value.$validate();
+        if (!isValid) {
+            return;
+        }
 
-export const username = ref('');
-export const password = ref('');
+        try {
+            const response = await apiLogin({ username: username.value, password: password.value });
+            toast.add({ severity: 'success', summary: 'Login successful', detail: `Welcome, ${response.username}` });
+            await router.push({ name: 'meters' });
+        } catch (error: any) {
+            toast.add({ severity: 'error', summary: 'Login failed', detail: 'Incorrect username or password' });
+        }
+    };
 
-const rules = {
-    username: {
-        required: helpers.withMessage('Username is required.', required)
-    },
-    password: {
-        required: helpers.withMessage('Password is required.', required)
-    }
-};
+    const username = ref('');
+    const password = ref('');
 
-export const v$ = useVuelidate(rules, { username, password });
+    const rules = {
+        username: {
+            required: helpers.withMessage('Username is required.', required)
+        },
+        password: {
+            required: helpers.withMessage('Password is required.', required)
+        }
+    };
+
+    const v$ = useVuelidate(rules, { username, password });
+
+    return {
+        username,
+        password,
+        v$,
+        login
+    };
+}

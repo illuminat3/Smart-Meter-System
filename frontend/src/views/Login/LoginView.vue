@@ -15,7 +15,7 @@
                                label="Password"
                                id="password"
                                :validation="v$.password"/>
-    </div>
+          </div>
           <div>
             <Button label="Login"
                     class="w-full"
@@ -35,9 +35,11 @@ import UsernameComponent from '@/components/UsernameComponent.vue';
 import PasswordComponent from '@/components/PasswordComponent.vue';
 import {useToast} from "primevue/usetoast";
 
-import {checkIsAuthenticatedAndRedirect, login, username, password, v$} from "@/composables/login/login";
+import {useLogin, checkIsAuthenticatedAndRedirect} from "@/composables/login/login";
 
 const toast = useToast();
+
+const {username, password, v$, login} = useLogin();
 
 onMounted(async () => {
   await checkIsAuthenticatedAndRedirect();
