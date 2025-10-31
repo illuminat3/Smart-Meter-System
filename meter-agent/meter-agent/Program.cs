@@ -1,17 +1,20 @@
 ﻿using DotNetEnv;
 using meter_agent.Datatypes;
 using meter_agent.Datatypes.Requests;
+using meter_agent.DataTypes;
 using meter_agent.DataTypes.Exceptions;
+using meter_agent.DataTypes.Messages;
+using meter_agent.Hubs;
 using meter_agent.Services;
 
 namespace meter_agent
 {
     public static class Program
     {
-        private static readonly IUsageService usageService = new UsageService();
+        private static readonly UsageService usageService = new();
         private static readonly Random random = new();
 
-        public static async Task Main(string[] args)
+        public static async Task Main()
         {
             Env.Load();
 
@@ -42,16 +45,36 @@ namespace meter_agent
                 Password = credentials.Password
             };
 
-            var response = await authenticationService.Login(loginRequest);
+            var hubUrl = $"{baseUrl}hub/agents";
 
-            while (true)
+            var agentHubClient = new AgentHubClient(authenticationService, loginRequest, hubUrl);
+
+            try      
             {
-                var usage = usageService.GetUsage();
-                Console.WriteLine($"Usage: {usage} kWh");
 
-                int delaySeconds = random.Next(15, 61);
-                Console.WriteLine($"Waiting {delaySeconds} seconds before next reading...\n");
-                Thread.Sleep(delaySeconds * 1000);
+                await agentHubClient.ConnectAsync();
+
+                while (true)
+                {
+                    var usage = usageService.GetUsage();
+                    Console.WriteLine($"Usage: {usage} kWh");
+
+                    await agentHubClient.SendMessageAsync(new AgentUsageUpdateMessage
+                    {
+                        Body = new AgentUsage
+                        {
+                            EnergyUsedKWh = usage
+                        }
+                    });
+
+                    int delaySeconds = random.Next(15, 61);
+                    Console.WriteLine($"Waiting {delaySeconds} seconds before next reading...\n");
+                    Thread.Sleep(delaySeconds * 1000);
+                }
+            }
+            finally
+            {
+                await agentHubClient.DisconnectAsync();
             }
         }
     }
