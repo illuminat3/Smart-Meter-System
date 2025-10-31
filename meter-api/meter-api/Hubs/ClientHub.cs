@@ -8,7 +8,7 @@ using SignalRSwaggerGen.Attributes;
 namespace meter_api.Hubs
 {
     [Authorize]
-    [SignalRHub]
+    [SignalRHub("hub/clients")]
     public class ClientHub(ISnapshotService snapshotService) : Hub
     {
         public override async Task OnConnectedAsync()
