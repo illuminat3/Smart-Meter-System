@@ -17,17 +17,10 @@ namespace meter_api.Services
 
             foreach (var meterId in meterIds)
             {
-                try
+                var meterSnapshot = await databaseService.GetMeterSnapshotFromId(meterId);
+                if (meterSnapshot != null)
                 {
-                    var meterSnapshot = await databaseService.GetMeterSnapshotFromId(meterId);
-                    if (meterSnapshot != null)
-                    {
-                        meterSnapshots.Add(meterSnapshot);
-                    }
-                }
-                catch (KeyNotFoundException)
-                {
-                   
+                    meterSnapshots.Add(meterSnapshot);
                 }
             }
 
