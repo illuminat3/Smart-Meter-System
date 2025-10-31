@@ -6,7 +6,7 @@ namespace meter_api.Datatypes.Database
     {
         public required string Id { get; set; }
         public required string DisplayName { get; set; }
-        public required double TotalUsage { get; set; }
+        public required decimal TotalUsage { get; set; }
         public required decimal TotalBilling { get; set; }
     }
 }

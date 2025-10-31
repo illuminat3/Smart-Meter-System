@@ -111,6 +111,7 @@ namespace meter_agent.Hubs
             {
                 _gate.Release();
                 _gate.Dispose();
+                GC.SuppressFinalize(this);
             }
         }
     }
