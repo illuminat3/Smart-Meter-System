@@ -6,17 +6,21 @@
           <div class="text-center">Welcome to Smart Meter</div>
         </template>
         <template #content>
-          <form class="space-y-4" @submit="login" novalidate>
+          <div class="mb-4">
             <UsernameComponent v-model="username"
-                               :validation="v$.username" />
+                               :validation="v$.username"/>
+          </div>
+          <div class="mb-4">
             <PasswordComponent v-model="password"
                                label="Password"
                                id="password"
-                               :validation="v$.password" />
-            <Button type="submit"
-                    label="Login"
-                    class="w-full" />
-          </form>
+                               :validation="v$.password"/>
+          </div>
+          <div>
+            <Button label="Login"
+                    class="w-full"
+                    @click="login(toast)"/>
+          </div>
         </template>
       </Card>
     </div>
@@ -24,48 +28,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useVuelidate } from '@vuelidate/core';
-import { required, helpers } from '@vuelidate/validators';
+import {onMounted} from "vue";
 import Card from 'primevue/card';
 import Button from 'primevue/button';
 import UsernameComponent from '@/components/UsernameComponent.vue';
 import PasswordComponent from '@/components/PasswordComponent.vue';
-import { login as apiLogin } from '@/services/auth';
+import {useToast} from "primevue/usetoast";
 
-const username = ref('');
-const password = ref('');
-const loading = ref(false);
-const errorMsg = ref<string | null>(null);
+import {useLogin, checkIsAuthenticatedAndRedirect} from "@/composables/login/login";
 
-const rules = {
-  username: {
-    required: helpers.withMessage('Username is required.', required)
-  },
-  password: {
-    required: helpers.withMessage('Password is required.', required)
-  }
-};
+const toast = useToast();
 
-const v$ = useVuelidate(rules, { username, password });
+const {username, password, v$, login} = useLogin();
 
-const login = async (e: Event) => {
-  e.preventDefault();
-  errorMsg.value = null;
-  const isValid = await v$.value.$validate();
-  if (!isValid) {
-    return;
-  }
-  try {
-    loading.value = true;
-    const res = await apiLogin({ username: username.value, password: password.value });
-    console.log('Logged in:', res);
-    // TODO: Navigate to dashboard upon success
-  } catch (err: any) {
-    console.error('Login failed', err);
-    errorMsg.value = err?.message || 'Login failed';
-  } finally {
-    loading.value = false;
-  }
-};
+onMounted(async () => {
+  await checkIsAuthenticatedAndRedirect();
+});
 </script>
