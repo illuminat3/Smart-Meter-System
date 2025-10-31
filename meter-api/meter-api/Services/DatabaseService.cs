@@ -71,9 +71,18 @@ namespace meter_api.Services
             return meterAgent;
         }
 
-        public Task<MeterSnapshot> GetMeterSnapshotFromId(string id)
+        public async Task<MeterSnapshot> GetMeterSnapshotFromId(string id)
         {
-            throw new NotImplementedException();
+            var fullMeterAgent = await GetFullMeterAgentFromId(id);
+
+            return new MeterSnapshot
+            {
+                MeterId = fullMeterAgent.Id,
+                DisplayName = fullMeterAgent.DisplayName,
+                CurrentUsage = fullMeterAgent.Readings.FirstOrDefault(r => r.Id == fullMeterAgent.PreviousReadingId)?.Usage ?? 0m,
+                TotalUsage = fullMeterAgent.TotalUsage,
+                TotalCost = fullMeterAgent.TotalBilling
+            };
         }
 
         public async Task<FullMeterAgent> GetFullMeterAgentFromId(string id)
