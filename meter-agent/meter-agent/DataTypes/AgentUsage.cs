@@ -1,4 +1,4 @@
-﻿namespace meter_api.Datatypes
+﻿namespace meter_agent.DataTypes
 {
     public class AgentUsage
     {
