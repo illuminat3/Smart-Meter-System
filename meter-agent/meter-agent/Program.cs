@@ -3,7 +3,6 @@ using meter_agent.Datatypes;
 using meter_agent.Datatypes.Requests;
 using meter_agent.DataTypes.Exceptions;
 using meter_agent.Services;
-using System.Threading.Tasks;
 
 namespace meter_agent
 {
