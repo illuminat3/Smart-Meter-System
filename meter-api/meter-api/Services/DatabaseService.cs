@@ -75,7 +75,7 @@ namespace meter_api.Services
             nameof(ClientCredentials) => "clientCredentials",
             nameof(MeterAgent) => "meterAgents",
             nameof(MeterAgentCredentials) => "meterAgentCredentials",
-            nameof(MeterAgentReading) => "meterAgentReading",
+            nameof(MeterAgentReading) => "meterAgentReadings",
             _ => throw new NotSupportedException($"No resource path configured for type {typeof(T).Name}.")
         };
 
