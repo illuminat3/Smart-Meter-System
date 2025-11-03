@@ -41,7 +41,7 @@ namespace meter_api.Services
         public async Task<List<T>?> GetListAsync<T>(string url)
         {
             using var resp = await _httpClient.GetAsync(url);
-            if (resp.StatusCode == HttpStatusCode.NotFound) return default;
+            if (resp.StatusCode == HttpStatusCode.NotFound) return [];
             resp.EnsureSuccessStatusCode();
             var stream = await resp.Content.ReadAsStreamAsync();
             var data = await JsonSerializer.DeserializeAsync<List<T>>(stream, _jsonOptions);
