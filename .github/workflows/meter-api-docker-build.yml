@@ -1,0 +1,42 @@
+name: Meter Api Docker Build
+
+on:
+  pull_request:
+    paths:
+      - 'meter-api/**'
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: pr-docker-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker metadata (tag with PR number)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: meter-api
+          tags: |
+            type=raw,value=pr-${{ github.event.pull_request.number }}
+
+      - name: Build Docker image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./meter-api/meter-api
+          file: ./meter-api/meter-api/Dockerfile
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
