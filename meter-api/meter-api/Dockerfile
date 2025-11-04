@@ -14,11 +14,7 @@ WORKDIR "/src/."
 RUN dotnet build "meter-api.csproj" -c $configuration -o /app/build
 RUN dotnet publish "meter-api.csproj" -c $configuration -o /app/publish /p:UseAppHost=false
 
-FROM build AS publish
-ARG configuration=Release
-RUN dotnet publish "meter-api.csproj" -c $configuration -o /app/publish /p:UseAppHost=false
-
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "meter-api.dll"]
