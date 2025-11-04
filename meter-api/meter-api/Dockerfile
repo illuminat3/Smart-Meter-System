@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-nanoserver-1809 AS base
 WORKDIR /app
-EXPOSE 5234
+EXPOSE 7268
 
-ENV ASPNETCORE_URLS=http://+:5234
+ENV ASPNETCORE_URLS=https://localhost:7268;http://localhost:5234
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
 ARG configuration=Release
