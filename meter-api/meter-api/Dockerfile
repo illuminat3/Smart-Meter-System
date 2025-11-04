@@ -11,7 +11,6 @@ COPY ["meter-api.csproj", "./"]
 RUN dotnet restore "meter-api.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "meter-api.csproj" -c $configuration -o /app/build
 RUN dotnet publish "meter-api.csproj" -c $configuration -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
