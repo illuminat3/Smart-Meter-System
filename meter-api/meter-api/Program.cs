@@ -133,6 +133,7 @@ builder.Services.AddSingleton<IBillingRateService, BillingRateService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IAgentTokenService, AgentTokenService>();
 builder.Services.AddSingleton<Database>();
+builder.Services.AddSingleton(new SemaphoreSlim(1, 1));
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IMeterAgentService, MeterAgentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();

@@ -7,15 +7,14 @@ using System.Text;
 
 namespace meter_api.Services
 {
-    public class DatabaseService(DatabaseHttpClient databaseClient, Database database, IOptions<DatabaseOptions> options) : IDatabaseService
+    public class DatabaseService(DatabaseHttpClient databaseClient, Database database, IOptions<DatabaseOptions> options, SemaphoreSlim semaphoreSlim) : IDatabaseService
     {
         private readonly DatabaseOptions _databaseOptions = options.Value;
-        private readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
 
 
         public async Task<FullMeterAgent> GetFullMeterAgentFromId(string id)
         {
-            await _semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync();
             try
             {
                 var meterAgent = await Get<MeterAgent>(new Dictionary<string, string> { { "id", id } });
@@ -36,13 +35,13 @@ namespace meter_api.Services
             }
             finally
             {
-                _semaphoreSlim.Release();
+                semaphoreSlim.Release();
             }
         }
 
         public async Task InitialiseDatabase()
         {
-            await _semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync();
             try
             {
                 if (database.IsInitialised) return;
@@ -57,7 +56,7 @@ namespace meter_api.Services
             }
             finally
             {
-                _semaphoreSlim.Release();
+                semaphoreSlim.Release();
             }
         }
 
@@ -65,7 +64,7 @@ namespace meter_api.Services
 
         public async Task<T> Create<T>(T entity) where T : IDatabaseObject
         {
-            await _semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
@@ -84,13 +83,13 @@ namespace meter_api.Services
             }
             finally
             {
-                _semaphoreSlim.Release();
+                semaphoreSlim.Release();
             }
         }
 
         public async Task<T> Update<T>(string id, T entity) where T : IDatabaseObject
         {
-            await _semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
@@ -111,13 +110,13 @@ namespace meter_api.Services
             }
             finally
             {
-                _semaphoreSlim.Release();
+                semaphoreSlim.Release();
             }
         }
 
         public async Task<T> Get<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject
         {
-            await _semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
@@ -128,13 +127,13 @@ namespace meter_api.Services
             }
             finally
             {
-                _semaphoreSlim.Release();
+                semaphoreSlim.Release();
             }
         }
 
         public async Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject
         {
-            await _semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
@@ -148,13 +147,13 @@ namespace meter_api.Services
             }
             finally
             {
-                _semaphoreSlim.Release();
+                semaphoreSlim.Release();
             }
         }
 
         private async Task InitialiseTable<T>() where T : IDatabaseObject
         {
-            await _semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync();
             try
             {
                 var property = typeof(Database).GetProperties()
@@ -170,7 +169,7 @@ namespace meter_api.Services
             }
             finally
             {
-                _semaphoreSlim.Release();
+                semaphoreSlim.Release();
             }
         }
 
