@@ -2,7 +2,7 @@
 {
     public class MeterAgentReading : IDatabaseObject
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public required string MeterId {  get; set; }
         public required string PreviousReadingId { get; set; }
         public DateTime TimestampUtc { get; set; } = DateTime.UtcNow;
