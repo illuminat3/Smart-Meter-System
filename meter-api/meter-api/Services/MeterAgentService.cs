@@ -60,7 +60,7 @@ namespace meter_api.Services
             meterAgent.TotalBilling = readings.Sum(r => r.Billing);
             meterAgent.TotalUsage = readings.Sum(r => r.Usage);
 
-            await databaseService.Update(meterAgent.Id, meterAgent);
+            await databaseService.Update(meterAgent);
         }
 
         public bool IsMeterAgentConnected(string meterId) => _meterAgentConnections.TryGetValue(meterId, out var connections) && !connections.IsEmpty;

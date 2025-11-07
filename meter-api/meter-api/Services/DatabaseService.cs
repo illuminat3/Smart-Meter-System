@@ -77,7 +77,7 @@ namespace meter_api.Services
                     entity.Id = nextNumeric.ToString();
                 }
 
-                return await Update(entity.Id, entity, false);
+                return await Update(entity, false);
             }
             finally
             {
@@ -85,14 +85,14 @@ namespace meter_api.Services
             }
         }
 
-        public async Task<T> Update<T>(string id, T entity, bool needsLock = true) where T : IDatabaseObject
+        public async Task<T> Update<T>(T entity, bool needsLock = true) where T : IDatabaseObject
         {
             if (needsLock) await semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
 
-                var existing = table.FirstOrDefault(item => item.Id == id);
+                var existing = table.FirstOrDefault(item => item.Id == entity.Id);
 
                 if (existing != null)
                 {
@@ -121,7 +121,7 @@ namespace meter_api.Services
 
                 var entity = table.FirstOrDefault(item => MatchesProperties(item, paramValue));
 
-                return entity ?? throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
+                return entity ?? throw new KeyNotFoundException($"{typeof(T).Name} with specified parameters not found.");
             }
             finally
             {
