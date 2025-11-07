@@ -54,7 +54,7 @@ namespace meter_api.Services
 
         public async Task UpdateAgent(string meterId)
         {
-            var readings = await databaseService.GetCollection<MeterAgentReading>(new Dictionary<string, string> { { "meterId", meterId } });            
+            var readings = await databaseService.GetCollection<MeterAgentReading>(new Dictionary<string, string> { { "meterId", meterId } });
             var meterAgent = await databaseService.Get<MeterAgent>(new Dictionary<string, string> { { "id", meterId } });
 
             meterAgent.TotalBilling = readings.Sum(r => r.Billing);

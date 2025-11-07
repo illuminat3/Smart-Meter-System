@@ -3,7 +3,6 @@ using meter_api.Datatypes.Database;
 using meter_api.Utils;
 using Microsoft.Extensions.Options;
 using System.Reflection;
-using System.Text;
 
 namespace meter_api.Services
 {
@@ -40,15 +39,23 @@ namespace meter_api.Services
 
         public async Task InitialiseDatabase()
         {
-            if (database.IsInitialised) return;
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                if (database.IsInitialised) return;
 
-            await InitialiseTable<Client>();
-            await InitialiseTable<ClientCredentials>();
-            await InitialiseTable<MeterAgent>();
-            await InitialiseTable<MeterAgentCredentials>();
-            await InitialiseTable<MeterAgentReading>();
+                await InitialiseTable<Client>();
+                await InitialiseTable<ClientCredentials>();
+                await InitialiseTable<MeterAgent>();
+                await InitialiseTable<MeterAgentCredentials>();
+                await InitialiseTable<MeterAgentReading>();
 
-            database.IsInitialised = true;
+                database.IsInitialised = true;
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
         }
 
         #region Generic Methods
@@ -144,24 +151,14 @@ namespace meter_api.Services
 
         private async Task InitialiseTable<T>() where T : IDatabaseObject
         {
-            await semaphoreSlim.WaitAsync();
-            try
-            {
-                var property = typeof(Database).GetProperties()
-                    .FirstOrDefault(p => p.PropertyType == typeof(List<T>));
+            var property = typeof(Database).GetProperties()
+                .FirstOrDefault(p => p.PropertyType == typeof(List<T>)) ?? throw new NotSupportedException($"No property found for type {typeof(T).Name} in database.");
 
-                if (property == null)
-                    throw new NotSupportedException($"No property found for type {typeof(T).Name} in database.");
+            var url = $"{_databaseOptions.ConnectionUrl}{typeof(T).Name.ToCamelCase()}";
+            var list = await databaseClient.GetListAsync<T>(url) ?? [];
 
-                var url = $"{_databaseOptions.ConnectionUrl}{typeof(T).Name.ToCamelCase()}";
-                var list = await databaseClient.GetListAsync<T>(url) ?? new List<T>();
+            property.SetValue(database, list);
 
-                property.SetValue(database, list);
-            }
-            finally
-            {
-                semaphoreSlim.Release();
-            }
         }
 
         private List<T> GetTable<T>() where T : IDatabaseObject => typeof(T).Name switch
