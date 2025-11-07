@@ -46,7 +46,6 @@ namespace meter_api.Services
 
             var cost = billingService.CalculateCost(currentReading, previousReading);
             currentReading.Billing = cost;
-         
 
             await databaseService.Create<MeterAgentReading>(currentReading);
             await UpdateAgent(meterId);

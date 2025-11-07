@@ -11,15 +11,14 @@ namespace meter_api.Services
     {
         private readonly DatabaseOptions _databaseOptions = options.Value;
 
-
         public async Task<FullMeterAgent> GetFullMeterAgentFromId(string id)
         {
             await semaphoreSlim.WaitAsync();
             try
             {
-                var meterAgent = await Get<MeterAgent>(new Dictionary<string, string> { { "id", id } });
-                var readings = await GetCollection<MeterAgentReading>(new Dictionary<string, string> { { "meterId", id } });
-                var credentials = await Get<MeterAgentCredentials>(new Dictionary<string, string> { { "meterId", id } });
+                var meterAgent = await Get<MeterAgent>(new Dictionary<string, string> { { "id", id } }, false);
+                var readings = await GetCollection<MeterAgentReading>(new Dictionary<string, string> { { "meterId", id } }, false);
+                var credentials = await Get<MeterAgentCredentials>(new Dictionary<string, string> { { "meterId", id } }, false);
 
                 var fullMeterAgent = new FullMeterAgent
                 {
@@ -41,30 +40,22 @@ namespace meter_api.Services
 
         public async Task InitialiseDatabase()
         {
-            await semaphoreSlim.WaitAsync();
-            try
-            {
-                if (database.IsInitialised) return;
+            if (database.IsInitialised) return;
 
-                await InitialiseTable<Client>();
-                await InitialiseTable<ClientCredentials>();
-                await InitialiseTable<MeterAgent>();
-                await InitialiseTable<MeterAgentCredentials>();
-                await InitialiseTable<MeterAgentReading>();
+            await InitialiseTable<Client>();
+            await InitialiseTable<ClientCredentials>();
+            await InitialiseTable<MeterAgent>();
+            await InitialiseTable<MeterAgentCredentials>();
+            await InitialiseTable<MeterAgentReading>();
 
-                database.IsInitialised = true;
-            }
-            finally
-            {
-                semaphoreSlim.Release();
-            }
+            database.IsInitialised = true;
         }
 
         #region Generic Methods
 
-        public async Task<T> Create<T>(T entity) where T : IDatabaseObject
+        public async Task<T> Create<T>(T entity, bool needsLock = true) where T : IDatabaseObject
         {
-            await semaphoreSlim.WaitAsync();
+            if (needsLock) await semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
@@ -79,17 +70,17 @@ namespace meter_api.Services
                     entity.Id = nextNumeric.ToString();
                 }
 
-                return await Update(entity.Id, entity);
+                return await Update(entity.Id, entity, false);
             }
             finally
             {
-                semaphoreSlim.Release();
+                if (needsLock) semaphoreSlim.Release();
             }
         }
 
-        public async Task<T> Update<T>(string id, T entity) where T : IDatabaseObject
+        public async Task<T> Update<T>(string id, T entity, bool needsLock = true) where T : IDatabaseObject
         {
-            await semaphoreSlim.WaitAsync();
+            if (needsLock) await semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
@@ -110,13 +101,13 @@ namespace meter_api.Services
             }
             finally
             {
-                semaphoreSlim.Release();
+                if (needsLock) semaphoreSlim.Release();
             }
         }
 
-        public async Task<T> Get<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject
+        public async Task<T> Get<T>(Dictionary<string, string> paramValue, bool needsLock = true) where T : IDatabaseObject
         {
-            await semaphoreSlim.WaitAsync();
+            if (needsLock) await semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
@@ -127,13 +118,13 @@ namespace meter_api.Services
             }
             finally
             {
-                semaphoreSlim.Release();
+                if (needsLock) semaphoreSlim.Release();
             }
         }
 
-        public async Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject
+        public async Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue, bool needsLock = true) where T : IDatabaseObject
         {
-            await semaphoreSlim.WaitAsync();
+            if (needsLock) await semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
@@ -147,7 +138,7 @@ namespace meter_api.Services
             }
             finally
             {
-                semaphoreSlim.Release();
+                if (needsLock) semaphoreSlim.Release();
             }
         }
 
