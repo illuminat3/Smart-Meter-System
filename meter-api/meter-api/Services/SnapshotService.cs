@@ -13,7 +13,7 @@ namespace meter_api.Services
             {
                 MeterId = fullMeterAgent.Id,
                 DisplayName = fullMeterAgent.DisplayName,
-                CurrentUsage = fullMeterAgent.Readings.FirstOrDefault(r => r.Id == fullMeterAgent.PreviousReadingId)?.Usage ?? 0m,
+                CurrentUsage = fullMeterAgent.PreviousReading?.Usage ?? 0m,
                 TotalUsage = fullMeterAgent.TotalUsage,
                 TotalCost = fullMeterAgent.TotalBilling
             };

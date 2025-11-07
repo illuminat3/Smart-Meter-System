@@ -1,9 +1,10 @@
 ﻿using meter_api.Datatypes;
+using meter_api.Datatypes.Database;
 using System.Collections.Concurrent;
 
 namespace meter_api.Services
 {
-    public class MeterAgentService : IMeterAgentService
+    public class MeterAgentService(IDatabaseService databaseService, IBillingService billingService, IClientService clientService) : IMeterAgentService
     {
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _meterAgentConnections = new();
 
@@ -30,9 +31,36 @@ namespace meter_api.Services
             throw new NotImplementedException();
         }
 
-        public Task HandleUsageUpdate(string meterId, AgentUsage usage)
+        public async Task HandleUsageUpdate(string meterId, AgentUsage usage)
         {
-            throw new NotImplementedException();
+            var fullMeterAgent = await databaseService.GetFullMeterAgentFromId(meterId);
+            var previousReading = fullMeterAgent.PreviousReading;
+
+            var currentReading = new MeterAgentReading
+            {
+                MeterId = meterId,
+                PreviousReadingId = previousReading?.Id ?? string.Empty,
+                TimestampUtc = DateTime.UtcNow,
+                Usage = usage.EnergyUsedKWh,
+            };
+
+            var cost = billingService.CalculateCost(currentReading, previousReading);
+            currentReading.Billing = cost;
+
+            await databaseService.Create<MeterAgentReading>(currentReading);
+            await UpdateAgent(meterId);
+            await clientService.MeterAgentUpdate(meterId);
+        }
+
+        public async Task UpdateAgent(string meterId)
+        {
+            var readings = await databaseService.GetCollection<MeterAgentReading>(new Dictionary<string, string> { { "meterId", meterId } });
+            var meterAgent = await databaseService.Get<MeterAgent>(new Dictionary<string, string> { { "id", meterId } });
+
+            meterAgent.TotalBilling = readings.Sum(r => r.Billing);
+            meterAgent.TotalUsage = readings.Sum(r => r.Usage);
+
+            await databaseService.Put(meterAgent);
         }
 
         public bool IsMeterAgentConnected(string meterId) => _meterAgentConnections.TryGetValue(meterId, out var connections) && !connections.IsEmpty;

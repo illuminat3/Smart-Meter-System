@@ -2,7 +2,7 @@
 {
     public class Client : IDatabaseObject
     {
-        public required string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public required string Name { get; set; }
         public List<string> MeterIds { get; set; } = [];
     }

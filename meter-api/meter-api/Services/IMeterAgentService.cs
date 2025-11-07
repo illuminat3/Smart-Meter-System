@@ -9,5 +9,6 @@ namespace meter_api.Services
         void AgentDisconnected(string meterId, string connectionId);
         Task HandleUsageUpdate(string meterId, AgentUsage usage);
         Task HandleErrorUpdate(string meterId, AgentError error);
+        Task UpdateAgent(string meterId);
     }
 }
