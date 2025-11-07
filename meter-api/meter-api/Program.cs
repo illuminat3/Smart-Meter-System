@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
+using meter_api.Datatypes.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,9 +29,13 @@ var jwtOptions = new JwtOptions
     Expiry = int.TryParse(Environment.GetEnvironmentVariable("JWT__EXPIRY"), out var mins) ? mins : 60
 };
 
+var connectionUrl = Require(Environment.GetEnvironmentVariable("DATABASE__CONNECTIONURL"), "DATABASE__CONNECTIONURL");
+if (!connectionUrl.EndsWith("/"))
+    connectionUrl += "/";
+
 var databaseOptions = new DatabaseOptions
 {
-    ConnectionUrl = Require(Environment.GetEnvironmentVariable("DATABASE__CONNECTIONURL"), "DATABASE__CONNECTIONURL")
+    ConnectionUrl = connectionUrl
 };
 
 builder.Services.AddSingleton<IOptions<JwtOptions>>(_ => Options.Create(jwtOptions));
@@ -128,7 +133,9 @@ builder.Services.AddSingleton<IBillingService, BillingService>();
 builder.Services.AddSingleton<IBillingRateService, BillingRateService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IAgentTokenService, AgentTokenService>();
-builder.Services.AddSingleton<IMeterAgentService, MeterAgentService>();
+builder.Services.AddSingleton<Database>();
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IMeterAgentService, MeterAgentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 builder.Services.AddScoped<ISnapshotService, SnapshotService>();
@@ -149,5 +156,11 @@ app.MapControllers();
 
 app.MapHub<ClientHub>("/hub/clients").RequireAuthorization();
 app.MapHub<AgentHub>("/hub/agents").RequireAuthorization();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbService = scope.ServiceProvider.GetRequiredService<IDatabaseService>();
+    await dbService.InitialiseDatabase();
+}
 
 await app.RunAsync();
