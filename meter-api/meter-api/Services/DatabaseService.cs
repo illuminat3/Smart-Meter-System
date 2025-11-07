@@ -77,7 +77,7 @@ namespace meter_api.Services
                     entity.Id = nextNumeric.ToString();
                 }
 
-                return await Update(entity, false);
+                return await Put(entity, false);
             }
             finally
             {
@@ -85,7 +85,7 @@ namespace meter_api.Services
             }
         }
 
-        public async Task<T> Update<T>(T entity, bool needsLock = true) where T : IDatabaseObject
+        public async Task<T> Put<T>(T entity, bool needsLock = true) where T : IDatabaseObject
         {
             if (needsLock) await semaphoreSlim.WaitAsync();
             try
