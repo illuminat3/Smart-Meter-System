@@ -8,7 +8,7 @@ namespace meter_api.Services
         Task InitialiseDatabase();
         Task<FullMeterAgent> GetFullMeterAgentFromId(string id);
         Task<T> Create<T>(T entity) where T : IDatabaseObject; 
-        T Update<T>(string id, T entity) where T : IDatabaseObject;
+        Task<T> Update<T>(string id, T entity) where T : IDatabaseObject;
         Task<T> Get<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject;
         Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject;
         List<T> GetTable<T>() where T : IDatabaseObject;

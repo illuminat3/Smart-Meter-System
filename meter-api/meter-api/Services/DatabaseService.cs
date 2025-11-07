@@ -80,7 +80,7 @@ namespace meter_api.Services
                     entity.Id = nextNumeric.ToString();
                 }
 
-                return Update(entity.Id, entity);
+                return await Update(entity.Id, entity);
             }
             finally
             {
@@ -88,23 +88,31 @@ namespace meter_api.Services
             }
         }
 
-        public T Update<T>(string id, T entity) where T : IDatabaseObject
+        public async Task<T> Update<T>(string id, T entity) where T : IDatabaseObject
         {
-            var table = GetTable<T>();
-
-            var existing = table.FirstOrDefault(item => item.Id == id);
-
-            if (existing != null)
+            await semaphoreSlim.WaitAsync();
+            try
             {
-                var index = table.IndexOf(existing);
-                table[index] = entity;
-            }
-            else
-            {
-                table.Add(entity);
-            }
+                var table = GetTable<T>();
 
-            return entity;
+                var existing = table.FirstOrDefault(item => item.Id == id);
+
+                if (existing != null)
+                {
+                    var index = table.IndexOf(existing);
+                    table[index] = entity;
+                }
+                else
+                {
+                    table.Add(entity);
+                }
+
+                return entity;
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
         }
 
         public async Task<T> Get<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject

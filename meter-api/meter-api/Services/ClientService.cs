@@ -1,5 +1,4 @@
-﻿
-using meter_api.Datatypes.Messages.Client;
+﻿using meter_api.Datatypes.Messages.Client;
 using meter_api.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
