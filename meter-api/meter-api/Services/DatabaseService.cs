@@ -15,34 +15,50 @@ namespace meter_api.Services
 
         public async Task<FullMeterAgent> GetFullMeterAgentFromId(string id)
         {
-            var meterAgent = await Get<MeterAgent>(new Dictionary<string, string> { { "id", id } });
-            var readings = await GetCollection<MeterAgentReading>(new Dictionary<string, string> { { "meterId", id } });
-            var credentials = await Get<MeterAgentCredentials>(new Dictionary<string, string> { { "meterId", id } });
-
-            var fullMeterAgent = new FullMeterAgent
+            await semaphoreSlim.WaitAsync();
+            try
             {
-                Id = meterAgent.Id,
-                DisplayName = meterAgent.DisplayName,
-                Credentials = credentials,
-                Readings = readings,
-                TotalUsage = meterAgent.TotalUsage,
-                TotalBilling = meterAgent.TotalBilling
-            };
+                var meterAgent = await Get<MeterAgent>(new Dictionary<string, string> { { "id", id } });
+                var readings = await GetCollection<MeterAgentReading>(new Dictionary<string, string> { { "meterId", id } });
+                var credentials = await Get<MeterAgentCredentials>(new Dictionary<string, string> { { "meterId", id } });
 
-            return fullMeterAgent;
+                var fullMeterAgent = new FullMeterAgent
+                {
+                    Id = meterAgent.Id,
+                    DisplayName = meterAgent.DisplayName,
+                    Credentials = credentials,
+                    Readings = readings,
+                    TotalUsage = meterAgent.TotalUsage,
+                    TotalBilling = meterAgent.TotalBilling
+                };
+
+                return fullMeterAgent;
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
         }
 
         public async Task InitialiseDatabase()
         {
-            if (database.IsInitialised) return;
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                if (database.IsInitialised) return;
 
-            await InitialiseTable<Client>();
-            await InitialiseTable<ClientCredentials>();
-            await InitialiseTable<MeterAgent>();
-            await InitialiseTable<MeterAgentCredentials>();
-            await InitialiseTable<MeterAgentReading>();
+                await InitialiseTable<Client>();
+                await InitialiseTable<ClientCredentials>();
+                await InitialiseTable<MeterAgent>();
+                await InitialiseTable<MeterAgentCredentials>();
+                await InitialiseTable<MeterAgentReading>();
 
-            database.IsInitialised = true;
+                database.IsInitialised = true;
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
         }
 
         #region Generic Methods
@@ -93,40 +109,65 @@ namespace meter_api.Services
 
         public async Task<T> Get<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject
         {
-            var table = GetTable<T>();
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                var table = GetTable<T>();
 
-            var entity = await Task.Run(() =>
-                table.FirstOrDefault(item => MatchesProperties(item, paramValue))
-            );
-            return entity ?? throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
+                var entity = await Task.Run(() =>
+                    table.FirstOrDefault(item => MatchesProperties(item, paramValue))
+                );
+
+                return entity ?? throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
         }
 
         public async Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject
         {
-            var table = GetTable<T>();
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                var table = GetTable<T>();
 
-            var entities = await Task.Run(() =>
-                table.Where(item => MatchesProperties(item, paramValue)).ToList()
-            );
+                var entities = await Task.Run(() =>
+                    table.Where(item => MatchesProperties(item, paramValue)).ToList()
+                );
 
-            if (entities.Count == 0)
-                throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
+                if (entities.Count == 0)
+                    throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
 
-            return entities;
+                return entities;
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
         }
 
         private async Task InitialiseTable<T>() where T : IDatabaseObject
         {
-            var property = typeof(Database).GetProperties()
-                .FirstOrDefault(p => p.PropertyType == typeof(List<T>));
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                var property = typeof(Database).GetProperties()
+                    .FirstOrDefault(p => p.PropertyType == typeof(List<T>));
 
-            if (property == null)
-                throw new NotSupportedException($"No property found for type {typeof(T).Name} in database.");
+                if (property == null)
+                    throw new NotSupportedException($"No property found for type {typeof(T).Name} in database.");
 
-            var url = $"{_databaseOptions.ConnectionUrl}{typeof(T).Name.ToCamelCase()}";
-            var list = await databaseClient.GetListAsync<T>(url) ?? new List<T>();
+                var url = $"{_databaseOptions.ConnectionUrl}{typeof(T).Name.ToCamelCase()}";
+                var list = await databaseClient.GetListAsync<T>(url) ?? new List<T>();
 
-            property.SetValue(database, list);
+                property.SetValue(database, list);
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
         }
 
         public List<T> GetTable<T>() where T : IDatabaseObject => typeof(T).Name switch
