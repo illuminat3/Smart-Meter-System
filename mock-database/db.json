@@ -1,5 +1,5 @@
 {
-  "clients": [
+  "client": [
     {
       "id": "1",
       "name": "Client1",
@@ -38,7 +38,7 @@
       "hashedPassword": "02c11f97a3f08f958d4855da473ae622918c55c2739941352b7e9b6466050768"
     }
   ],
-  "meterAgents": [
+  "meterAgent": [
     {
       "id": "1",
       "displayName": "Meter 1",
@@ -222,7 +222,7 @@
       "hashedPassword": "43a3741a317e654e7cb29980b2128ff8c7c3d0be46dd699c2a969cc68ec007e6"
     }
   ],
-  "meterAgentReadings": [
+  "meterAgentReading": [
     {
       "id": "1",
       "meterId": "1",
