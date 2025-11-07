@@ -12,7 +12,6 @@ using meter_api.Datatypes.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 Env.Load(); 
 builder.Configuration.AddEnvironmentVariables();
 
