@@ -10,12 +10,12 @@ namespace meter_api.Services
     public class DatabaseService(DatabaseHttpClient databaseClient, Database database, IOptions<DatabaseOptions> options) : IDatabaseService
     {
         private readonly DatabaseOptions _databaseOptions = options.Value;
-        private readonly SemaphoreSlim semaphoreSlim = new(1, 1);
+        private readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
 
 
         public async Task<FullMeterAgent> GetFullMeterAgentFromId(string id)
         {
-            await semaphoreSlim.WaitAsync();
+            await _semaphoreSlim.WaitAsync();
             try
             {
                 var meterAgent = await Get<MeterAgent>(new Dictionary<string, string> { { "id", id } });
@@ -36,13 +36,13 @@ namespace meter_api.Services
             }
             finally
             {
-                semaphoreSlim.Release();
+                _semaphoreSlim.Release();
             }
         }
 
         public async Task InitialiseDatabase()
         {
-            await semaphoreSlim.WaitAsync();
+            await _semaphoreSlim.WaitAsync();
             try
             {
                 if (database.IsInitialised) return;
@@ -57,7 +57,7 @@ namespace meter_api.Services
             }
             finally
             {
-                semaphoreSlim.Release();
+                _semaphoreSlim.Release();
             }
         }
 
@@ -65,7 +65,7 @@ namespace meter_api.Services
 
         public async Task<T> Create<T>(T entity) where T : IDatabaseObject
         {
-            await semaphoreSlim.WaitAsync();
+            await _semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
@@ -84,13 +84,13 @@ namespace meter_api.Services
             }
             finally
             {
-                semaphoreSlim.Release();
+                _semaphoreSlim.Release();
             }
         }
 
         public async Task<T> Update<T>(string id, T entity) where T : IDatabaseObject
         {
-            await semaphoreSlim.WaitAsync();
+            await _semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
@@ -111,39 +111,35 @@ namespace meter_api.Services
             }
             finally
             {
-                semaphoreSlim.Release();
+                _semaphoreSlim.Release();
             }
         }
 
         public async Task<T> Get<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject
         {
-            await semaphoreSlim.WaitAsync();
+            await _semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
 
-                var entity = await Task.Run(() =>
-                    table.FirstOrDefault(item => MatchesProperties(item, paramValue))
-                );
+                var entity = table.FirstOrDefault(item => MatchesProperties(item, paramValue));
 
                 return entity ?? throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
             }
             finally
             {
-                semaphoreSlim.Release();
+                _semaphoreSlim.Release();
             }
         }
 
         public async Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject
         {
-            await semaphoreSlim.WaitAsync();
+            await _semaphoreSlim.WaitAsync();
             try
             {
                 var table = GetTable<T>();
 
-                var entities = await Task.Run(() =>
-                    table.Where(item => MatchesProperties(item, paramValue)).ToList()
-                );
+                var entities = table.Where(item => MatchesProperties(item, paramValue)).ToList();
 
                 if (entities.Count == 0)
                     throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
@@ -152,13 +148,13 @@ namespace meter_api.Services
             }
             finally
             {
-                semaphoreSlim.Release();
+                _semaphoreSlim.Release();
             }
         }
 
         private async Task InitialiseTable<T>() where T : IDatabaseObject
         {
-            await semaphoreSlim.WaitAsync();
+            await _semaphoreSlim.WaitAsync();
             try
             {
                 var property = typeof(Database).GetProperties()
@@ -174,7 +170,7 @@ namespace meter_api.Services
             }
             finally
             {
-                semaphoreSlim.Release();
+                _semaphoreSlim.Release();
             }
         }
 
