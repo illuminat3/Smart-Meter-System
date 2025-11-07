@@ -11,6 +11,5 @@ namespace meter_api.Services
         Task<T> Update<T>(string id, T entity) where T : IDatabaseObject;
         Task<T> Get<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject;
         Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject;
-        List<T> GetTable<T>() where T : IDatabaseObject;
     }
 }

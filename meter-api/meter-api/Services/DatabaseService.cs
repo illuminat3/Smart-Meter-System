@@ -178,7 +178,7 @@ namespace meter_api.Services
             }
         }
 
-        public List<T> GetTable<T>() where T : IDatabaseObject => typeof(T).Name switch
+        private List<T> GetTable<T>() where T : IDatabaseObject => typeof(T).Name switch
         {
             nameof(Client) => database.Clients as List<T>,
             nameof(ClientCredentials) => database.ClientCredentials as List<T>,
