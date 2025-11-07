@@ -27,6 +27,10 @@ namespace meter_agent
 
             var baseUrl = Environment.GetEnvironmentVariable("BASE_URL") ?? throw new MissingCredentialException("BASE_URL missing");
 
+
+            if (!baseUrl.EndsWith("/"))
+                baseUrl += "/";
+
             var handler = new SocketsHttpHandler
             {
                 PooledConnectionLifetime = TimeSpan.FromMinutes(2),
