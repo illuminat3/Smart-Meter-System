@@ -9,6 +9,6 @@ namespace meter_api.Datatypes
         public required List<MeterAgentReading> Readings { get; set; }
 
         [JsonIgnore]
-        public MeterAgentReading? PreviousReading => Readings.OrderByDescending(r => r.TimestampUtc).FirstOrDefault() ?? null;
+        public MeterAgentReading? PreviousReading => Readings.OrderByDescending(r => r.TimestampUtc).FirstOrDefault();
     }
 }
