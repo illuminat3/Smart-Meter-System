@@ -1,13 +1,17 @@
 ﻿using meter_api.Datatypes;
 using meter_api.Datatypes.Database;
+using meter_api.Utils;
 using Microsoft.Extensions.Options;
+using System.Reflection;
 using System.Text;
 
 namespace meter_api.Services
 {
-    public class DatabaseService(DatabaseHttpClient databaseClient, IOptions<DatabaseOptions> options) : IDatabaseService
+    public class DatabaseService(DatabaseHttpClient databaseClient, Database database, IOptions<DatabaseOptions> options) : IDatabaseService
     {
         private readonly DatabaseOptions _databaseOptions = options.Value;
+        private readonly SemaphoreSlim semaphoreSlim = new(1, 1);
+
 
         public async Task<FullMeterAgent> GetFullMeterAgentFromId(string id)
         {
@@ -28,69 +32,134 @@ namespace meter_api.Services
             return fullMeterAgent;
         }
 
+        public async Task InitialiseDatabase()
+        {
+            if (database.IsInitialised) return;
+
+            await InitialiseTable<Client>();
+            await InitialiseTable<ClientCredentials>();
+            await InitialiseTable<MeterAgent>();
+            await InitialiseTable<MeterAgentCredentials>();
+            await InitialiseTable<MeterAgentReading>();
+
+            database.IsInitialised = true;
+        }
+
         #region Generic Methods
 
-        public async Task<T> Create<T>(T entity)
+        public async Task<T> Create<T>(T entity) where T : IDatabaseObject
         {
-            var resource = GetResourcePathFor<T>();
-            var url = $"{_databaseOptions.ConnectionUrl}/{resource}";
-            var created = await databaseClient.PostAsync<T>(url, entity)
-                ?? throw new InvalidOperationException($"Failed to create {typeof(T).Name} at {url}");
-            return created;
-        }
-        public async Task<T> Update<T>(string id, T entity)
-        {
-            var resource = GetResourcePathFor<T>();
-            var url = $"{_databaseOptions.ConnectionUrl}/{resource}/{Uri.EscapeDataString(id)}";
-            var updated = await databaseClient.PutAsync<T>(url, entity)
-                ?? throw new KeyNotFoundException($"{typeof(T).Name} with id '{id}' not found or not updated.");
-            return updated;
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                var table = GetTable<T>();
+
+                if (string.IsNullOrWhiteSpace(entity.Id))
+                {
+                    var nextNumeric = table
+                        .Select(x => int.TryParse(x.Id, out var n) ? n : 0)
+                        .DefaultIfEmpty(0)
+                        .Max() + 1;
+
+                    entity.Id = nextNumeric.ToString();
+                }
+
+                return Update(entity.Id, entity);
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
         }
 
-        public async Task<T> Get<T>(Dictionary<string, string> paramValue)
+        public T Update<T>(string id, T entity) where T : IDatabaseObject
         {
-            var resource = GetResourcePathFor<T>();
-            var url = BuildUrl(_databaseOptions.ConnectionUrl, resource, paramValue);
+            var table = GetTable<T>();
 
-            var entity = await databaseClient.GetFirstOrDefaultAsync<T>(url)
-                ?? throw new KeyNotFoundException($"{typeof(T).Name} with specified parameters not found.");
+            var existing = table.FirstOrDefault(item => item.Id == id);
+
+            if (existing != null)
+            {
+                var index = table.IndexOf(existing);
+                table[index] = entity;
+            }
+            else
+            {
+                table.Add(entity);
+            }
 
             return entity;
         }
 
-        public async Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue)
+        public async Task<T> Get<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject
         {
-            var resource = GetResourcePathFor<T>();
-            var url = BuildUrl(_databaseOptions.ConnectionUrl, resource, paramValue);
+            var table = GetTable<T>();
 
-            var entities = await databaseClient.GetListAsync<T>(url)
-                ?? throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
+            var entity = await Task.Run(() =>
+                table.FirstOrDefault(item => MatchesProperties(item, paramValue))
+            );
+            return entity ?? throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
+        }
+
+        public async Task<List<T>> GetCollection<T>(Dictionary<string, string> paramValue) where T : IDatabaseObject
+        {
+            var table = GetTable<T>();
+
+            var entities = await Task.Run(() =>
+                table.Where(item => MatchesProperties(item, paramValue)).ToList()
+            );
+
+            if (entities.Count == 0)
+                throw new KeyNotFoundException($"{typeof(T).Name} collection with specified parameters not found.");
 
             return entities;
         }
 
-        private static string GetResourcePathFor<T>() => typeof(T).Name switch
+        private async Task InitialiseTable<T>() where T : IDatabaseObject
         {
-            nameof(Client) => "clients",
-            nameof(ClientCredentials) => "clientCredentials",
-            nameof(MeterAgent) => "meterAgents",
-            nameof(MeterAgentCredentials) => "meterAgentCredentials",
-            nameof(MeterAgentReading) => "meterAgentReadings",
+            var property = typeof(Database).GetProperties()
+                .FirstOrDefault(p => p.PropertyType == typeof(List<T>));
+
+            if (property == null)
+                throw new NotSupportedException($"No property found for type {typeof(T).Name} in database.");
+
+            var url = $"{_databaseOptions.ConnectionUrl}{typeof(T).Name.ToCamelCase()}";
+            var list = await databaseClient.GetListAsync<T>(url) ?? new List<T>();
+
+            property.SetValue(database, list);
+        }
+
+        public List<T> GetTable<T>() where T : IDatabaseObject => typeof(T).Name switch
+        {
+            nameof(Client) => database.Clients as List<T>,
+            nameof(ClientCredentials) => database.ClientCredentials as List<T>,
+            nameof(MeterAgent) => database.MeterAgents as List<T>,
+            nameof(MeterAgentCredentials) => database.MeterAgentCredentials as List<T>,
+            nameof(MeterAgentReading) => database.MeterAgentReadings as List<T>,
             _ => throw new NotSupportedException($"No resource path configured for type {typeof(T).Name}.")
-        };
+        } ?? throw new InvalidOperationException($"Failed to resolve table for type {typeof(T).Name}.");
 
-        private static string BuildUrl(string baseUrl, string resource, Dictionary<string, string>? parameters = null)
+        private static bool MatchesProperties<T>(T item, Dictionary<string, string> parameters)
         {
-            var sb = new StringBuilder($"{baseUrl}/{resource}");
-
-            if (parameters != null && parameters.Count > 0)
+            foreach (var kv in parameters)
             {
-                sb.Append('?');
-                sb.Append(string.Join("&", parameters.Select(kvp =>
-                    $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}")));
+                var prop = typeof(T).GetProperty(
+                    kv.Key,
+                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance
+                );
+
+                if (prop == null)
+                    return false;
+
+                var value = prop.GetValue(item);
+                if (value == null)
+                    return false;
+
+                if (!string.Equals(value.ToString(), kv.Value, StringComparison.OrdinalIgnoreCase))
+                    return false;
             }
 
-            return sb.ToString();
+            return true;
         }
         #endregion 
     }
