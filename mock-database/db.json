@@ -622,6 +622,14 @@
       "timestampUtc": "2025-10-03T15:45:30.000Z",
       "usage": 4.34567,
       "billing": 0.52
+    },
+    {
+      "id": "51",
+      "meterId": "15",
+      "previousReadingId": "50",
+      "timestampUtc": "2025-10-03T15:45:30.000Z",
+      "usage": 2.34537,
+      "billing": 0.52
     }
   ]
 }
