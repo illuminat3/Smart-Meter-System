@@ -1,8 +1,5 @@
 services:
   mock-database:
-    build:
-      context: .
-      dockerfile: dockerfile
     image: ghcr.io/illuminat3/smart-meter-system-database:latest
     container_name: mock-database
     ports:
@@ -10,25 +7,3 @@ services:
     volumes:
       - ./db.json:/src/db.json
     restart: unless-stopped
-
-  meterapi:
-    build:
-      context: ../meter-api/meter-api
-      dockerfile: Dockerfile
-    image: smart-meter-system-meterapi:local
-    container_name: meterapi
-    depends_on:
-      - mock-database
-    ports:
-      - "5234:5234"
-    environment:
-      DATABASE__CONNECTIONURL: "http://mock-database:3000/"
-      JWT__SECRET: "dev_secret_change_me"
-      JWT__ISSUER: "smart-meter-local"
-      JWT__AUDIENCE: "smart-meter-local"
-      JWT__EXPIRY: "30"
-    restart: unless-stopped
-
-networks:
-  default:
-    name: sms-network
