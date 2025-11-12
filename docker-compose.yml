@@ -14,7 +14,7 @@ services:
     image: ghcr.io/illuminat3/smart-meter-system-meter-api:latest
     container_name: smart-meter-system-meter-api
     environment:
-      - JWT__SECRET=hpyqZJRzQbFWUsWPH99cUBMLuw6buRfA
+      - JWT__SECRET=change_me_for_live
       - JWT__ISSUER=meter-api
       - JWT__AUDIENCE=meter-api-clients
       - JWT__EXPIRY=60
