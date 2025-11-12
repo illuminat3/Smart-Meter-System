@@ -9,7 +9,7 @@ The other way is by individually running each project and configuring all the en
 
 ### Docker Compose
 
-To run the project via docker compose start by cloning the respoitory.
+To run the project via docker compose start by cloning the repository.
 
 ```bash
 git clone https://github.com/illuminat3/Smart-Meter-System.git
