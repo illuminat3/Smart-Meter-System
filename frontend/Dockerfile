@@ -1,6 +1,8 @@
-FROM node:18-alpine AS build
+FROM node:18-alpine AS builder
 
 WORKDIR /app
+
+ARG VITE_API_BASE_URL=https://localhost:7268
 
 COPY package*.json ./
 
@@ -8,6 +10,17 @@ RUN npm install
 
 COPY . .
 
+RUN npm run build
+
+# Prod
+FROM node:18-alpine
+
+WORKDIR /app
+
+RUN npm install -g serve
+
+COPY --from=builder /app/dist ./dist
+
 EXPOSE 5173
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+CMD ["serve", "-s", "dist", "-l", "5173"]
