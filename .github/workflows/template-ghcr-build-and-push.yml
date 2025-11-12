@@ -1,8 +1,19 @@
 name: Template GHCR Build and Push
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      context:
+        description: Build context (folder with Dockerfile)
+        required: true
+        default: mock-database
+      dockerfile:
+        description: Dockerfile path (relative to context)
+        required: true
+        default: Dockerfile
+      image:
+        description: Full image name including tag
+        required: true
+        default: ghcr.io/illuminat3/smart-meter-system-database:latest
 
 permissions:
   contents: read
@@ -23,7 +34,7 @@ jobs:
       - name: Build & push latest
         uses: docker/build-push-action@v6
         with:
-          context: mock-database 
-          file: mock-database/dockerfile
+          context: ${{ github.event.inputs.context }}
+          file: ${{ github.event.inputs.context }}/${{ github.event.inputs.dockerfile }}
           push: true
-          tags: ghcr.io/illuminat3/smart-meter-system-database:latest
+          tags: ${{ github.event.inputs.image }}
