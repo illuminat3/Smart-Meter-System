@@ -1,6 +1,32 @@
 # Smart-Meter-System
 University Smart Meter System.
 
+## How to run
+
+There are 2 main ways to run this project.  
+The easiest way to do this is by using the preconfigured docker compose.  
+The other way is by individually running each project and configuring all the env files to match.
+
+### Docker Compose
+
+To run the project via docker compose start by cloning the repository.
+
+```bash
+git clone https://github.com/illuminat3/Smart-Meter-System.git
+cd Smart-Meter-System
+```
+
+If you do not have docker installed, you will need to install it.  
+You can find the link to download this in the [requirements](#requirements)  
+Once you have docker installed you will have to run the following commands
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+This should run the entire project.
+
 ## Group Project
 
 This is a group project with:
