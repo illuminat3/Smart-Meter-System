@@ -7,3 +7,12 @@ services:
     volumes:
       - ./db.json:/src/db.json
     restart: unless-stopped
+
+  meterapi:
+    image: ghcr.io/illuminat3/smart-meter-system-database:latest
+    container_name: meterapi
+    ports:
+      - "3031:3000"
+    volumes:
+      - ./db.json:/src/db.json
+    restart: unless-stopped
