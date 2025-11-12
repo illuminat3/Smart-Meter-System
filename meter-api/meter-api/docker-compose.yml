@@ -1,0 +1,9 @@
+services:
+  meter-api:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-api:latest
+    container_name: smart-meter-system-meter-api
+    env_file:
+      - .env
+    ports:
+      - "5234:5234"
+    restart: unless-stopped

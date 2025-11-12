@@ -1,0 +1,33 @@
+services:
+  mock-database:
+    image: ghcr.io/illuminat3/smart-meter-system-database:latest
+    container_name: mock-database
+    ports:
+      - "3030:3000"
+    volumes:
+      - ./db.json:/src/db.json
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+
+  meter-api:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-api:latest
+    container_name: smart-meter-system-meter-api
+    environment:
+      - JWT__SECRET=change_me_for_live
+      - JWT__ISSUER=meter-api
+      - JWT__AUDIENCE=meter-api-clients
+      - JWT__EXPIRY=60
+      - DATABASE__CONNECTIONURL=http://mock-database:3000
+      - ALLOWEDHOSTS=*
+    ports:
+      - "5234:5234"
+    depends_on:
+      - mock-database
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+
+networks:
+  smart-meter-system:
+    name: smart-meter-system
