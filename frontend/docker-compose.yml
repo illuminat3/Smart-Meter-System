@@ -5,7 +5,7 @@ services:
     build:
       context: .
       args:
-        VITE_API_BASE_URL: https://localhost:7268 # docker compose.yml
+        VITE_API_BASE_URL: ${API_BASE_URL:-http://meter-api:7268} # docker compose.yml
     ports:
       - "5173:5173" # Vite dev server
     environment:
