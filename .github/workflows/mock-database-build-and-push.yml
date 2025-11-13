@@ -24,6 +24,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: mock-database
-          file: Dockerfile
+          file: mock-database/Dockerfile
           push: true
           tags: ghcr.io/illuminat3/smart-meter-system-database:latest
