@@ -10,4 +10,19 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      // Proxy REST API in dev to avoid CORS
+      '/api': {
+        target: 'http://localhost:5234',
+        changeOrigin: true,
+      },
+      // Proxy SignalR hub with WebSocket support
+      '/hub': {
+        target: 'http://localhost:5234',
+        ws: true,
+        changeOrigin: true,
+      },
+    },
+  },
 });
