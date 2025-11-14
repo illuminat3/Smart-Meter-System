@@ -1,4 +1,5 @@
-﻿using DotNetEnv;
+﻿using System.Globalization;
+using DotNetEnv;
 using meter_agent.Datatypes;
 using meter_agent.Datatypes.Requests;
 using meter_agent.DataTypes;
@@ -25,10 +26,16 @@ namespace meter_agent
                 Password = Environment.GetEnvironmentVariable("PASSWORD") ?? throw new MissingCredentialException("PASSWORD missing")
             };
 
-            var baseUrl = Environment.GetEnvironmentVariable("BASE_URL") ?? throw new MissingCredentialException("BASE_URL missing");
+            var baseUrl = Environment.GetEnvironmentVariable("BASE_URL") ?? throw new MissingFieldException("BASE_URL missing");
 
+            var errorChanceString = Environment.GetEnvironmentVariable("ERROR_CHANCE") ?? throw new MissingFieldException("ERROR_CHANCE missing");
 
-            if (!baseUrl.EndsWith("/"))
+            if (!double.TryParse(errorChanceString, NumberStyles.Float, CultureInfo.InvariantCulture, out var errorChance))
+            {
+                throw new FormatException("ERROR_CHANCE must be a valid number like 0.8");
+            }
+
+            if (!baseUrl.EndsWith('/'))
                 baseUrl += "/";
 
             var handler = new SocketsHttpHandler
@@ -37,8 +44,12 @@ namespace meter_agent
                 PooledConnectionIdleTimeout = TimeSpan.FromMinutes(5),
                 EnableMultipleHttp2Connections = true
             };
-            var sharedClient = new HttpClient(handler) { BaseAddress = new Uri(baseUrl), Timeout = TimeSpan.FromSeconds(100) };
 
+            var sharedClient = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(baseUrl),
+                Timeout = TimeSpan.FromSeconds(100)
+            };
 
             var authenticationService = new AuthenticationService(sharedClient);
 
@@ -53,27 +64,44 @@ namespace meter_agent
 
             var agentHubClient = new AgentHubClient(authenticationService, loginRequest, hubUrl);
 
-            try      
+            try
             {
-
                 await agentHubClient.ConnectAsync();
 
                 while (true)
                 {
-                    var usage = usageService.GetUsage();
-                    Console.WriteLine($"Usage: {usage} kWh");
+                    bool shouldSendError = random.NextDouble() < errorChance;
 
-                    await agentHubClient.SendMessageAsync(new AgentUsageUpdateMessage
+                    if (shouldSendError)
                     {
-                        Body = new AgentUsage
+                        var errorMessage = "Meter Agent failed to get usage";
+                        Console.WriteLine($"Error: {errorMessage}");
+
+                        await agentHubClient.SendMessageAsync(new AgentErrorUpdateMessage
                         {
-                            EnergyUsedKWh = usage
-                        }
-                    });
+                            Body = new AgentError
+                            {
+                                ErrorMessage = errorMessage
+                            }
+                        });
+                    }
+                    else
+                    {
+                        var usage = usageService.GetUsage();
+                        Console.WriteLine($"Usage: {usage} kWh");
+
+                        await agentHubClient.SendMessageAsync(new AgentUsageUpdateMessage
+                        {
+                            Body = new AgentUsage
+                            {
+                                EnergyUsedKWh = usage
+                            }
+                        });
+                    }
 
                     int delaySeconds = random.Next(15, 61);
                     Console.WriteLine($"Waiting {delaySeconds} seconds");
-                    Thread.Sleep(delaySeconds * 1000);
+                    await Task.Delay(delaySeconds * 1000);
                 }
             }
             finally
