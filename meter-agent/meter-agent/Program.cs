@@ -104,6 +104,18 @@ namespace meter_agent
                     await Task.Delay(delaySeconds * 1000);
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fatal error: {ex.Message}");
+
+                await agentHubClient.SendMessageAsync(new AgentErrorUpdateMessage
+                {
+                    Body = new AgentError
+                    {
+                        ErrorMessage = ex.Message
+                    }
+                });
+            }
             finally
             {
                 await agentHubClient.DisconnectAsync();
