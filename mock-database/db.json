@@ -227,7 +227,7 @@
       "id": "1",
       "meterId": "1",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T08:15:22.000Z",
+      "timestampUtc": "2025-09-01T08:15:22.000Z",
       "usage": 0.034123,
       "billing": 0.28
     },
@@ -235,7 +235,7 @@
       "id": "2",
       "meterId": "1",
       "previousReadingId": "1",
-      "timestampUtc": "2025-10-02T09:30:15.000Z",
+      "timestampUtc": "2025-09-02T09:30:15.000Z",
       "usage": 0.009456,
       "billing": 0.22
     },
@@ -243,7 +243,7 @@
       "id": "3",
       "meterId": "1",
       "previousReadingId": "2",
-      "timestampUtc": "2025-10-03T10:45:30.000Z",
+      "timestampUtc": "2025-09-03T10:45:30.000Z",
       "usage": 0.041789,
       "billing": 0.37
     },
@@ -251,7 +251,7 @@
       "id": "4",
       "meterId": "2",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T08:20:10.000Z",
+      "timestampUtc": "2025-09-04T08:20:10.000Z",
       "usage": 0.012345,
       "billing": 0.19
     },
@@ -259,7 +259,7 @@
       "id": "5",
       "meterId": "2",
       "previousReadingId": "4",
-      "timestampUtc": "2025-10-02T09:35:45.000Z",
+      "timestampUtc": "2025-09-05T09:35:45.000Z",
       "usage": 0.047321,
       "billing": 0.36
     },
@@ -267,7 +267,7 @@
       "id": "6",
       "meterId": "2",
       "previousReadingId": "5",
-      "timestampUtc": "2025-10-03T11:00:20.000Z",
+      "timestampUtc": "2025-09-06T11:00:20.000Z",
       "usage": 0.022111,
       "billing": 0.28
     },
@@ -275,7 +275,7 @@
       "id": "7",
       "meterId": "2",
       "previousReadingId": "6",
-      "timestampUtc": "2025-10-04T12:15:00.000Z",
+      "timestampUtc": "2025-09-07T12:15:00.000Z",
       "usage": 0.005678,
       "billing": 0.21
     },
@@ -283,7 +283,7 @@
       "id": "8",
       "meterId": "3",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T08:25:00.000Z",
+      "timestampUtc": "2025-09-08T08:25:00.000Z",
       "usage": 0.049999,
       "billing": 0.55
     },
@@ -291,7 +291,7 @@
       "id": "9",
       "meterId": "3",
       "previousReadingId": "8",
-      "timestampUtc": "2025-10-02T10:00:30.000Z",
+      "timestampUtc": "2025-09-09T10:00:30.000Z",
       "usage": 0.018234,
       "billing": 0.38
     },
@@ -299,7 +299,7 @@
       "id": "10",
       "meterId": "3",
       "previousReadingId": "9",
-      "timestampUtc": "2025-10-03T11:30:45.000Z",
+      "timestampUtc": "2025-09-10T11:30:45.000Z",
       "usage": 0.006543,
       "billing": 0.34
     },
@@ -307,7 +307,7 @@
       "id": "11",
       "meterId": "4",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T08:30:15.000Z",
+      "timestampUtc": "2025-09-11T08:30:15.000Z",
       "usage": 0.033210,
       "billing": 0.15
     },
@@ -315,7 +315,7 @@
       "id": "12",
       "meterId": "4",
       "previousReadingId": "11",
-      "timestampUtc": "2025-10-02T10:15:00.000Z",
+      "timestampUtc": "2025-09-12T10:15:00.000Z",
       "usage": 0.024567,
       "billing": 0.32
     },
@@ -323,7 +323,7 @@
       "id": "13",
       "meterId": "4",
       "previousReadingId": "12",
-      "timestampUtc": "2025-10-03T12:00:00.000Z",
+      "timestampUtc": "2025-09-13T12:00:00.000Z",
       "usage": 0.039001,
       "billing": 0.41
     },
@@ -331,7 +331,7 @@
       "id": "14",
       "meterId": "4",
       "previousReadingId": "13",
-      "timestampUtc": "2025-10-04T13:30:20.000Z",
+      "timestampUtc": "2025-09-14T13:30:20.000Z",
       "usage": 0.011111,
       "billing": 0.24
     },
@@ -339,7 +339,7 @@
       "id": "15",
       "meterId": "5",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T08:35:45.000Z",
+      "timestampUtc": "2025-09-15T08:35:45.000Z",
       "usage": 0.002345,
       "billing": 0.46
     },
@@ -347,7 +347,7 @@
       "id": "16",
       "meterId": "5",
       "previousReadingId": "15",
-      "timestampUtc": "2025-10-02T10:30:20.000Z",
+      "timestampUtc": "2025-09-16T10:30:20.000Z",
       "usage": 0.045678,
       "billing": 0.25
     },
@@ -355,7 +355,7 @@
       "id": "17",
       "meterId": "5",
       "previousReadingId": "16",
-      "timestampUtc": "2025-10-03T12:15:00.000Z",
+      "timestampUtc": "2025-09-17T12:15:00.000Z",
       "usage": 0.007890,
       "billing": 0.51
     },
@@ -363,7 +363,7 @@
       "id": "18",
       "meterId": "6",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T08:40:00.000Z",
+      "timestampUtc": "2025-09-18T08:40:00.000Z",
       "usage": 0.028765,
       "billing": 0.31
     },
@@ -371,7 +371,7 @@
       "id": "19",
       "meterId": "6",
       "previousReadingId": "18",
-      "timestampUtc": "2025-10-02T10:45:30.000Z",
+      "timestampUtc": "2025-09-19T10:45:30.000Z",
       "usage": 0.003210,
       "billing": 0.22
     },
@@ -379,7 +379,7 @@
       "id": "20",
       "meterId": "6",
       "previousReadingId": "19",
-      "timestampUtc": "2025-10-03T12:30:15.000Z",
+      "timestampUtc": "2025-09-20T12:30:15.000Z",
       "usage": 0.050000,
       "billing": 0.41
     },
@@ -387,7 +387,7 @@
       "id": "21",
       "meterId": "7",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T08:45:20.000Z",
+      "timestampUtc": "2025-09-21T08:45:20.000Z",
       "usage": 0.001234,
       "billing": 0.20
     },
@@ -395,7 +395,7 @@
       "id": "22",
       "meterId": "7",
       "previousReadingId": "21",
-      "timestampUtc": "2025-10-02T11:00:00.000Z",
+      "timestampUtc": "2025-09-22T11:00:00.000Z",
       "usage": 0.038765,
       "billing": 0.36
     },
@@ -403,7 +403,7 @@
       "id": "23",
       "meterId": "7",
       "previousReadingId": "22",
-      "timestampUtc": "2025-10-03T13:00:30.000Z",
+      "timestampUtc": "2025-09-23T13:00:30.000Z",
       "usage": 0.020987,
       "billing": 0.38
     },
@@ -411,7 +411,7 @@
       "id": "24",
       "meterId": "8",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T09:00:00.000Z",
+      "timestampUtc": "2025-09-24T09:00:00.000Z",
       "usage": 0.030456,
       "billing": 0.49
     },
@@ -419,7 +419,7 @@
       "id": "25",
       "meterId": "8",
       "previousReadingId": "24",
-      "timestampUtc": "2025-10-02T11:15:45.000Z",
+      "timestampUtc": "2025-09-25T11:15:45.000Z",
       "usage": 0.010101,
       "billing": 0.28
     },
@@ -427,7 +427,7 @@
       "id": "26",
       "meterId": "8",
       "previousReadingId": "25",
-      "timestampUtc": "2025-10-03T13:30:00.000Z",
+      "timestampUtc": "2025-09-26T13:30:00.000Z",
       "usage": 0.044444,
       "billing": 0.43
     },
@@ -435,7 +435,7 @@
       "id": "27",
       "meterId": "9",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T09:05:30.000Z",
+      "timestampUtc": "2025-09-27T09:05:30.000Z",
       "usage": 0.015555,
       "billing": 0.24
     },
@@ -443,7 +443,7 @@
       "id": "28",
       "meterId": "9",
       "previousReadingId": "27",
-      "timestampUtc": "2025-10-02T11:30:20.000Z",
+      "timestampUtc": "2025-09-28T11:30:20.000Z",
       "usage": 0.027890,
       "billing": 0.32
     },
@@ -451,7 +451,7 @@
       "id": "29",
       "meterId": "9",
       "previousReadingId": "28",
-      "timestampUtc": "2025-10-03T14:00:00.000Z",
+      "timestampUtc": "2025-09-29T14:00:00.000Z",
       "usage": 0.004321,
       "billing": 0.37
     },
@@ -459,7 +459,7 @@
       "id": "30",
       "meterId": "9",
       "previousReadingId": "29",
-      "timestampUtc": "2025-10-04T15:30:15.000Z",
+      "timestampUtc": "2025-09-30T15:30:15.000Z",
       "usage": 0.013579,
       "billing": 0.29
     },
@@ -491,7 +491,7 @@
       "id": "34",
       "meterId": "11",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T09:15:45.000Z",
+      "timestampUtc": "2025-10-04T09:15:45.000Z",
       "usage": 0.042222,
       "billing": 0.41
     },
@@ -499,7 +499,7 @@
       "id": "35",
       "meterId": "11",
       "previousReadingId": "34",
-      "timestampUtc": "2025-10-02T12:00:00.000Z",
+      "timestampUtc": "2025-10-05T12:00:00.000Z",
       "usage": 0.017890,
       "billing": 0.25
     },
@@ -507,7 +507,7 @@
       "id": "36",
       "meterId": "11",
       "previousReadingId": "35",
-      "timestampUtc": "2025-10-03T14:45:00.000Z",
+      "timestampUtc": "2025-10-06T14:45:00.000Z",
       "usage": 0.048333,
       "billing": 0.55
     },
@@ -515,7 +515,7 @@
       "id": "37",
       "meterId": "12",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T09:20:20.000Z",
+      "timestampUtc": "2025-10-07T09:20:20.000Z",
       "usage": 0.002999,
       "billing": 0.22
     },
@@ -523,7 +523,7 @@
       "id": "38",
       "meterId": "12",
       "previousReadingId": "37",
-      "timestampUtc": "2025-10-02T12:15:45.000Z",
+      "timestampUtc": "2025-10-08T12:15:45.000Z",
       "usage": 0.025678,
       "billing": 0.36
     },
@@ -531,7 +531,7 @@
       "id": "39",
       "meterId": "12",
       "previousReadingId": "38",
-      "timestampUtc": "2025-10-03T15:00:30.000Z",
+      "timestampUtc": "2025-10-09T15:00:30.000Z",
       "usage": 0.021234,
       "billing": 0.38
     },
@@ -539,7 +539,7 @@
       "id": "40",
       "meterId": "12",
       "previousReadingId": "39",
-      "timestampUtc": "2025-10-04T16:30:00.000Z",
+      "timestampUtc": "2025-10-10T16:30:00.000Z",
       "usage": 0.009999,
       "billing": 0.28
     },
@@ -547,7 +547,7 @@
       "id": "41",
       "meterId": "13",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T09:25:00.000Z",
+      "timestampUtc": "2025-10-11T09:25:00.000Z",
       "usage": 0.037001,
       "billing": 0.49
     },
@@ -555,7 +555,7 @@
       "id": "42",
       "meterId": "13",
       "previousReadingId": "41",
-      "timestampUtc": "2025-10-02T12:30:20.000Z",
+      "timestampUtc": "2025-10-12T12:30:20.000Z",
       "usage": 0.001999,
       "billing": 0.20
     },
@@ -563,7 +563,7 @@
       "id": "43",
       "meterId": "13",
       "previousReadingId": "42",
-      "timestampUtc": "2025-10-03T15:15:00.000Z",
+      "timestampUtc": "2025-10-13T15:15:00.000Z",
       "usage": 0.046789,
       "billing": 0.43
     },
@@ -571,7 +571,7 @@
       "id": "44",
       "meterId": "14",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T09:30:30.000Z",
+      "timestampUtc": "2025-10-14T09:30:30.000Z",
       "usage": 0.014321,
       "billing": 0.29
     },
@@ -579,7 +579,7 @@
       "id": "45",
       "meterId": "14",
       "previousReadingId": "44",
-      "timestampUtc": "2025-10-02T12:45:00.000Z",
+      "timestampUtc": "2025-10-15T12:45:00.000Z",
       "usage": 0.032100,
       "billing": 0.46
     },
@@ -587,7 +587,7 @@
       "id": "46",
       "meterId": "14",
       "previousReadingId": "45",
-      "timestampUtc": "2025-10-03T15:30:45.000Z",
+      "timestampUtc": "2025-10-16T15:30:45.000Z",
       "usage": 0.019876,
       "billing": 0.24
     },
@@ -595,7 +595,7 @@
       "id": "47",
       "meterId": "14",
       "previousReadingId": "46",
-      "timestampUtc": "2025-10-04T17:00:30.000Z",
+      "timestampUtc": "2025-10-17T17:00:30.000Z",
       "usage": 0.023456,
       "billing": 0.32
     },
@@ -603,7 +603,7 @@
       "id": "48",
       "meterId": "15",
       "previousReadingId": "",
-      "timestampUtc": "2025-10-01T09:35:00.000Z",
+      "timestampUtc": "2025-10-18T09:35:00.000Z",
       "usage": 0.029999,
       "billing": 0.38
     },
@@ -611,7 +611,7 @@
       "id": "49",
       "meterId": "15",
       "previousReadingId": "48",
-      "timestampUtc": "2025-10-02T13:00:15.000Z",
+      "timestampUtc": "2025-10-19T13:00:15.000Z",
       "usage": 0.008765,
       "billing": 0.31
     },
@@ -619,7 +619,7 @@
       "id": "50",
       "meterId": "15",
       "previousReadingId": "49",
-      "timestampUtc": "2025-10-03T15:45:30.000Z",
+      "timestampUtc": "2025-10-20T15:45:30.000Z",
       "usage": 0.039999,
       "billing": 0.52
     },
@@ -627,7 +627,7 @@
       "id": "51",
       "meterId": "15",
       "previousReadingId": "50",
-      "timestampUtc": "2025-10-04T16:45:30.000Z",
+      "timestampUtc": "2025-10-21T16:45:30.000Z",
       "usage": 0.005001,
       "billing": 0.52
     }
