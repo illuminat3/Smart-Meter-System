@@ -10,5 +10,6 @@ namespace meter_api.Datatypes
         public required decimal CurrentUsage { get; set; }
         public required decimal TotalUsage { get; set; }
         public required decimal TotalCost { get; set; }
+        public string ErrorMessage { get; set; } = string.Empty;
     }
 }

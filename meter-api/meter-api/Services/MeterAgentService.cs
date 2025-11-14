@@ -26,9 +26,10 @@ namespace meter_api.Services
             }
         }
 
-        public Task HandleErrorUpdate(string meterId, AgentError error)
+        public async Task HandleErrorUpdate(string meterId, AgentError error)
         {
-            throw new NotImplementedException();
+            await UpdateAgent(meterId);
+            await clientService.MeterAgentErrorUpdate(meterId, error);
         }
 
         public async Task HandleUsageUpdate(string meterId, AgentUsage usage)
