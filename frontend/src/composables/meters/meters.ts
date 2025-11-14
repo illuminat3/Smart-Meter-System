@@ -83,7 +83,7 @@ export function useMeters() {
     });
 
     onUnmounted(async () => {
-        offEvent('MeterUpdate', handleMeterUpdate);
+        offEvent('ClientUpdate', handleMeterUpdate);
         initialEventNames.forEach(evt => offEvent(evt, handleInitialState));
 
         await disconnect();
