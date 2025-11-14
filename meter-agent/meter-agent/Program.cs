@@ -26,13 +26,18 @@ namespace meter_agent
                 Password = Environment.GetEnvironmentVariable("PASSWORD") ?? throw new MissingCredentialException("PASSWORD missing")
             };
 
-            var baseUrl = Environment.GetEnvironmentVariable("BASE_URL") ?? throw new MissingFieldException("BASE_URL missing");
+            var baseUrl = Environment.GetEnvironmentVariable("BASE_URL") ?? throw new MissingArgumentException("BASE_URL missing");
 
-            var errorChanceString = Environment.GetEnvironmentVariable("ERROR_CHANCE") ?? throw new MissingFieldException("ERROR_CHANCE missing");
+            var errorChanceString = Environment.GetEnvironmentVariable("ERROR_CHANCE") ?? throw new MissingArgumentException("ERROR_CHANCE missing");
 
             if (!double.TryParse(errorChanceString, NumberStyles.Float, CultureInfo.InvariantCulture, out var errorChance))
             {
                 throw new FormatException("ERROR_CHANCE must be a valid number like 0.8");
+            }
+
+            if (errorChance < 0.0 || errorChance > 1.0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(errorChance), "ERROR_CHANCE must be between 0.0 and 1.0");
             }
 
             if (!baseUrl.EndsWith('/'))
@@ -107,14 +112,17 @@ namespace meter_agent
             catch (Exception ex)
             {
                 Console.WriteLine($"Fatal error: {ex.Message}");
-
-                await agentHubClient.SendMessageAsync(new AgentErrorUpdateMessage
+                try
                 {
-                    Body = new AgentError
+                    await agentHubClient.SendMessageAsync(new AgentErrorUpdateMessage
                     {
-                        ErrorMessage = ex.Message
-                    }
-                });
+                        Body = new AgentError
+                        {
+                            ErrorMessage = ex.Message
+                        }
+                    });
+                }
+                catch { }
             }
             finally
             {
