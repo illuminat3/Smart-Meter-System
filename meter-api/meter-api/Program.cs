@@ -107,7 +107,7 @@ builder.Services.AddCors(o =>
 builder.Services.AddAuthorization();
 
 // HttpClient
-builder.Services.AddHttpClient<DatabaseHttpClient>();
+builder.Services.AddHttpClient<IDatabaseHttpClient, DatabaseHttpClient>();
 
 // Controllers
 builder.Services.AddControllers();

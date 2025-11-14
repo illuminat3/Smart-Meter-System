@@ -27,3 +27,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release
       working-directory: ./meter-api
+
+    - name: Test
+      run: dotnet test --no-build --configuration Release
+      working-directory: ./meter-api

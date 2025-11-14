@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace meter_api.Services
 {
-    public class MeterAgentService(IDatabaseService databaseService, IBillingService billingService, IClientService clientService) : IMeterAgentService
+    public class MeterAgentService(IDatabaseService databaseService, IBillingService billingService) : IMeterAgentService
     {
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _meterAgentConnections = new();
 
@@ -26,12 +26,6 @@ namespace meter_api.Services
             }
         }
 
-        public async Task HandleErrorUpdate(string meterId, AgentError error)
-        {
-            await UpdateAgent(meterId);
-            await clientService.MeterAgentErrorUpdate(meterId, error);
-        }
-
         public async Task HandleUsageUpdate(string meterId, AgentUsage usage)
         {
             var fullMeterAgent = await databaseService.GetFullMeterAgentFromId(meterId);
@@ -50,7 +44,6 @@ namespace meter_api.Services
 
             await databaseService.Create<MeterAgentReading>(currentReading);
             await UpdateAgent(meterId);
-            await clientService.MeterAgentUpdate(meterId);
         }
 
         public async Task UpdateAgent(string meterId)
