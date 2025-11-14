@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9 d17.14
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11206.111 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "meter-agent", "meter-agent\meter-agent.csproj", "{0118B935-C8EE-4838-B0B9-CD97E2C3F71A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "meter-agent.tests", "meter-agent.tests\meter-agent.tests.csproj", "{1E007786-CE1B-489D-8951-542269264302}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0118B935-C8EE-4838-B0B9-CD97E2C3F71A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0118B935-C8EE-4838-B0B9-CD97E2C3F71A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0118B935-C8EE-4838-B0B9-CD97E2C3F71A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E007786-CE1B-489D-8951-542269264302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E007786-CE1B-489D-8951-542269264302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E007786-CE1B-489D-8951-542269264302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E007786-CE1B-489D-8951-542269264302}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
