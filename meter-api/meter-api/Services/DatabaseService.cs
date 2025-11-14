@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace meter_api.Services
 {
-    public class DatabaseService(DatabaseHttpClient databaseClient, Database database, IOptions<DatabaseOptions> options, SemaphoreSlim semaphoreSlim) : IDatabaseService
+    public class DatabaseService(IDatabaseHttpClient databaseClient, Database database, IOptions<DatabaseOptions> options, SemaphoreSlim semaphoreSlim) : IDatabaseService
     {
         private readonly DatabaseOptions _databaseOptions = options.Value;
 

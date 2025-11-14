@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace meter_api.Services
 {
-    public class DatabaseHttpClient
+    public class DatabaseHttpClient : IDatabaseHttpClient
     {
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _jsonOptions;

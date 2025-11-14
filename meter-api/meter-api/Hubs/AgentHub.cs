@@ -1,5 +1,4 @@
-﻿using meter_api.Datatypes.Messages;
-using meter_api.Datatypes.Messages.Agent;
+﻿using meter_api.Datatypes.Messages.Agent;
 using meter_api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -10,7 +9,7 @@ namespace meter_api.Hubs
 {
     [Authorize]
     [SignalRHub("hub/agents")]
-    public class AgentHub(IMeterAgentService meterAgentService) : Hub
+    public class AgentHub(IMeterAgentService meterAgentService, IClientService clientService) : Hub
     {
         public override async Task OnConnectedAsync()
         {
@@ -57,7 +56,10 @@ namespace meter_api.Hubs
                     {
                         var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
                         foreach (var meterId in meterIds)
-                            await meterAgentService.HandleErrorUpdate(meterId, errorUpdate.Body);
+                        {
+                            await meterAgentService.UpdateAgent(meterId);
+                            await clientService.MeterAgentErrorUpdate(meterId, errorUpdate.Body);
+                        }
                     }
                     break;
 
@@ -67,7 +69,10 @@ namespace meter_api.Hubs
                     {
                         var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
                         foreach (var meterId in meterIds)
+                        {
                             await meterAgentService.HandleUsageUpdate(meterId, usageUpdate.Body);
+                            await clientService.MeterAgentUpdate(meterId);
+                        }
                     }
                     break;
 
