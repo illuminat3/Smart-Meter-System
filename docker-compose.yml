@@ -5,7 +5,7 @@ services:
     ports:
       - "3030:3000"
     volumes:
-      - ./db.json:/src/db.json
+      - ./mock-database/db.json:/src/db.json
     networks:
       - smart-meter-system
     restart: unless-stopped
