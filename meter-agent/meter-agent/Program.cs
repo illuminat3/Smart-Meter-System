@@ -122,7 +122,10 @@ namespace meter_agent
                         }
                     });
                 }
-                catch { }
+                catch (Exception newEx) 
+                {
+                    Console.WriteLine(newEx.Message);
+                }
             }
             finally
             {
