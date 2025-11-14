@@ -1,9 +1,10 @@
 ﻿using meter_api.Datatypes;
 using meter_api.Datatypes.Database;
+using System.Data;
 
 namespace meter_api.Services
 {
-    public class SnapshotService(IDatabaseService databaseService) : ISnapshotService
+    public class SnapshotService(IDatabaseService databaseService, IMeterAgentService meterAgentService) : ISnapshotService
     {
         public async Task<MeterSnapshot> GetMeterSnapshot(string meterId)
         {
@@ -12,6 +13,7 @@ namespace meter_api.Services
             return new MeterSnapshot
             {
                 MeterId = fullMeterAgent.Id,
+                ConnectionState = meterAgentService.IsMeterAgentConnected(meterId) ? ConnectionState.Open : ConnectionState.Closed,
                 DisplayName = fullMeterAgent.DisplayName,
                 CurrentUsage = fullMeterAgent.PreviousReading?.Usage ?? 0m,
                 TotalUsage = fullMeterAgent.TotalUsage,
