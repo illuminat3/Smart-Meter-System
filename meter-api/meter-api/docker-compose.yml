@@ -1,4 +1,13 @@
 services:
+  mock-database:
+    image: ghcr.io/illuminat3/smart-meter-system-database:latest
+    container_name: mock-database
+    ports:
+      - "3030:3000"
+    volumes:
+      - ../../mock-database/db.json:/src/db.json
+    restart: unless-stopped
+
   meter-api:
     image: ghcr.io/illuminat3/smart-meter-system-meter-api:latest
     container_name: smart-meter-system-meter-api
@@ -6,4 +15,6 @@ services:
       - .env
     ports:
       - "5234:5234"
+    depends_on:
+      - mock-database
     restart: unless-stopped
