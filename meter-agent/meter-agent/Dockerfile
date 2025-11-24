@@ -1,8 +1,5 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
 WORKDIR /app
-EXPOSE 5234
-
-ENV ASPNETCORE_URLS=http://+:5234
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build 
 ARG configuration=Release
