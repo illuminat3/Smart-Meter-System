@@ -1,10 +1,10 @@
-import type { RouteRecordRaw } from 'vue-router';
-import LoginView from './LoginView.vue';
+import type { RouteRecordRaw } from "vue-router";
+import LoginView from "./LoginView.vue";
 
 export const loginRoutes: RouteRecordRaw[] = [
   {
-    path: '/',
-    name: 'login',
+    path: "/",
+    name: "login",
     component: LoginView,
   },
 ];

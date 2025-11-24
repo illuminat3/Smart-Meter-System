@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-declare module '@primeuix/forms' {
+declare module "@primeuix/forms" {
   export const Form: any;
   export const FormField: any;
   export function useForm(...args: any[]): any;

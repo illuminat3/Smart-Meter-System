@@ -1,5 +1,5 @@
-import { request } from '@/lib/httpClient';
-import { useAuthStore } from '@/stores/auth';
+import { request } from "@/lib/httpClient";
+import { useAuthStore } from "@/stores/auth";
 
 export type LoginRequest = {
   username: string;
@@ -7,15 +7,15 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
-    authenticationToken: string;
-    username: string;
+  authenticationToken: string;
+  username: string;
 };
 
 export async function login(data: LoginRequest): Promise<LoginResponse> {
   const res = await request<LoginResponse>({
-    method: 'POST',
-    url: '/auth/client/login',
-    data
+    method: "POST",
+    url: "/auth/client/login",
+    data,
   });
 
   if (res?.authenticationToken) {
