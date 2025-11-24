@@ -176,26 +176,4 @@ services:
       ERROR_CHANCE: 0.01
     networks:
       - smart-meter-system
-    restart: unless-stopped    meter_agent_4:
-      image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
-      environment:
-        METER_ID: 4
-        USERNAME: username_agent_4
-        PASSWORD: password_agent_4
-        BASE_URL: http://meter-api:5234/
-        ERROR_CHANCE: 0.01
-      networks:
-        - smart-meter-system
-      restart: unless-stopped      meter_agent_4:
-        image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
-        environment:
-          METER_ID: 4
-          USERNAME: username_agent_4
-          PASSWORD: password_agent_4
-          BASE_URL: http://meter-api:5234/
-          ERROR_CHANCE: 0.01
-        depends_on:
-          - meter-api
-        networks:
-          - smart-meter-system
-        restart: unless-stopped
+    restart: unless-stopped    
