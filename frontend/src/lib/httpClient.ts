@@ -1,22 +1,29 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { getStoredToken } from '@/stores/auth';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import { getStoredToken } from "@/stores/auth";
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL as string | undefined;
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL as
+  | string
+  | undefined;
+
+function normalizeBaseUrl(url?: string): string | undefined {
+  if (!url) return undefined;
+  return url.endsWith("/") ? url : url + "/";
+}
 
 function createClient(): AxiosInstance {
   const instance = axios.create({
-    baseURL: API_BASE_URL || '/api',
+    baseURL: normalizeBaseUrl(API_BASE_URL),
     timeout: 15000,
     headers: {
-      'Content-Type': 'application/json'
-    }
+      "Content-Type": "application/json",
+    },
   });
 
   instance.interceptors.request.use((config) => {
     const t = getStoredToken();
     if (t) {
       config.headers = config.headers || {};
-      (config.headers as any)['Authorization'] = `Bearer ${t}`;
+      (config.headers as any)["Authorization"] = `Bearer ${t}`;
     }
     return config;
   });
@@ -27,16 +34,27 @@ function createClient(): AxiosInstance {
       if (error.response) {
         const status = error.response.status;
         const msg =
-          (error.response.data && (error.response.data.message || error.response.data.error)) ||
+          (error.response.data &&
+            (error.response.data.message || error.response.data.error)) ||
           error.message ||
-          'Request failed';
+          "Request failed";
 
-        return Promise.reject({ status, message: msg, data: error.response.data });
+        return Promise.reject({
+          status,
+          message: msg,
+          data: error.response.data,
+        });
       }
       if (error.request) {
-        return Promise.reject({ status: 0, message: 'Network error or no response from server' });
+        return Promise.reject({
+          status: 0,
+          message: "Network error or no response from server",
+        });
       }
-      return Promise.reject({ status: 0, message: error.message || 'Unknown error' });
+      return Promise.reject({
+        status: 0,
+        message: error.message || "Unknown error",
+      });
     }
   );
 
