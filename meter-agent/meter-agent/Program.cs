@@ -56,6 +56,14 @@ namespace meter_agent
                 Timeout = TimeSpan.FromSeconds(100)
             };
 
+            var healthCheckService = new HealthCheckService(sharedClient);
+            var healthy = await healthCheckService.WaitForHealthyStatus(10, 3);
+
+            if (!healthy)
+            {
+                Environment.Exit(1);
+            }
+
             var authenticationService = new AuthenticationService(sharedClient);
 
             var loginRequest = new AgentLoginRequest
