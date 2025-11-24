@@ -1,13 +1,13 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-const TOKEN_KEY = 'auth_token';
+const TOKEN_KEY = "auth_token";
 
 interface State {
   token: string | undefined;
   user: string | undefined;
 }
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore("auth", {
   state: (): State => ({
     token: undefined,
     user: undefined,
@@ -17,10 +17,10 @@ export const useAuthStore = defineStore('auth', {
   },
   actions: {
     loadFromStorage() {
-        const token = localStorage.getItem(TOKEN_KEY);
-        if (token) {
-            this.token = token;
-        }
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (token) {
+        this.token = token;
+      }
     },
     setToken(token: string, user: string) {
       this.token = token;
@@ -38,7 +38,7 @@ export const useAuthStore = defineStore('auth', {
 });
 
 export function getStoredToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+  return localStorage.getItem(TOKEN_KEY);
 }
 
 export { TOKEN_KEY };

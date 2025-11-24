@@ -1,15 +1,15 @@
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import ToastService from 'primevue/toastservice';
-import App from './App.vue';
-import router from './router';
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import ToastService from "primevue/toastservice";
+import App from "./App.vue";
+import router from "./router";
 
-import PrimeVue from 'primevue/config';
-import Aura from '@primevue/themes/aura';
+import PrimeVue from "primevue/config";
+import Aura from "@primevue/themes/aura";
 
-import 'primeicons/primeicons.css';
-import './assets/main.css';
-import { useAuthStore } from '@/stores/auth';
+import "primeicons/primeicons.css";
+import "./assets/main.css";
+import { useAuthStore } from "@/stores/auth";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -27,4 +27,4 @@ app.use(ToastService);
 const auth = useAuthStore();
 auth.loadFromStorage();
 
-app.mount('#app');
+app.mount("#app");
