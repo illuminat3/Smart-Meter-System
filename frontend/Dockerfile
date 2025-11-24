@@ -1,27 +1,15 @@
-FROM node:18-alpine AS builder
+FROM node:22-alpine
 
 WORKDIR /app
 
-ARG VITE_API_BASE_URL=http://meter-api:7268
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-
 COPY package*.json ./
-
 RUN npm install
 
 COPY . .
-
 RUN npm run build
 
-# Prod
-FROM node:18-alpine
+ENV VITE_PREVIEW_PORT=4173
 
-WORKDIR /app
+EXPOSE 4173
 
-RUN npm install -g serve
-
-COPY --from=builder /app/dist ./dist
-
-EXPOSE 5173
-
-CMD ["serve", "-s", "dist", "-l", "5173"]
+CMD ["sh", "-c", "npm run preview -- --port ${VITE_PREVIEW_PORT} --host 0.0.0.0"]
