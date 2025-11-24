@@ -1,23 +1,9 @@
-version: '3.8'
-
 services:
-  web:
-    build:
-      context: .
-      args:
-        VITE_API_BASE_URL: ${API_BASE_URL:-http://meter-api:7268} # docker compose.yml
-    ports:
-      - "5173:5173" # Vite dev server
+  frontend:
+    image: ghcr.io/illuminat3/smart-meter-system-frontend:latest
+    container_name: frontend
     environment:
-      - NODE_ENV=production
-    networks:
-      - smart-meter-network
-
-volumes:
-  node_modules:
-
-networks:
-  smart-meter-network:
-    driver: bridge
-  
-
+      VITE_PREVIEW_PORT: 4173
+      VITE_API_BASE_URL: http://host.docker.internal:5234
+    ports:
+      - "4173:4173"
