@@ -6,11 +6,20 @@
         {
             for (var attempt = 1; attempt <= maxRetries; attempt++)
             {
-                var response = await httpClient.GetAsync("health");
-
-                if (response.IsSuccessStatusCode)
+                try
                 {
-                    return true;
+                    using var response = await httpClient.GetAsync("health");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return true;
+                    }
+                }
+                catch (HttpRequestException)
+                {
+                }
+                catch (TaskCanceledException)
+                {
                 }
 
                 if (attempt < maxRetries)
