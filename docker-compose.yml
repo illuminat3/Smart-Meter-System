@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ghcr.io/illuminat3/smart-meter-system-frontend-with-deps:latest
+    image: ghcr.io/illuminat3/smart-meter-system-frontend:latest
     container_name: frontend
     depends_on:
       - meter-api
