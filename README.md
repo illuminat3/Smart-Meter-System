@@ -16,7 +16,15 @@ git clone https://github.com/illuminat3/Smart-Meter-System.git
 cd Smart-Meter-System
 ```
 
-If you do not have docker installed, you will need to install it.  
+Next you will have to set up the env file.  
+To do this simply copy the .env.example file 
+
+```bash
+copy env.example .env
+```
+
+Alternatively, you can manually copy paste it.  
+At this point, if you do not have docker installed, you will need to install it.  
 You can find the link to download this in the [requirements](#requirements)  
 Once you have docker installed you will have to run the following commands
 
