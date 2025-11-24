@@ -40,6 +40,8 @@ services:
       PASSWORD: password_agent_1
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.8
+    depends_on:
+      - meter-api
     networks:
       - smart-meter-system
     restart: unless-stopped
@@ -52,6 +54,8 @@ services:
       PASSWORD: password_agent_2
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api
     networks:
       - smart-meter-system
     restart: unless-stopped
@@ -64,6 +68,8 @@ services:
       PASSWORD: password_agent_3
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api
     networks:
       - smart-meter-system
     restart: unless-stopped
@@ -90,6 +96,8 @@ services:
       PASSWORD: password_agent_5
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api
     networks:
       - smart-meter-system
     restart: unless-stopped
@@ -102,6 +110,8 @@ services:
       PASSWORD: password_agent_6
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api
     networks:
       - smart-meter-system
     restart: unless-stopped
@@ -114,6 +124,8 @@ services:
       PASSWORD: password_agent_7
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api
     networks:
       - smart-meter-system
     restart: unless-stopped
@@ -126,6 +138,8 @@ services:
       PASSWORD: password_agent_8
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api
     networks:
       - smart-meter-system
     restart: unless-stopped
@@ -138,6 +152,8 @@ services:
       PASSWORD: password_agent_9
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api
     networks:
       - smart-meter-system
     restart: unless-stopped
@@ -150,6 +166,8 @@ services:
       PASSWORD: password_agent_10
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api
     networks:
       - smart-meter-system
     restart: unless-stopped
@@ -162,6 +180,8 @@ services:
       PASSWORD: password_agent_11
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api 
     networks:
       - smart-meter-system
     restart: unless-stopped
@@ -174,6 +194,8 @@ services:
       PASSWORD: password_agent_12
       BASE_URL: http://meter-api:5234/
       ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api
     networks:
       - smart-meter-system
-    restart: unless-stopped    
+    restart: unless-stopped
