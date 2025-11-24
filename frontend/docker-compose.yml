@@ -1,9 +1,10 @@
 services:
   frontend:
-    image: ghcr.io/illuminat3/smart-meter-system-frontend:latest
+    image: ghcr.io/illuminat3/smart-meter-system-frontend-with-deps:latest
     container_name: frontend
     environment:
       VITE_PREVIEW_PORT: 4173
-      VITE_API_BASE_URL: http://host.docker.internal:5234
+      VITE_API_BASE_URL: http://localhost:5234
     ports:
       - "4173:4173"
+    restart: unless-stopped
