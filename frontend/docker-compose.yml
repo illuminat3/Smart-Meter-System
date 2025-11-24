@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: ghcr.io/illuminat3/smart-meter-system-frontend-with-deps:latest
+    image: ghcr.io/illuminat3/smart-meter-system-frontend:latest
     container_name: frontend
     environment:
       VITE_PREVIEW_PORT: 4173
