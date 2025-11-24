@@ -1,1 +1,201 @@
-#need to add compose
+networks:
+  smart-meter-system:
+    name: smart-meter-system
+ 
+services:
+  mock-database:
+    image: ghcr.io/illuminat3/smart-meter-system-database:latest
+    container_name: mock-database
+    ports:
+      - "3030:3000"
+    volumes:
+      - ./mock-database/db.json:/src/db.json
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter-api:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-api:latest
+    container_name: smart-meter-system-meter-api
+    environment:
+      - JWT__SECRET=change_me_for_live
+      - JWT__ISSUER=meter-api
+      - JWT__AUDIENCE=meter-api-clients
+      - JWT__EXPIRY=60
+      - DATABASE__CONNECTIONURL=http://mock-database:3000
+      - ALLOWEDHOSTS=*
+    ports:
+      - "5234:5234"
+    depends_on:
+      - mock-database
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_1:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 1
+      USERNAME: username_agent_1
+      PASSWORD: password_agent_1
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.8
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_2:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 2
+      USERNAME: username_agent_2
+      PASSWORD: password_agent_2
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_3:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 3
+      USERNAME: username_agent_3
+      PASSWORD: password_agent_3
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_4:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 4
+      USERNAME: username_agent_4
+      PASSWORD: password_agent_4
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    depends_on:
+      - meter-api
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_5:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 5
+      USERNAME: username_agent_5
+      PASSWORD: password_agent_5
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_6:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 6
+      USERNAME: username_agent_6
+      PASSWORD: password_agent_6
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_7:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 7
+      USERNAME: username_agent_7
+      PASSWORD: password_agent_7
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_8:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 8
+      USERNAME: username_agent_8
+      PASSWORD: password_agent_8
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_9:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 9
+      USERNAME: username_agent_9
+      PASSWORD: password_agent_9
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_10:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 10
+      USERNAME: username_agent_10
+      PASSWORD: password_agent_10
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_11:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 11
+      USERNAME: username_agent_11
+      PASSWORD: password_agent_11
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    networks:
+      - smart-meter-system
+    restart: unless-stopped
+ 
+  meter_agent_12:
+    image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+    environment:
+      METER_ID: 12
+      USERNAME: username_agent_12
+      PASSWORD: password_agent_12
+      BASE_URL: http://meter-api:5234/
+      ERROR_CHANCE: 0.01
+    networks:
+      - smart-meter-system
+    restart: unless-stopped    meter_agent_4:
+      image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+      environment:
+        METER_ID: 4
+        USERNAME: username_agent_4
+        PASSWORD: password_agent_4
+        BASE_URL: http://meter-api:5234/
+        ERROR_CHANCE: 0.01
+      networks:
+        - smart-meter-system
+      restart: unless-stopped      meter_agent_4:
+        image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
+        environment:
+          METER_ID: 4
+          USERNAME: username_agent_4
+          PASSWORD: password_agent_4
+          BASE_URL: http://meter-api:5234/
+          ERROR_CHANCE: 0.01
+        depends_on:
+          - meter-api
+        networks:
+          - smart-meter-system
+        restart: unless-stopped
