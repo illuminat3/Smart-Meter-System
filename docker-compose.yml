@@ -24,10 +24,22 @@ services:
       - "5234:5234"
     restart: unless-stopped
 
+  frontend:
+    image: ghcr.io/illuminat3/smart-meter-system-frontend:latest
+    container_name: frontend
+    depends_on:
+      - meter-api
+    environment:
+      VITE_PREVIEW_PORT: 4173
+      VITE_API_BASE_URL: http://localhost:5234
+    ports:
+      - "4173:4173"
+    restart: unless-stopped
+
   meter_agent_1:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 1
       USERNAME: username_agent_1
@@ -39,7 +51,7 @@ services:
   meter_agent_2:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 2
       USERNAME: username_agent_2
@@ -51,7 +63,7 @@ services:
   meter_agent_3:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 3
       USERNAME: username_agent_3
@@ -63,7 +75,7 @@ services:
   meter_agent_4:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 4
       USERNAME: username_agent_4
@@ -75,7 +87,7 @@ services:
   meter_agent_5:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 5
       USERNAME: username_agent_5
@@ -87,7 +99,7 @@ services:
   meter_agent_6:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 6
       USERNAME: username_agent_6
@@ -99,7 +111,7 @@ services:
   meter_agent_7:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 7
       USERNAME: username_agent_7
@@ -111,7 +123,7 @@ services:
   meter_agent_8:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 8
       USERNAME: username_agent_8
@@ -123,7 +135,7 @@ services:
   meter_agent_9:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 9
       USERNAME: username_agent_9
@@ -135,7 +147,7 @@ services:
   meter_agent_10:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 10
       USERNAME: username_agent_10
@@ -147,7 +159,7 @@ services:
   meter_agent_11:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 11
       USERNAME: username_agent_11
@@ -159,7 +171,7 @@ services:
   meter_agent_12:
     image: ghcr.io/illuminat3/smart-meter-system-meter-agent:latest
     depends_on:
-      - meter-api
+      - frontend
     environment:
       METER_ID: 12
       USERNAME: username_agent_12
