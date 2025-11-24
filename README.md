@@ -33,7 +33,8 @@ docker compose pull
 docker compose up -d
 ```
 
-This should run the entire project.
+This should run the entire project.  
+You will be able to access it in your browser at [http://localhost:4173](http://localhost:4173)
 
 ## Group Project
 
