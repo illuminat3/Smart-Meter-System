@@ -27,7 +27,7 @@ copy .env.example .env
 Alternatively, you can manually copy paste it.  
 If you wish you can update the `JWT__SECRET` value.  
 If you do this please ensure that it is at least 256 bits long otherwise the meter api will return 500 errors.  
-You can generate a 256 hash with this [online has generator](https://tools.keycdn.com/sha256-online-generator)  
+You can generate a 256-bit hash with this [online hash generator](https://tools.keycdn.com/sha256-online-generator)  
 An example value of this env file should look something like
 
 ```txt
