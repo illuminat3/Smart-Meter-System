@@ -3,7 +3,7 @@
 public class MockDatabaseContainer : IAsyncLifetime
 {
     public IContainer Container { get; private set; } = default!;
-    public static string BaseUrl => "http://localhost:3030";
+    public string BaseUrl => $"http://localhost:{Container.GetMappedPublicPort(3000)}";
 
     public async Task InitializeAsync()
     {
@@ -21,7 +21,7 @@ public class MockDatabaseContainer : IAsyncLifetime
 
         Container = new ContainerBuilder()
             .WithImage("ghcr.io/illuminat3/smart-meter-system-database:latest")
-            .WithPortBinding(3030, 3000)
+            .WithPortBinding(3000, assignRandomHostPort: true)
             .WithBindMount(jsonPath, "/src/db.json")
             .WithWaitStrategy(
                 Wait.ForUnixContainer()

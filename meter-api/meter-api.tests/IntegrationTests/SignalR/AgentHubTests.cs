@@ -7,8 +7,7 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
 {
     private HttpClient CreateClient()
     {
-        GC.KeepAlive(db);
-        Environment.SetEnvironmentVariable("DATABASE__CONNECTIONURL", MockDatabaseContainer.BaseUrl + "/");
+        Environment.SetEnvironmentVariable("DATABASE__CONNECTIONURL", db.BaseUrl + "/");
         return factory.CreateClient();
     }
 
