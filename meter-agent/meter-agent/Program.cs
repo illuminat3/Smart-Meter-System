@@ -45,14 +45,14 @@ public static class Program
             baseUrl += "/";
         }
 
-        var handler = new SocketsHttpHandler
+        using var handler = new SocketsHttpHandler
         {
             PooledConnectionLifetime = TimeSpan.FromMinutes(2),
             PooledConnectionIdleTimeout = TimeSpan.FromMinutes(5),
             EnableMultipleHttp2Connections = true
         };
 
-        var sharedClient = new HttpClient(handler)
+        using var sharedClient = new HttpClient(handler)
         {
             BaseAddress = new Uri(baseUrl),
             Timeout = TimeSpan.FromSeconds(100)
