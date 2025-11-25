@@ -1,7 +1,6 @@
-﻿namespace meter_api.Datatypes
+﻿namespace meter_api.Datatypes;
+
+public class AgentError
 {
-    public class AgentError
-    {
-        public required string ErrorMessage { get; set; }
-    }
+    public required string ErrorMessage { get; set; }
 }

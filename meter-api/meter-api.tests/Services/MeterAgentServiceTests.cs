@@ -96,7 +96,7 @@
 
             MeterAgentReading? createdReading = null;
             databaseService
-                .Create<MeterAgentReading>(Arg.Any<MeterAgentReading>(), true)
+                .Create(Arg.Any<MeterAgentReading>(), true)
                 .Returns(ci =>
                 {
                     createdReading = ci.Arg<MeterAgentReading>();

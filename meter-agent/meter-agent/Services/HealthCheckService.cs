@@ -1,34 +1,35 @@
-﻿namespace meter_agent.Services
+﻿namespace meter_agent.Services;
+
+public class HealthCheckService(HttpClient httpClient) : IHealthCheckService
 {
-    public class HealthCheckService(HttpClient httpClient) : IHealthCheckService
+    public async Task<bool> WaitForHealthyStatus(int maxRetries, int delaySeconds)
     {
-        public async Task<bool> WaitForHealthyStatus(int maxRetries, int delaySeconds)
+        for (var attempt = 1; attempt <= maxRetries; attempt++)
         {
-            for (var attempt = 1; attempt <= maxRetries; attempt++)
+            try
             {
-                try
-                {
-                    using var response = await httpClient.GetAsync("health");
+                using var response = await httpClient.GetAsync("health");
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return true;
-                    }
-                }
-                catch (HttpRequestException)
+                if (response.IsSuccessStatusCode)
                 {
-                }
-                catch (TaskCanceledException)
-                {
-                }
-
-                if (attempt < maxRetries)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(delaySeconds));
+                    return true;
                 }
             }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Health check HTTP error on attempt {attempt}/{maxRetries}: {ex.Message}");
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Health check timed out on attempt {attempt}/{maxRetries}: {ex.Message}");
+            }
 
-            return false;
+            if (attempt < maxRetries)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(delaySeconds));
+            }
         }
+
+        return false;
     }
 }

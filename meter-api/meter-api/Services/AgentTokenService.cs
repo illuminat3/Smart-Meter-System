@@ -6,64 +6,65 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace meter_api.Services
+namespace meter_api.Services;
+
+public class AgentTokenService(IOptions<JwtOptions> options) : IAgentTokenService
 {
-    public class AgentTokenService(IOptions<JwtOptions> options) : IAgentTokenService
+    private readonly JwtOptions _options = options.Value;
+
+    public string GetAgentToken(MeterAgent agent)
     {
-        private readonly JwtOptions _options = options.Value;
+        ArgumentNullException.ThrowIfNull(agent);
 
-        public string GetAgentToken(MeterAgent agent)
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Secret));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
         {
-            ArgumentNullException.ThrowIfNull(agent);
+        new Claim("agent_id", agent.Id.ToString()),
+        new Claim("agent_display_name", agent.DisplayName ?? string.Empty),
+        new Claim("issued_at", DateTime.UtcNow.ToString("O"))
+    };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Secret));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var token = new JwtSecurityToken(
+            issuer: _options.Issuer,
+            audience: _options.Audience,
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(_options.Expiry),
+            signingCredentials: creds
+        );
 
-            var claims = new[]
-            {
-            new Claim("agent_id", agent.Id.ToString()),
-            new Claim("agent_display_name", agent.DisplayName ?? string.Empty),
-            new Claim("issued_at", DateTime.UtcNow.ToString("O"))
-        };
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
 
-            var token = new JwtSecurityToken(
-                issuer: _options.Issuer,
-                audience: _options.Audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_options.Expiry),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+    public bool IsAgentTokenValid(string agentToken)
+    {
+        if (string.IsNullOrWhiteSpace(agentToken))
+        {
+            return false;
         }
 
-        public bool IsAgentTokenValid(string agentToken)
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(_options.Secret);
+
+        try
         {
-            if (string.IsNullOrWhiteSpace(agentToken))
-                return false;
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_options.Secret);
-
-            try
+            tokenHandler.ValidateToken(agentToken, new TokenValidationParameters
             {
-                tokenHandler.ValidateToken(agentToken, new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = _options.Issuer,
-                    ValidateAudience = true,
-                    ValidAudience = _options.Audience,
-                    ValidateLifetime = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuerSigningKey = true
-                }, out SecurityToken validatedToken);
+                ValidateIssuer = true,
+                ValidIssuer = _options.Issuer,
+                ValidateAudience = true,
+                ValidAudience = _options.Audience,
+                ValidateLifetime = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuerSigningKey = true
+            }, out var _);
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }

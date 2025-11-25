@@ -2,32 +2,35 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace meter_api.Services
+namespace meter_api.Services;
+
+public class DatabaseHttpClient : IDatabaseHttpClient
 {
-    public class DatabaseHttpClient : IDatabaseHttpClient
+    private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _jsonOptions;
+
+    public DatabaseHttpClient(HttpClient httpClient)
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _jsonOptions;
+        _httpClient = httpClient;
 
-        public DatabaseHttpClient(HttpClient httpClient)
+        _jsonOptions = new JsonSerializerOptions
         {
-            _httpClient = httpClient;
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+    }
 
-            _jsonOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            };
+    public async Task<List<T>?> GetListAsync<T>(string url)
+    {
+        using var resp = await _httpClient.GetAsync(url);
+        if (resp.StatusCode == HttpStatusCode.NotFound)
+        {
+            return [];
         }
 
-        public async Task<List<T>?> GetListAsync<T>(string url)
-        {
-            using var resp = await _httpClient.GetAsync(url);
-            if (resp.StatusCode == HttpStatusCode.NotFound) return [];
-            resp.EnsureSuccessStatusCode();
-            var stream = await resp.Content.ReadAsStreamAsync();
-            var data = await JsonSerializer.DeserializeAsync<List<T>>(stream, _jsonOptions);
-            return data;
-        }
+        resp.EnsureSuccessStatusCode();
+        var stream = await resp.Content.ReadAsStreamAsync();
+        var data = await JsonSerializer.DeserializeAsync<List<T>>(stream, _jsonOptions);
+        return data;
     }
 }

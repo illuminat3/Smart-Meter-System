@@ -1,83 +1,86 @@
-﻿using meter_api.Datatypes;
-using meter_api.Datatypes.Database;
+﻿using meter_api.Datatypes.Database;
 using meter_api.Datatypes.Requests;
 using meter_api.Datatypes.Responses;
 
-namespace meter_api.Services
+namespace meter_api.Services;
+
+public class AuthService(IDatabaseService databaseService, IHashService hashService, IJwtService jwtService, IAgentTokenService agentTokenService) : IAuthService
 {
-    public class AuthService(IDatabaseService databaseService, IHashService hashService, IJwtService jwtService, IAgentTokenService agentTokenService) : IAuthService
+    public async Task<AgentLoginResponse> AgentLogin(AgentLoginRequest request)
     {
-        public async Task<AgentLoginResponse> AgentLogin(AgentLoginRequest request)
+        var credential = await databaseService.Get<MeterAgentCredentials>(new Dictionary<string, string>
         {
-            var credential = await databaseService.Get<MeterAgentCredentials>(new Dictionary<string, string>
-            {
-                { "meterId", request.MeterId },
-                { "username", request.Username }
-            });
+            { "meterId", request.MeterId },
+            { "username", request.Username }
+        });
 
-            var hashedPassword = hashService.GetHash(request.Password);
+        var hashedPassword = hashService.GetHash(request.Password);
 
-            if (credential.HashedPassword != hashedPassword)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            var agent = await databaseService.GetFullMeterAgentFromId(request.MeterId);
-            var authToken = agentTokenService.GetAgentToken(agent);
-
-            var response = new AgentLoginResponse
-            {
-                MeterId = request.MeterId,
-                Username = request.Username,
-                AuthenticationToken = authToken,
-            };
-
-            return response;
+        if (credential.HashedPassword != hashedPassword)
+        {
+            throw new UnauthorizedAccessException();
         }
 
-        public async Task<ClientLoginResponse> ClientLogin(ClientLoginRequest request)
+        var agent = await databaseService.GetFullMeterAgentFromId(request.MeterId);
+        var authToken = agentTokenService.GetAgentToken(agent);
+
+        var response = new AgentLoginResponse
         {
-            var credential = await databaseService.Get<ClientCredentials>(new Dictionary<string, string>
-            {
-                { "username", request.Username }
-            });
-            var hashedPassword = hashService.GetHash(request.Password);
+            MeterId = request.MeterId,
+            Username = request.Username,
+            AuthenticationToken = authToken,
+        };
 
-            if (credential.HashedPassword != hashedPassword)
-            {
-                throw new UnauthorizedAccessException();
-            }
+        return response;
+    }
 
-            var client = await databaseService.Get<Client>(new Dictionary<string, string> { { "id", credential.ClientId } });
+    public async Task<ClientLoginResponse> ClientLogin(ClientLoginRequest request)
+    {
+        var credential = await databaseService.Get<ClientCredentials>(new Dictionary<string, string>
+        {
+            { "username", request.Username }
+        });
+        var hashedPassword = hashService.GetHash(request.Password);
 
-            var authToken = jwtService.GetClientJwt(client);
-
-            var response = new ClientLoginResponse 
-            { 
-                AuthenticationToken = authToken,
-                Username = request.Username 
-            };
-
-            return response;
+        if (credential.HashedPassword != hashedPassword)
+        {
+            throw new UnauthorizedAccessException();
         }
 
-        public string? TryGetBearerToken(string? authHeader)
-        {
-            if (string.IsNullOrWhiteSpace(authHeader)) return null;
-            if (!authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)) return null;
-            return authHeader["Bearer ".Length..].Trim();
-        }
+        var client = await databaseService.Get<Client>(new Dictionary<string, string> { { "id", credential.ClientId } });
 
-        public bool IsTokenAuthorised(string? token)
-        {
-            if (string.IsNullOrWhiteSpace(token)) return false;
-            return jwtService.IsValidJwt(token) || agentTokenService.IsAgentTokenValid(token);
-        }
+        var authToken = jwtService.GetClientJwt(client);
 
-        public bool IsAuthorised(HttpContext httpContext)
-        {
-            var token = TryGetBearerToken(httpContext.Request.Headers.Authorization);
-            return IsTokenAuthorised(token);
-        }
+        var response = new ClientLoginResponse 
+        { 
+            AuthenticationToken = authToken,
+            Username = request.Username 
+        };
+
+        return response;
+    }
+
+    public string? TryGetBearerToken(string? authHeader)
+    {
+        return string.IsNullOrWhiteSpace(authHeader)
+            ? null
+            : ExtractBearerToken(authHeader);
+    }
+
+    private static string? ExtractBearerToken(string authHeader)
+    {
+        return !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase) ? null : authHeader["Bearer ".Length..].Trim();
+    }
+
+
+    public bool IsTokenAuthorised(string? token)
+    {
+        return !string.IsNullOrWhiteSpace(token) && (jwtService.IsValidJwt(token) || agentTokenService.IsAgentTokenValid(token));
+    }
+
+    public bool IsAuthorised(HttpContext httpContext)
+    {
+        var token = TryGetBearerToken(httpContext.Request.Headers.Authorization);
+        return IsTokenAuthorised(token);
     }
 }

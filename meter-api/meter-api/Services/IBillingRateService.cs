@@ -1,7 +1,6 @@
-﻿namespace meter_api.Services
+﻿namespace meter_api.Services;
+
+public interface IBillingRateService
 {
-    public interface IBillingRateService
-    {
-        decimal GetRate(DateTime timestampUtc);
-    }
+    decimal GetRate(DateTime timestampUtc);
 }

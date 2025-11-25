@@ -1,9 +1,8 @@
 ﻿using meter_api.Datatypes.Database;
 
-namespace meter_api.Services
+namespace meter_api.Services;
+
+public interface IBillingService
 {
-    public interface IBillingService
-    {
-        decimal CalculateCost(MeterAgentReading currentReading, MeterAgentReading? previousReading);
-    }
+    decimal CalculateCost(MeterAgentReading currentReading, MeterAgentReading? previousReading);
 }

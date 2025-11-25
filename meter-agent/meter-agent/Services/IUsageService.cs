@@ -1,7 +1,6 @@
-namespace meter_agent.Services
+namespace meter_agent.Services;
+
+public interface IUsageService
 {
-    public interface IUsageService
-    {
-        decimal GetUsage();
-    }
+    decimal GetUsage();
 }

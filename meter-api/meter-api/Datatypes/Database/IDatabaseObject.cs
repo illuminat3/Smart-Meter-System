@@ -1,7 +1,6 @@
-﻿namespace meter_api.Datatypes.Database
+﻿namespace meter_api.Datatypes.Database;
+
+public interface IDatabaseObject
 {
-    public interface IDatabaseObject
-    {
-        string Id { get; set; }
-    }
+    string Id { get; set; }
 }

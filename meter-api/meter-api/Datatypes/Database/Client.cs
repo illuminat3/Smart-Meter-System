@@ -1,9 +1,8 @@
-﻿namespace meter_api.Datatypes.Database
+﻿namespace meter_api.Datatypes.Database;
+
+public class Client : IDatabaseObject
 {
-    public class Client : IDatabaseObject
-    {
-        public string Id { get; set; } = string.Empty;
-        public required string Name { get; set; }
-        public List<string> MeterIds { get; set; } = [];
-    }
+    public string Id { get; set; } = string.Empty;
+    public required string Name { get; set; }
+    public List<string> MeterIds { get; set; } = [];
 }

@@ -1,7 +1,6 @@
-﻿namespace meter_agent.Services
+﻿namespace meter_agent.Services;
+
+public interface IHealthCheckService
 {
-    public interface IHealthCheckService
-    {
-        Task<bool> WaitForHealthyStatus(int maxRetries, int delaySeconds);
-    }
+    Task<bool> WaitForHealthyStatus(int maxRetries, int delaySeconds);
 }
