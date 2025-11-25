@@ -1,6 +1,14 @@
-﻿global using FluentAssertions;
-global using Xunit;
+﻿global using System.Net.Http.Json;
+global using System.Text.Json;
+global using Microsoft.AspNetCore.SignalR.Client;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using FluentAssertions;
 global using NSubstitute;
+global using DotNet.Testcontainers.Builders;
+global using DotNet.Testcontainers.Containers;
 global using meter_api.Services;
 global using meter_api.Datatypes.Database;
+global using meter_api.Datatypes.Requests;
+global using meter_api.Datatypes.Responses;
 global using meter_api.Datatypes;

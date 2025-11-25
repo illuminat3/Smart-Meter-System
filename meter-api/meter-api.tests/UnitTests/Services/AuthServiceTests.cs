@@ -1,7 +1,6 @@
-﻿using meter_api.Datatypes.Requests;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace meter_api.tests.Services;
+namespace meter_api.tests.UnitTests.Services;
 
 public class AuthServiceTests
 {

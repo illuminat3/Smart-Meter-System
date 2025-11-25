@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace meter_api.tests.Services;
+namespace meter_api.tests.UnitTests.Services;
 
 public class SnapshotServiceTests
 {
