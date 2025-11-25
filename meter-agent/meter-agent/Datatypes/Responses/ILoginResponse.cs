@@ -1,8 +1,7 @@
-﻿namespace meter_agent.Datatypes.Responses
+﻿namespace meter_agent.Datatypes.Responses;
+
+public interface ILoginResponse
 {
-    public interface ILoginResponse
-    {
-        string Username { get; set; }
-        string AuthenticationToken { get; set; }
-    }
+    string Username { get; set; }
+    string AuthenticationToken { get; set; }
 }

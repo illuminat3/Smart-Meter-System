@@ -1,8 +1,7 @@
-﻿namespace meter_agent.Datatypes.Requests
+﻿namespace meter_agent.Datatypes.Requests;
+
+public interface ILoginRequest
 {
-    public interface ILoginRequest
-    {
-        string Username { get; set; }
-        string Password { get; set; }
-    }
+    string Username { get; set; }
+    string Password { get; set; }
 }

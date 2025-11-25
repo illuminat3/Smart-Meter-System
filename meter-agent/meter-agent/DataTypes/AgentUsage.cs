@@ -1,7 +1,6 @@
-﻿namespace meter_agent.DataTypes
+﻿namespace meter_agent.DataTypes;
+
+public class AgentUsage
 {
-    public class AgentUsage
-    {
-        public required decimal EnergyUsedKWh { get; set; }
-    }
+    public required decimal EnergyUsedKWh { get; set; }
 }

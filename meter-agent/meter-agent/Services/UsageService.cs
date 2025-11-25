@@ -1,18 +1,17 @@
-namespace meter_agent.Services
+namespace meter_agent.Services;
+
+public class UsageService : IUsageService
 {
-    public class UsageService : IUsageService
+    private readonly Random _random = new();
+
+    public decimal GetUsage()
     {
-        private readonly Random _random = new();
+        var min = 0.001m;
+        var max = 0.06m;
 
-        public decimal GetUsage()
-        {
-            decimal min = 0.001m;
-            decimal max = 0.06m;
+        var usage = (decimal)_random.NextDouble();
+        usage = min + (usage * (max - min));
 
-            decimal usage = (decimal)_random.NextDouble();
-            usage = min + (usage * (max - min));
-
-            return usage;
-        }
+        return usage;
     }
 }
