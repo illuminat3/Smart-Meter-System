@@ -32,12 +32,12 @@ public static class Program
 
         if (!double.TryParse(errorChanceString, NumberStyles.Float, CultureInfo.InvariantCulture, out var errorChance))
         {
-            throw new FormatException("ERROR_CHANCE must be a valid number like 0.8");
+            throw new FormatException("ERROR_CHANCE must be a valid double");
         }
 
         if (errorChance < 0.0 || errorChance > 1.0)
         {
-            throw new InvalidOperationException("ERROR_CHANCE must be between 0.0 and 1.0");
+            throw new FormatException("ERROR_CHANCE must be between 0.0 and 1.0");
         }
 
         if (!baseUrl.EndsWith('/'))
