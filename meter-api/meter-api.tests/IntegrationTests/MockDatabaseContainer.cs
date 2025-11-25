@@ -21,7 +21,6 @@ public class MockDatabaseContainer : IAsyncLifetime
 
         Container = new ContainerBuilder()
             .WithImage("ghcr.io/illuminat3/smart-meter-system-database:latest")
-            .WithName("mock-database-test")
             .WithPortBinding(3030, 3000)
             .WithBindMount(jsonPath, "/src/db.json")
             .WithWaitStrategy(
