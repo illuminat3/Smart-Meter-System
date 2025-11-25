@@ -13,7 +13,7 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
 
     private async Task<string> GetAgentTokenAsync()
     {
-        var httpClient = CreateClient();
+        using var httpClient = CreateClient();
 
         var loginRequest = new AgentLoginRequest
         {
@@ -50,7 +50,7 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
     public async Task AgentHub_WithValidAgentToken_Connects()
     {
         // Arrange
-        var httpClient = CreateClient();
+        using var httpClient = CreateClient();
         var token = await GetAgentTokenAsync();
         var connection = CreateConnection(httpClient, token);
 
@@ -68,7 +68,7 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
     public async Task AgentHub_WithValidAgentToken_Disconnects()
     {
         // Arrange
-        var httpClient = CreateClient();
+        using var httpClient = CreateClient();
         var token = await GetAgentTokenAsync();
         var connection = CreateConnection(httpClient, token);
 
@@ -87,7 +87,7 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
     public async Task AgentHub_WithValidAgentToken_CanHandle_AgentErrorUpdate_Message()
     {
         // Arrange
-        var httpClient = CreateClient();
+        using var httpClient = CreateClient();
         var token = await GetAgentTokenAsync();
         var connection = CreateConnection(httpClient, token);
         await connection.StartAsync();
@@ -116,7 +116,7 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
     public async Task AgentHub_WithValidAgentToken_CanHandle_AgentUsageUpdate_Message()
     {
         // Arrange
-        var httpClient = CreateClient();
+        using var httpClient = CreateClient();
         var token = await GetAgentTokenAsync();
         var connection = CreateConnection(httpClient, token);
         await connection.StartAsync();

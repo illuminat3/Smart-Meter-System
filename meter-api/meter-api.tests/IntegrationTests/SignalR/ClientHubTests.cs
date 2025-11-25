@@ -13,7 +13,7 @@ public class ClientHubTests(MockDatabaseContainer db, MeterApiApplicationFactory
     public async Task ClientHub_WithValidClientToken_Connects()
     {
         // Arrange
-        var httpClient = CreateClient();
+        using var httpClient = CreateClient();
         var loginRequest = new ClientLoginRequest
         {
             Username = "Client1",
@@ -52,7 +52,7 @@ public class ClientHubTests(MockDatabaseContainer db, MeterApiApplicationFactory
     public async Task ClientHub_WithValidClientToken_Disconnects()
     {
         // Arrange
-        var httpClient = CreateClient();
+        using var httpClient = CreateClient();
 
         var loginRequest = new ClientLoginRequest
         {

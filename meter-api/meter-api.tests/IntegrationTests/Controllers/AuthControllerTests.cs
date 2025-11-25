@@ -15,7 +15,7 @@ public class AuthControllerTests(MockDatabaseContainer db, MeterApiApplicationFa
     public async Task ClientLogin_WithValidCredentials_ReturnsOkAndToken()
     {
         // Arrange
-        var client = CreateClient();
+        using var client = CreateClient();
         var request = new ClientLoginRequest
         {
             Username = "Client1",
@@ -38,7 +38,7 @@ public class AuthControllerTests(MockDatabaseContainer db, MeterApiApplicationFa
     public async Task ClientLogin_WithInvalidCredentials_ReturnsUnauthorized()
     {
         // Arrange
-        var client = CreateClient();
+        using var client = CreateClient();
         var request = new ClientLoginRequest
         {
             Username = "Client1",
@@ -56,7 +56,7 @@ public class AuthControllerTests(MockDatabaseContainer db, MeterApiApplicationFa
     public async Task AgentLogin_WithValidCredentials_ReturnsOkAndToken()
     {
         // Arrange
-        var client = CreateClient();
+        using var client = CreateClient();
         var request = new AgentLoginRequest
         {
             MeterId = "1",
@@ -81,7 +81,7 @@ public class AuthControllerTests(MockDatabaseContainer db, MeterApiApplicationFa
     public async Task AgentLogin_WithInvalidCredentials_ReturnsUnauthorized()
     {
         // Arrange
-        var client = CreateClient();
+        using var client = CreateClient();
         var request = new AgentLoginRequest
         {
             MeterId = "1",
