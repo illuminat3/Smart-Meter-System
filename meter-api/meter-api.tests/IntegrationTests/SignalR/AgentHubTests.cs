@@ -2,6 +2,7 @@
 
 namespace meter_api.tests.IntegrationTests.SignalR;
 
+[Collection("IntegrationTests")]
 public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory factory) : IClassFixture<MockDatabaseContainer>, IClassFixture<MeterApiApplicationFactory>
 {
     private HttpClient CreateClient()

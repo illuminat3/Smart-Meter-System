@@ -2,8 +2,8 @@
 
 namespace meter_api.tests.IntegrationTests.Controllers;
 
-public class AuthControllerTests(MockDatabaseContainer db, MeterApiApplicationFactory factory)
-    : IClassFixture<MockDatabaseContainer>, IClassFixture<MeterApiApplicationFactory>
+[Collection("IntegrationTests")]
+public class AuthControllerTests(MockDatabaseContainer db, MeterApiApplicationFactory factory) : IClassFixture<MockDatabaseContainer>, IClassFixture<MeterApiApplicationFactory>
 {
     private HttpClient CreateClient()
     {

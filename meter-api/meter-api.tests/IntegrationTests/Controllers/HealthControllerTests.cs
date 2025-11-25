@@ -2,6 +2,7 @@
 
 namespace meter_api.tests.IntegrationTests.Controllers;
 
+[Collection("IntegrationTests")]
 public class HealthControllerTests(MockDatabaseContainer db, MeterApiApplicationFactory factory) : IClassFixture<MockDatabaseContainer>, IClassFixture<MeterApiApplicationFactory>
 {
     private HttpClient CreateClient()
