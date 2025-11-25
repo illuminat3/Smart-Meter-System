@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace meter_api.tests.Services;
+namespace meter_api.tests.UnitTests.Services;
 
 public class DatabaseServiceTests
 {

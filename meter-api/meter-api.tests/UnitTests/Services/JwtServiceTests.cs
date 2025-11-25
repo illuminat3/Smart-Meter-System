@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace meter_api.tests.Services;
+namespace meter_api.tests.UnitTests.Services;
 
 public class JwtServiceTests
 {

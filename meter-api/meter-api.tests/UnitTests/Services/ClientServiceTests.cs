@@ -2,7 +2,7 @@
 using meter_api.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
-namespace meter_api.tests.Services;
+namespace meter_api.tests.UnitTests.Services;
 
 public class ClientServiceTests
 {
