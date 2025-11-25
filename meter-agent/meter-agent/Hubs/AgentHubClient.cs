@@ -114,8 +114,9 @@ public class AgentHubClient(IAuthenticationService authenticationService, AgentL
         finally
         {
             _gate.Release();
-            _gate.Dispose();
-            GC.SuppressFinalize(this);
         }
+
+        _gate.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
