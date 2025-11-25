@@ -12,8 +12,8 @@ public class ClientHubTests(MockDatabaseContainer db, MeterApiApplicationFactory
     [Fact]
     public async Task ClientHub_WithValidClientToken_Connects()
     {
+        // Arrange
         var httpClient = CreateClient();
-
         var loginRequest = new ClientLoginRequest
         {
             Username = "Client1",
@@ -38,8 +38,10 @@ public class ClientHubTests(MockDatabaseContainer db, MeterApiApplicationFactory
             .WithAutomaticReconnect()
             .Build();
 
+        // Act
         await connection.StartAsync();
 
+        // Assert
         connection.State.Should().Be(HubConnectionState.Connected);
 
         await connection.StopAsync();
@@ -49,6 +51,7 @@ public class ClientHubTests(MockDatabaseContainer db, MeterApiApplicationFactory
     [Fact]
     public async Task ClientHub_WithValidClientToken_Disconnects()
     {
+        // Arrange
         var httpClient = CreateClient();
 
         var loginRequest = new ClientLoginRequest
@@ -76,16 +79,15 @@ public class ClientHubTests(MockDatabaseContainer db, MeterApiApplicationFactory
             .Build();
 
         await connection.StartAsync();
-
         connection.State.Should().Be(HubConnectionState.Connected);
 
+        // Act
         await connection.StopAsync();
-
         await Task.Delay(100);
 
+        // Assert
         connection.State.Should().Be(HubConnectionState.Disconnected);
 
         await connection.DisposeAsync();
     }
-
 }

@@ -49,13 +49,15 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
     [Fact]
     public async Task AgentHub_WithValidAgentToken_Connects()
     {
+        // Arrange
         var httpClient = CreateClient();
         var token = await GetAgentTokenAsync();
-
         var connection = CreateConnection(httpClient, token);
 
+        // Act
         await connection.StartAsync();
 
+        // Assert
         connection.State.Should().Be(HubConnectionState.Connected);
 
         await connection.StopAsync();
@@ -65,16 +67,17 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
     [Fact]
     public async Task AgentHub_WithValidAgentToken_Disconnects()
     {
+        // Arrange
         var httpClient = CreateClient();
         var token = await GetAgentTokenAsync();
-
         var connection = CreateConnection(httpClient, token);
 
+        // Act
         await connection.StartAsync();
         connection.State.Should().Be(HubConnectionState.Connected);
-
         await connection.StopAsync();
 
+        // Assert
         connection.State.Should().Be(HubConnectionState.Disconnected);
 
         await connection.DisposeAsync();
@@ -83,13 +86,11 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
     [Fact]
     public async Task AgentHub_WithValidAgentToken_CanHandle_AgentErrorUpdate_Message()
     {
+        // Arrange
         var httpClient = CreateClient();
         var token = await GetAgentTokenAsync();
-
         var connection = CreateConnection(httpClient, token);
-
         await connection.StartAsync();
-        connection.State.Should().Be(HubConnectionState.Connected);
 
         var message = new AgentErrorUpdateMessage
         {
@@ -98,13 +99,13 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
                 ErrorMessage = "Something went wrong"
             }
         };
-
         var rawMessage = JsonSerializer.Serialize(message);
 
+        // Act
         Func<Task> act = async () => await connection.InvokeAsync("ReceiveMessage", rawMessage);
 
+        // Assert
         await act.Should().NotThrowAsync();
-
         connection.State.Should().Be(HubConnectionState.Connected);
 
         await connection.StopAsync();
@@ -114,13 +115,11 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
     [Fact]
     public async Task AgentHub_WithValidAgentToken_CanHandle_AgentUsageUpdate_Message()
     {
+        // Arrange
         var httpClient = CreateClient();
         var token = await GetAgentTokenAsync();
-
         var connection = CreateConnection(httpClient, token);
-
         await connection.StartAsync();
-        connection.State.Should().Be(HubConnectionState.Connected);
 
         var message = new AgentUsageUpdateMessage
         {
@@ -129,13 +128,13 @@ public class AgentHubTests(MockDatabaseContainer db, MeterApiApplicationFactory 
                 EnergyUsedKWh = 123.45m
             }
         };
-
         var rawMessage = JsonSerializer.Serialize(message);
 
+        // Act
         Func<Task> act = async () => await connection.InvokeAsync("ReceiveMessage", rawMessage);
 
+        // Assert
         await act.Should().NotThrowAsync();
-
         connection.State.Should().Be(HubConnectionState.Connected);
 
         await connection.StopAsync();

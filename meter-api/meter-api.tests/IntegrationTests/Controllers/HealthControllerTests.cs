@@ -14,8 +14,8 @@ public class HealthControllerTests(MockDatabaseContainer db, MeterApiApplication
     [Fact]
     public async Task GetHealthStatus_ReturnsHealthyStatus()
     {
-    // Arrange
-    var client = CreateClient();
+        // Arrange
+        var client = CreateClient();
 
         // Act
         var response = await client.GetAsync("/health");
