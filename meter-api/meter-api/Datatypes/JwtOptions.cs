@@ -1,10 +1,9 @@
-﻿namespace meter_api.Datatypes
+﻿namespace meter_api.Datatypes;
+
+public class JwtOptions
 {
-    public class JwtOptions
-    {
-        public required string Secret { get; set; }
-        public required string Issuer { get; set; }
-        public required string Audience { get; set; }
-        public required int Expiry { get; set; }
-    }
+    public required string Secret { get; set; }
+    public required string Issuer { get; set; }
+    public required string Audience { get; set; }
+    public required int Expiry { get; set; }
 }

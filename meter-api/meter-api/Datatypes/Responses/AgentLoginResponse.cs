@@ -1,9 +1,8 @@
-﻿namespace meter_api.Datatypes.Responses
+﻿namespace meter_api.Datatypes.Responses;
+
+public class AgentLoginResponse : ILoginResponse
 {
-    public class AgentLoginResponse : ILoginResponse
-    {
-        public required string MeterId { get; set; }
-        public required string Username { get; set; }
-        public required string AuthenticationToken { get; set; }
-    }
+    public required string MeterId { get; set; }
+    public required string Username { get; set; }
+    public required string AuthenticationToken { get; set; }
 }

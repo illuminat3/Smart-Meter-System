@@ -1,9 +1,8 @@
-﻿namespace meter_api.Datatypes.Messages.Agent
+﻿namespace meter_api.Datatypes.Messages.Agent;
+
+public class AgentErrorUpdateMessage : IMessage<AgentError>
 {
-    public class AgentErrorUpdateMessage : IMessage<AgentError>
-    {
-        public string MessageName { get; } = "AgentErrorUpdate";
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-        public required AgentError Body { get; set; }
-    }
+    public string MessageName { get; } = "AgentErrorUpdate";
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+    public required AgentError Body { get; set; }
 }

@@ -1,11 +1,10 @@
 ﻿using meter_api.Datatypes.Database;
 
-namespace meter_api.Services
-{
-    public interface IAgentTokenService
-    {
-        string GetAgentToken(MeterAgent agent);
+namespace meter_api.Services;
 
-        bool IsAgentTokenValid(string agentToken);
-    }
+public interface IAgentTokenService
+{
+    string GetAgentToken(MeterAgent agent);
+
+    bool IsAgentTokenValid(string agentToken);
 }

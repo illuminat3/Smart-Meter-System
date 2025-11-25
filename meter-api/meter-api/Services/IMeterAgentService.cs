@@ -1,13 +1,12 @@
 ﻿using meter_api.Datatypes;
 
-namespace meter_api.Services
+namespace meter_api.Services;
+
+public interface IMeterAgentService
 {
-    public interface IMeterAgentService
-    {
-        bool IsMeterAgentConnected(string meterId);
-        void AgentConnected(string meterId, string connectionId);
-        void AgentDisconnected(string meterId, string connectionId);
-        Task HandleUsageUpdate(string meterId, AgentUsage usage);
-        Task UpdateAgent(string meterId);
-    }
+    bool IsMeterAgentConnected(string meterId);
+    void AgentConnected(string meterId, string connectionId);
+    void AgentDisconnected(string meterId, string connectionId);
+    Task HandleUsageUpdate(string meterId, AgentUsage usage);
+    Task UpdateAgent(string meterId);
 }

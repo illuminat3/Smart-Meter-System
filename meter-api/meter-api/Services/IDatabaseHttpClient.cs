@@ -1,7 +1,6 @@
-﻿namespace meter_api.Services
+﻿namespace meter_api.Services;
+
+public interface IDatabaseHttpClient
 {
-    public interface IDatabaseHttpClient
-    {
-        Task<List<T>?> GetListAsync<T>(string url);
-    }
+    Task<List<T>?> GetListAsync<T>(string url);
 }

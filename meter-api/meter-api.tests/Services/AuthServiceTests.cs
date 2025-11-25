@@ -1,337 +1,336 @@
 ﻿using meter_api.Datatypes.Requests;
 using Microsoft.AspNetCore.Http;
 
-namespace meter_api.tests.Services
+namespace meter_api.tests.Services;
+
+public class AuthServiceTests
 {
-    public class AuthServiceTests
+    private static AuthService CreateSut(
+        out IDatabaseService databaseService,
+        out IHashService hashService,
+        out IJwtService jwtService,
+        out IAgentTokenService agentTokenService)
     {
-        private static AuthService CreateSut(
-            out IDatabaseService databaseService,
-            out IHashService hashService,
-            out IJwtService jwtService,
-            out IAgentTokenService agentTokenService)
+        databaseService = Substitute.For<IDatabaseService>();
+        hashService = Substitute.For<IHashService>();
+        jwtService = Substitute.For<IJwtService>();
+        agentTokenService = Substitute.For<IAgentTokenService>();
+        return new AuthService(databaseService, hashService, jwtService, agentTokenService);
+    }
+
+    [Fact]
+    public async Task AgentLogin_ValidCredentials_ReturnsResponseWithToken()
+    {
+        // Arrange
+        var sut = CreateSut(out var databaseService, out var hashService, out var _, out var agentTokenService);
+
+        var request = new AgentLoginRequest
         {
-            databaseService = Substitute.For<IDatabaseService>();
-            hashService = Substitute.For<IHashService>();
-            jwtService = Substitute.For<IJwtService>();
-            agentTokenService = Substitute.For<IAgentTokenService>();
-            return new AuthService(databaseService, hashService, jwtService, agentTokenService);
-        }
+            MeterId = "meter-1",
+            Username = "agentuser",
+            Password = "password123"
+        };
 
-        [Fact]
-        public async Task AgentLogin_ValidCredentials_ReturnsResponseWithToken()
+        var storedCredentials = new MeterAgentCredentials
         {
-            // Arrange
-            var sut = CreateSut(out var databaseService, out var hashService, out var _, out var agentTokenService);
+            Id = "cred-1",
+            MeterId = "meter-1",
+            Username = "agentuser",
+            HashedPassword = "hashed-password"
+        };
 
-            var request = new AgentLoginRequest
-            {
-                MeterId = "meter-1",
-                Username = "agentuser",
-                Password = "password123"
-            };
-
-            var storedCredentials = new MeterAgentCredentials
-            {
-                Id = "cred-1",
-                MeterId = "meter-1",
-                Username = "agentuser",
-                HashedPassword = "hashed-password"
-            };
-
-            var fullAgent = new FullMeterAgent
-            {
-                Id = "meter-1",
-                DisplayName = "Agent One",
-                Credentials = storedCredentials,
-                Readings = [],
-                TotalUsage = 0m,
-                TotalBilling = 0m
-            };
-
-            databaseService
-                .Get<MeterAgentCredentials>(Arg.Any<Dictionary<string, string>>(), true)
-                .Returns(storedCredentials);
-
-            hashService
-                .GetHash("password123")
-                .Returns("hashed-password");
-
-            databaseService
-                .GetFullMeterAgentFromId("meter-1")
-                .Returns(fullAgent);
-
-            agentTokenService
-                .GetAgentToken(fullAgent)
-                .Returns("agent-token");
-
-            // Act
-            var response = await sut.AgentLogin(request);
-
-            // Assert
-            response.MeterId.Should().Be("meter-1");
-            response.Username.Should().Be("agentuser");
-            response.AuthenticationToken.Should().Be("agent-token");
-        }
-
-        [Fact]
-        public async Task AgentLogin_InvalidPassword_ThrowsUnauthorizedAccessException()
+        var fullAgent = new FullMeterAgent
         {
-            // Arrange
-            var sut = CreateSut(out var databaseService, out var hashService, out var jwtService, out var agentTokenService);
+            Id = "meter-1",
+            DisplayName = "Agent One",
+            Credentials = storedCredentials,
+            Readings = [],
+            TotalUsage = 0m,
+            TotalBilling = 0m
+        };
 
-            var request = new AgentLoginRequest
-            {
-                MeterId = "meter-1",
-                Username = "agentuser",
-                Password = "wrong-password"
-            };
+        databaseService
+            .Get<MeterAgentCredentials>(Arg.Any<Dictionary<string, string>>(), true)
+            .Returns(storedCredentials);
 
-            var storedCredentials = new MeterAgentCredentials
-            {
-                Id = "cred-1",
-                MeterId = "meter-1",
-                Username = "agentuser",
-                HashedPassword = "correct-hash"
-            };
+        hashService
+            .GetHash("password123")
+            .Returns("hashed-password");
 
-            databaseService
-                .Get<MeterAgentCredentials>(Arg.Any<Dictionary<string, string>>(), true)
-                .Returns(storedCredentials);
+        databaseService
+            .GetFullMeterAgentFromId("meter-1")
+            .Returns(fullAgent);
 
-            hashService
-                .GetHash("wrong-password")
-                .Returns("wrong-hash");
+        agentTokenService
+            .GetAgentToken(fullAgent)
+            .Returns("agent-token");
 
-            // Act
-            var act = async () => await sut.AgentLogin(request);
+        // Act
+        var response = await sut.AgentLogin(request);
 
-            // Assert
-            await act.Should().ThrowAsync<UnauthorizedAccessException>();
-            await databaseService.DidNotReceive().GetFullMeterAgentFromId(Arg.Any<string>());
-            agentTokenService.DidNotReceive().GetAgentToken(Arg.Any<FullMeterAgent>());
-        }
+        // Assert
+        response.MeterId.Should().Be("meter-1");
+        response.Username.Should().Be("agentuser");
+        response.AuthenticationToken.Should().Be("agent-token");
+    }
 
-        [Fact]
-        public async Task ClientLogin_ValidCredentials_ReturnsResponseWithToken()
+    [Fact]
+    public async Task AgentLogin_InvalidPassword_ThrowsUnauthorizedAccessException()
+    {
+        // Arrange
+        var sut = CreateSut(out var databaseService, out var hashService, out var _, out var agentTokenService);
+
+        var request = new AgentLoginRequest
         {
-            // Arrange
-            var sut = CreateSut(out var databaseService, out var hashService, out var jwtService, out var _);
+            MeterId = "meter-1",
+            Username = "agentuser",
+            Password = "wrong-password"
+        };
 
-            var request = new ClientLoginRequest
-            {
-                Username = "clientuser",
-                Password = "password123"
-            };
-
-            var storedCredentials = new ClientCredentials
-            {
-                Id = "cred-1",
-                ClientId = "client-1",
-                Username = "clientuser",
-                HashedPassword = "hashed-password"
-            };
-
-            var client = new Client
-            {
-                Id = "client-1",
-                Name = "Client One",
-                MeterIds = ["m1", "m2"]
-            };
-
-            databaseService
-                .Get<ClientCredentials>(Arg.Any<Dictionary<string, string>>(), true)
-                .Returns(storedCredentials);
-
-            hashService
-                .GetHash("password123")
-                .Returns("hashed-password");
-
-            databaseService
-                .Get<Client>(Arg.Any<Dictionary<string, string>>(), true)
-                .Returns(client);
-
-            jwtService
-                .GetClientJwt(client)
-                .Returns("client-jwt");
-
-            // Act
-            var response = await sut.ClientLogin(request);
-
-            // Assert
-            response.Username.Should().Be("clientuser");
-            response.AuthenticationToken.Should().Be("client-jwt");
-        }
-
-        [Fact]
-        public async Task ClientLogin_InvalidPassword_ThrowsUnauthorizedAccessException()
+        var storedCredentials = new MeterAgentCredentials
         {
-            // Arrange
-            var sut = CreateSut(out var databaseService, out var hashService, out var jwtService, out var agentTokenService);
+            Id = "cred-1",
+            MeterId = "meter-1",
+            Username = "agentuser",
+            HashedPassword = "correct-hash"
+        };
 
-            var request = new ClientLoginRequest
-            {
-                Username = "clientuser",
-                Password = "wrong-password"
-            };
+        databaseService
+            .Get<MeterAgentCredentials>(Arg.Any<Dictionary<string, string>>(), true)
+            .Returns(storedCredentials);
 
-            var storedCredentials = new ClientCredentials
-            {
-                Id = "cred-1",
-                ClientId = "client-1",
-                Username = "clientuser",
-                HashedPassword = "correct-hash"
-            };
+        hashService
+            .GetHash("wrong-password")
+            .Returns("wrong-hash");
 
-            databaseService
-                .Get<ClientCredentials>(Arg.Any<Dictionary<string, string>>(), true)
-                .Returns(storedCredentials);
+        // Act
+        var act = async () => await sut.AgentLogin(request);
 
-            hashService
-                .GetHash("wrong-password")
-                .Returns("wrong-hash");
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+        await databaseService.DidNotReceive().GetFullMeterAgentFromId(Arg.Any<string>());
+        agentTokenService.DidNotReceive().GetAgentToken(Arg.Any<FullMeterAgent>());
+    }
 
-            // Act
-            var act = async () => await sut.ClientLogin(request);
+    [Fact]
+    public async Task ClientLogin_ValidCredentials_ReturnsResponseWithToken()
+    {
+        // Arrange
+        var sut = CreateSut(out var databaseService, out var hashService, out var jwtService, out var _);
 
-            // Assert
-            await act.Should().ThrowAsync<UnauthorizedAccessException>();
-            await databaseService.DidNotReceive().Get<Client>(Arg.Any<Dictionary<string, string>>(), true);
-            jwtService.DidNotReceive().GetClientJwt(Arg.Any<Client>());
-        }
-
-        [Fact]
-        public void TryGetBearerToken_NullOrEmpty_ReturnsNull()
+        var request = new ClientLoginRequest
         {
-            // Arrange
-            var sut = CreateSut(out var _, out var _, out var _, out var _);
+            Username = "clientuser",
+            Password = "password123"
+        };
 
-            // Act
-            var fromNull = sut.TryGetBearerToken(null);
-            var fromEmpty = sut.TryGetBearerToken(string.Empty);
-
-            // Assert
-            fromNull.Should().BeNull();
-            fromEmpty.Should().BeNull();
-        }
-
-        [Fact]
-        public void TryGetBearerToken_InvalidPrefix_ReturnsNull()
+        var storedCredentials = new ClientCredentials
         {
-            // Arrange
-            var sut = CreateSut(out var _, out var _, out var _, out var _);
+            Id = "cred-1",
+            ClientId = "client-1",
+            Username = "clientuser",
+            HashedPassword = "hashed-password"
+        };
 
-            // Act
-            var result = sut.TryGetBearerToken("Token abc123");
-
-            // Assert
-            result.Should().BeNull();
-        }
-
-        [Fact]
-        public void TryGetBearerToken_ValidBearerHeader_ReturnsTokenPart()
+        var client = new Client
         {
-            // Arrange
-            var sut = CreateSut(out var _, out var _, out var _, out var _);
+            Id = "client-1",
+            Name = "Client One",
+            MeterIds = ["m1", "m2"]
+        };
 
-            // Act
-            var result = sut.TryGetBearerToken("Bearer abc123 ");
+        databaseService
+            .Get<ClientCredentials>(Arg.Any<Dictionary<string, string>>(), true)
+            .Returns(storedCredentials);
 
-            // Assert
-            result.Should().Be("abc123");
-        }
+        hashService
+            .GetHash("password123")
+            .Returns("hashed-password");
 
-        [Fact]
-        public void IsTokenAuthorised_NullOrWhitespace_ReturnsFalse()
+        databaseService
+            .Get<Client>(Arg.Any<Dictionary<string, string>>(), true)
+            .Returns(client);
+
+        jwtService
+            .GetClientJwt(client)
+            .Returns("client-jwt");
+
+        // Act
+        var response = await sut.ClientLogin(request);
+
+        // Assert
+        response.Username.Should().Be("clientuser");
+        response.AuthenticationToken.Should().Be("client-jwt");
+    }
+
+    [Fact]
+    public async Task ClientLogin_InvalidPassword_ThrowsUnauthorizedAccessException()
+    {
+        // Arrange
+        var sut = CreateSut(out var databaseService, out var hashService, out var jwtService, out var _);
+
+        var request = new ClientLoginRequest
         {
-            // Arrange
-            var sut = CreateSut(out var _, out var _, out var jwtService, out var agentTokenService);
+            Username = "clientuser",
+            Password = "wrong-password"
+        };
 
-            // Act
-            var resultNull = sut.IsTokenAuthorised(null);
-            var resultEmpty = sut.IsTokenAuthorised(" ");
-
-            // Assert
-            resultNull.Should().BeFalse();
-            resultEmpty.Should().BeFalse();
-            jwtService.DidNotReceive().IsValidJwt(Arg.Any<string>());
-            agentTokenService.DidNotReceive().IsAgentTokenValid(Arg.Any<string>());
-        }
-
-        [Fact]
-        public void IsTokenAuthorised_ReturnsTrueIfJwtValid()
+        var storedCredentials = new ClientCredentials
         {
-            // Arrange
-            var sut = CreateSut(out var _, out var _, out var jwtService, out var agentTokenService);
-            jwtService.IsValidJwt("jwt-token").Returns(true);
-            agentTokenService.IsAgentTokenValid("jwt-token").Returns(false);
+            Id = "cred-1",
+            ClientId = "client-1",
+            Username = "clientuser",
+            HashedPassword = "correct-hash"
+        };
 
-            // Act
-            var result = sut.IsTokenAuthorised("jwt-token");
+        databaseService
+            .Get<ClientCredentials>(Arg.Any<Dictionary<string, string>>(), true)
+            .Returns(storedCredentials);
 
-            // Assert
-            result.Should().BeTrue();
-        }
+        hashService
+            .GetHash("wrong-password")
+            .Returns("wrong-hash");
 
-        [Fact]
-        public void IsTokenAuthorised_ReturnsTrueIfAgentTokenValid()
-        {
-            // Arrange
-            var sut = CreateSut(out var _, out var _, out var jwtService, out var agentTokenService);
-            jwtService.IsValidJwt("agent-token").Returns(false);
-            agentTokenService.IsAgentTokenValid("agent-token").Returns(true);
+        // Act
+        var act = async () => await sut.ClientLogin(request);
 
-            // Act
-            var result = sut.IsTokenAuthorised("agent-token");
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+        await databaseService.DidNotReceive().Get<Client>(Arg.Any<Dictionary<string, string>>(), true);
+        jwtService.DidNotReceive().GetClientJwt(Arg.Any<Client>());
+    }
 
-            // Assert
-            result.Should().BeTrue();
-        }
+    [Fact]
+    public void TryGetBearerToken_NullOrEmpty_ReturnsNull()
+    {
+        // Arrange
+        var sut = CreateSut(out var _, out var _, out var _, out var _);
 
-        [Fact]
-        public void IsTokenAuthorised_ReturnsFalseIfBothInvalid()
-        {
-            // Arrange
-            var sut = CreateSut(out var _, out var _, out var jwtService, out var agentTokenService);
-            jwtService.IsValidJwt("token").Returns(false);
-            agentTokenService.IsAgentTokenValid("token").Returns(false);
+        // Act
+        var fromNull = sut.TryGetBearerToken(null);
+        var fromEmpty = sut.TryGetBearerToken(string.Empty);
 
-            // Act
-            var result = sut.IsTokenAuthorised("token");
+        // Assert
+        fromNull.Should().BeNull();
+        fromEmpty.Should().BeNull();
+    }
 
-            // Assert
-            result.Should().BeFalse();
-        }
+    [Fact]
+    public void TryGetBearerToken_InvalidPrefix_ReturnsNull()
+    {
+        // Arrange
+        var sut = CreateSut(out var _, out var _, out var _, out var _);
 
-        [Fact]
-        public void IsAuthorised_WithValidBearerHeader_ReturnsTrue()
-        {
-            // Arrange
-            var sut = CreateSut(out var _, out var _, out var jwtService, out var agentTokenService);
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers.Authorization = "Bearer valid-token";
-            jwtService.IsValidJwt("valid-token").Returns(true);
-            agentTokenService.IsAgentTokenValid("valid-token").Returns(false);
+        // Act
+        var result = sut.TryGetBearerToken("Token abc123");
 
-            // Act
-            var result = sut.IsAuthorised(httpContext);
+        // Assert
+        result.Should().BeNull();
+    }
 
-            // Assert
-            result.Should().BeTrue();
-        }
+    [Fact]
+    public void TryGetBearerToken_ValidBearerHeader_ReturnsTokenPart()
+    {
+        // Arrange
+        var sut = CreateSut(out var _, out var _, out var _, out var _);
 
-        [Fact]
-        public void IsAuthorised_WithNoAuthorizationHeader_ReturnsFalse()
-        {
-            // Arrange
-            var sut = CreateSut(out var _, out var _, out var _, out var _);
-            var httpContext = new DefaultHttpContext();
+        // Act
+        var result = sut.TryGetBearerToken("Bearer abc123 ");
 
-            // Act
-            var result = sut.IsAuthorised(httpContext);
+        // Assert
+        result.Should().Be("abc123");
+    }
 
-            // Assert
-            result.Should().BeFalse();
-        }
+    [Fact]
+    public void IsTokenAuthorised_NullOrWhitespace_ReturnsFalse()
+    {
+        // Arrange
+        var sut = CreateSut(out var _, out var _, out var jwtService, out var agentTokenService);
+
+        // Act
+        var resultNull = sut.IsTokenAuthorised(null);
+        var resultEmpty = sut.IsTokenAuthorised(" ");
+
+        // Assert
+        resultNull.Should().BeFalse();
+        resultEmpty.Should().BeFalse();
+        jwtService.DidNotReceive().IsValidJwt(Arg.Any<string>());
+        agentTokenService.DidNotReceive().IsAgentTokenValid(Arg.Any<string>());
+    }
+
+    [Fact]
+    public void IsTokenAuthorised_ReturnsTrueIfJwtValid()
+    {
+        // Arrange
+        var sut = CreateSut(out var _, out var _, out var jwtService, out var agentTokenService);
+        jwtService.IsValidJwt("jwt-token").Returns(true);
+        agentTokenService.IsAgentTokenValid("jwt-token").Returns(false);
+
+        // Act
+        var result = sut.IsTokenAuthorised("jwt-token");
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsTokenAuthorised_ReturnsTrueIfAgentTokenValid()
+    {
+        // Arrange
+        var sut = CreateSut(out var _, out var _, out var jwtService, out var agentTokenService);
+        jwtService.IsValidJwt("agent-token").Returns(false);
+        agentTokenService.IsAgentTokenValid("agent-token").Returns(true);
+
+        // Act
+        var result = sut.IsTokenAuthorised("agent-token");
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsTokenAuthorised_ReturnsFalseIfBothInvalid()
+    {
+        // Arrange
+        var sut = CreateSut(out var _, out var _, out var jwtService, out var agentTokenService);
+        jwtService.IsValidJwt("token").Returns(false);
+        agentTokenService.IsAgentTokenValid("token").Returns(false);
+
+        // Act
+        var result = sut.IsTokenAuthorised("token");
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void IsAuthorised_WithValidBearerHeader_ReturnsTrue()
+    {
+        // Arrange
+        var sut = CreateSut(out var _, out var _, out var jwtService, out var agentTokenService);
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Headers.Authorization = "Bearer valid-token";
+        jwtService.IsValidJwt("valid-token").Returns(true);
+        agentTokenService.IsAgentTokenValid("valid-token").Returns(false);
+
+        // Act
+        var result = sut.IsAuthorised(httpContext);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsAuthorised_WithNoAuthorizationHeader_ReturnsFalse()
+    {
+        // Arrange
+        var sut = CreateSut(out var _, out var _, out var _, out var _);
+        var httpContext = new DefaultHttpContext();
+
+        // Act
+        var result = sut.IsAuthorised(httpContext);
+
+        // Assert
+        result.Should().BeFalse();
     }
 }

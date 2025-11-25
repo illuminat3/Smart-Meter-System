@@ -5,80 +5,79 @@ using Microsoft.AspNetCore.SignalR;
 using SignalRSwaggerGen.Attributes;
 using System.Text.Json;
 
-namespace meter_api.Hubs
+namespace meter_api.Hubs;
+
+[Authorize]
+[SignalRHub("hub/agents")]
+public class AgentHub(IMeterAgentService meterAgentService, IClientService clientService) : Hub
 {
-    [Authorize]
-    [SignalRHub("hub/agents")]
-    public class AgentHub(IMeterAgentService meterAgentService, IClientService clientService) : Hub
+    public override async Task OnConnectedAsync()
     {
-        public override async Task OnConnectedAsync()
+        var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
+
+        if (!meterIds.Any())
         {
-            var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
-
-            if (!meterIds.Any())
-            {
-                Context.Abort();
-                return;
-            }
-
-            foreach (var meterId in meterIds)
-            {
-                meterAgentService.AgentConnected(meterId, Context.ConnectionId);
-                await Groups.AddToGroupAsync(Context.ConnectionId, $"meter:{meterId}");
-            }
-
-            await base.OnConnectedAsync();
+            Context.Abort();
+            return;
         }
 
-        public override async Task OnDisconnectedAsync(Exception? exception)
+        foreach (var meterId in meterIds)
         {
-            var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
-            foreach (var meterId in meterIds)
-            {
-                meterAgentService.AgentDisconnected(meterId, Context.ConnectionId);
-                await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"meter:{meterId}");
-            }
-
-            await base.OnDisconnectedAsync(exception);
+            meterAgentService.AgentConnected(meterId, Context.ConnectionId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"meter:{meterId}");
         }
 
-        [HubMethodName("ReceiveMessage")]
-        public async Task ReceiveMessage(string rawMessage)
+        await base.OnConnectedAsync();
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
+        foreach (var meterId in meterIds)
         {
-            using var doc = JsonDocument.Parse(rawMessage);
-            var messageName = doc.RootElement.GetProperty("MessageName").GetString();
+            meterAgentService.AgentDisconnected(meterId, Context.ConnectionId);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"meter:{meterId}");
+        }
 
-            switch (messageName)
-            {
-                case "AgentErrorUpdate":
-                    var errorUpdate = JsonSerializer.Deserialize<AgentErrorUpdateMessage>(rawMessage);
-                    if (errorUpdate is not null)
+        await base.OnDisconnectedAsync(exception);
+    }
+
+    [HubMethodName("ReceiveMessage")]
+    public async Task ReceiveMessage(string rawMessage)
+    {
+        using var doc = JsonDocument.Parse(rawMessage);
+        var messageName = doc.RootElement.GetProperty("MessageName").GetString();
+
+        switch (messageName)
+        {
+            case "AgentErrorUpdate":
+                var errorUpdate = JsonSerializer.Deserialize<AgentErrorUpdateMessage>(rawMessage);
+                if (errorUpdate is not null)
+                {
+                    var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
+                    foreach (var meterId in meterIds)
                     {
-                        var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
-                        foreach (var meterId in meterIds)
-                        {
-                            await meterAgentService.UpdateAgent(meterId);
-                            await clientService.MeterAgentErrorUpdate(meterId, errorUpdate.Body);
-                        }
+                        await meterAgentService.UpdateAgent(meterId);
+                        await clientService.MeterAgentErrorUpdate(meterId, errorUpdate.Body);
                     }
-                    break;
+                }
+                break;
 
-                case "AgentUsageUpdate":
-                    var usageUpdate = JsonSerializer.Deserialize<AgentUsageUpdateMessage>(rawMessage);
-                    if (usageUpdate is not null)
+            case "AgentUsageUpdate":
+                var usageUpdate = JsonSerializer.Deserialize<AgentUsageUpdateMessage>(rawMessage);
+                if (usageUpdate is not null)
+                {
+                    var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
+                    foreach (var meterId in meterIds)
                     {
-                        var meterIds = Context.User?.FindAll("agent_id").Select(c => c.Value) ?? [];
-                        foreach (var meterId in meterIds)
-                        {
-                            await meterAgentService.HandleUsageUpdate(meterId, usageUpdate.Body);
-                            await clientService.MeterAgentUpdate(meterId);
-                        }
+                        await meterAgentService.HandleUsageUpdate(meterId, usageUpdate.Body);
+                        await clientService.MeterAgentUpdate(meterId);
                     }
-                    break;
+                }
+                break;
 
-                default:
-                    break;
-            }
+            default:
+                break;
         }
     }
 }

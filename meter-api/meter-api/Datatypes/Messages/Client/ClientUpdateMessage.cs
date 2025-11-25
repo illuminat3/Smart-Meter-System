@@ -1,9 +1,8 @@
-﻿namespace meter_api.Datatypes.Messages.Client
+﻿namespace meter_api.Datatypes.Messages.Client;
+
+public class ClientUpdateMessage : IMessage<MeterSnapshot>
 {
-    public class ClientUpdateMessage : IMessage<MeterSnapshot>
-    {
-        public string MessageName { get; } = "ClientUpdate";
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-        public required MeterSnapshot Body { get; set; }
-    }
+    public string MessageName { get; } = "ClientUpdate";
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+    public required MeterSnapshot Body { get; set; }
 }

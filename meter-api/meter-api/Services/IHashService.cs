@@ -1,7 +1,6 @@
-﻿namespace meter_api.Services
+﻿namespace meter_api.Services;
+
+public interface IHashService
 {
-    public interface IHashService
-    {
-        string GetHash(string rawText);
-    }
+    string GetHash(string rawText);
 }

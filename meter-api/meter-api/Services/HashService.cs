@@ -2,16 +2,15 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace meter_api.Services
+namespace meter_api.Services;
+
+public class HashService : IHashService
 {
-    public class HashService : IHashService
+    public string GetHash(string rawText)
     {
-        public string GetHash(string rawText)
-        {
-            var bytes = Encoding.UTF8.GetBytes(rawText);
-            var hashBytes = SHA256.HashData(bytes);
-            var hash = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-            return hash;
-        }
+        var bytes = Encoding.UTF8.GetBytes(rawText);
+        var hashBytes = SHA256.HashData(bytes);
+        var hash = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+        return hash;
     }
 }

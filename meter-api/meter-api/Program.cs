@@ -30,7 +30,9 @@ var jwtOptions = new JwtOptions
 
 var connectionUrl = Require(Environment.GetEnvironmentVariable("DATABASE__CONNECTIONURL"), "DATABASE__CONNECTIONURL");
 if (!connectionUrl.EndsWith('/'))
+{
     connectionUrl += "/";
+}
 
 var databaseOptions = new DatabaseOptions
 {
@@ -148,7 +150,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors("open");

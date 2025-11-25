@@ -1,7 +1,6 @@
-﻿namespace meter_api.Datatypes
+﻿namespace meter_api.Datatypes;
+
+public class DatabaseOptions
 {
-    public class DatabaseOptions
-    {
-        public required string ConnectionUrl { get; set; }
-    }
+    public required string ConnectionUrl { get; set; }
 }
