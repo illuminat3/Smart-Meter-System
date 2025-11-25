@@ -5,9 +5,6 @@ on:
     types: [opened, synchronize, reopened]
     paths:
       - 'mock-database/**'
-  push:
-    paths:
-      - 'mock-database/**'
 
 permissions:
   contents: read
