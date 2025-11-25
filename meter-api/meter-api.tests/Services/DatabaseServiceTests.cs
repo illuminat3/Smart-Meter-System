@@ -16,7 +16,7 @@ public class DatabaseServiceTests
         var databaseClient = Substitute.For<IDatabaseHttpClient>();
         var database = new Database();
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
 
         var meterId = "1";
 
@@ -71,7 +71,7 @@ public class DatabaseServiceTests
         var databaseClient = Substitute.For<IDatabaseHttpClient>();
         var database = new Database();
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
 
         var clients = new List<Client> { new() { Id = "1", Name = "Client 1" } };
         var clientCredentials = new List<ClientCredentials>
@@ -118,7 +118,7 @@ public class DatabaseServiceTests
         var databaseClient = Substitute.For<IDatabaseHttpClient>();
         var database = new Database { IsInitialised = true };
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
         var sut = new DatabaseService(databaseClient, database, options, semaphore);
 
         // Act
@@ -146,7 +146,7 @@ public class DatabaseServiceTests
             ]
         };
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
         var sut = new DatabaseService(databaseClient, database, options, semaphore);
 
         var newClient = new Client { Name = "New Client" };
@@ -166,7 +166,7 @@ public class DatabaseServiceTests
         var databaseClient = Substitute.For<IDatabaseHttpClient>();
         var database = new Database();
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
         var sut = new DatabaseService(databaseClient, database, options, semaphore);
 
         var newClient = new Client { Id = "10", Name = "Explicit Id Client" };
@@ -186,7 +186,7 @@ public class DatabaseServiceTests
         var databaseClient = Substitute.For<IDatabaseHttpClient>();
         var database = new Database();
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
         var sut = new DatabaseService(databaseClient, database, options, semaphore);
 
         var client = new Client { Id = "1", Name = "Client 1" };
@@ -210,7 +210,7 @@ public class DatabaseServiceTests
             Clients = [existing]
         };
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
         var sut = new DatabaseService(databaseClient, database, options, semaphore);
 
         var updated = new Client { Id = "1", Name = "New Name" };
@@ -234,7 +234,7 @@ public class DatabaseServiceTests
             Clients = [client]
         };
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
         var sut = new DatabaseService(databaseClient, database, options, semaphore);
 
         var parameters = new Dictionary<string, string>
@@ -256,7 +256,7 @@ public class DatabaseServiceTests
         var databaseClient = Substitute.For<IDatabaseHttpClient>();
         var database = new Database();
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
         var sut = new DatabaseService(databaseClient, database, options, semaphore);
 
         var parameters = new Dictionary<string, string>
@@ -284,7 +284,7 @@ public class DatabaseServiceTests
             Clients = [client1, client2, client3]
         };
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
         var sut = new DatabaseService(databaseClient, database, options, semaphore);
 
         var parameters = new Dictionary<string, string>
@@ -308,7 +308,7 @@ public class DatabaseServiceTests
         var databaseClient = Substitute.For<IDatabaseHttpClient>();
         var database = new Database();
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
         var sut = new DatabaseService(databaseClient, database, options, semaphore);
 
         var parameters = new Dictionary<string, string>
@@ -330,7 +330,7 @@ public class DatabaseServiceTests
         var databaseClient = Substitute.For<IDatabaseHttpClient>();
         var database = new Database();
         var options = Options.Create(new DatabaseOptions { ConnectionUrl = "http://test/" });
-        var semaphore = new SemaphoreSlim(1, 1);
+        using var semaphore = new SemaphoreSlim(1, 1);
         var sut = new DatabaseService(databaseClient, database, options, semaphore);
 
         var unsupported = new UnsupportedDbObject();

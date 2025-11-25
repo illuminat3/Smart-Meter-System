@@ -16,7 +16,7 @@ public class AuthenticationServiceTests
             return await Task.FromResult(response);
         });
 
-        var httpClient = new HttpClient(handler)
+        using var httpClient = new HttpClient(handler)
         {
             BaseAddress = new Uri("https://example.com/")
         };
@@ -46,7 +46,7 @@ public class AuthenticationServiceTests
             return await Task.FromResult(response);
         });
 
-        var httpClient = new HttpClient(handler)
+        using var httpClient = new HttpClient(handler)
         {
             BaseAddress = new Uri("https://example.com/")
         };
