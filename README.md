@@ -128,7 +128,7 @@ npm run dev
 This should then run the frontend at [http://localhost:5173](http://localhost:5173)  
 You should use the login credentials of `Client1` and `password_client_1`
 
-If you need help with any of these steps you can watch tis [helpful video guide](https://www.youtube.com/watch?v=gDNOK6Na-mE)
+If you need help with any of these steps you can watch this [helpful video guide](https://www.youtube.com/watch?v=gDNOK6Na-mE)
 
 ## Group Project
 
