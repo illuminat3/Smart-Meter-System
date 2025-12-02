@@ -6,7 +6,8 @@ University Smart Meter System.
 
 There are 2 main ways to run this project.  
 The easiest way to do this is by using the preconfigured docker compose.  
-The other way is by individually running each project and configuring all the env files to match.
+The other way is by individually running each project and configuring all the env files to match.  
+You will need to have all programs from the requirements installed.
 
 ### Docker Compose
 
@@ -46,6 +47,88 @@ docker compose up -d
 This should run the entire project.  
 You will be able to access it in your browser at [http://localhost:4173](http://localhost:4173)  
 You should use the login credentials of `Client1` and `password_client_1`
+
+### Individually
+
+If you have run the project previously via the docker compose in the root folder you will have to remove the container group from docker desktop.  
+If you do not do this there will be clashes.  
+
+To run the project individually start by cloning the repository,
+
+```bash
+git clone https://github.com/illuminat3/Smart-Meter-System.git
+cd Smart-Meter-System
+```
+
+To start with we will set up the mock-database.  
+
+```bash
+cd mock-database
+docker compose pull
+docker compose up -d
+```
+
+This should now run the mock-database container.  
+To verify that this is the case you should be able to access it at [http://localhost:3030](http://localhost:3030) in your browser.  
+
+Once this is done return to the root folder.
+
+```bash
+cd ..
+```
+
+Now we will set up the meter api.
+
+```bash
+cd meter-api/meter-api
+copy .env.example .env
+```
+
+For this you should have visual studio and dotnet 8.0 installed.  
+You should now head to the `Smart-Meter-System\meter-api` folder in your file explorer.  
+This should be the folder that contains the `.sln` file.  
+Open `meter-api.sln` in Visual Studio.  
+Once this is open make sure to press the green run button.  
+
+<img width="351" height="74" alt="{7ED9FCC6-52E8-4A90-B43D-F578102BA10F}" src="https://github.com/user-attachments/assets/4fe424bf-79e8-47fc-b5dd-e58a80993656" />
+
+You can confirm this is running by opening the [swagger page](http://localhost:5234/swagger/index.html) or you can make a GET request to [http://localhost:5234/health](http://localhost:5234/health).  
+
+Now that the meter api is running, we will setup the meter agent.
+
+```bash
+cd ../../
+cd meter-agent/meter-agent
+copy .env.example .env
+```
+
+Again you should have visual studio and dotnet 8.0 installed.  
+You should now head to the `Smart-Meter-System\meter-agent` folder in your file explorer.  
+This should be the folder that contains the `.sln` file.  
+Open `meter-agent.sln` in Visual Studio.  
+Once this is open make sure to press the green run button.  
+
+<img width="434" height="87" alt="{DA63017C-0F04-433D-AD51-60042D6D03AF}" src="https://github.com/user-attachments/assets/24384c5c-6883-4af3-98b5-a74525825a0a" />
+
+This will then run the meter-agent.  
+By default the environment is set up with an 80% chance to fail.  
+To change this locate the `ERROR_CHANCE` in the `.env` file.  
+
+Finally, we will set up the frontend.  
+For this you should have node.js installed 
+
+```bash
+cd ../../
+cd frontend
+copy .env.example .env
+npm install
+npm run dev
+```
+
+This should then run the frontend at [http://localhost:5173](http://localhost:5173)  
+You should use the login credentials of `Client1` and `password_client_1`
+
+If you need help with any of these steps you can watch tis [helpful video guide](https://www.youtube.com/watch?v=gDNOK6Na-mE)
 
 ## Group Project
 
