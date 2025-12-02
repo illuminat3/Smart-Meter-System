@@ -44,7 +44,8 @@ docker compose up -d
 ```
 
 This should run the entire project.  
-You will be able to access it in your browser at [http://localhost:4173](http://localhost:4173)
+You will be able to access it in your browser at [http://localhost:4173](http://localhost:4173)  
+You should use the login credentials of `Client1` and `password_client_1`
 
 ## Group Project
 
